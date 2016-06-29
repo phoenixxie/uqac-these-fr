@@ -1,0 +1,55 @@
+%!TEX root = these.tex
+
+\chapter{Introduction}
+
+In recent decades, a huge number of hardware and software systems have been introduced in almost every area of our life \citep{clarke1999model}. While people enjoy the facilities brought by these systems, there is always the risk of failure in the systems. Some failure like some buggy computer game is annoying but tolerable, but some failure is fatal and unacceptable, e.g. the medical instruments, automated vehicle control system and aerospace system. One recent example is the Japanese astronomical satellite Hitomi which cost the Japan Aerospace Exploration Agency (JAXA) 286 million dollars. It was launched on February 17, 2016 and officially declared lost on April 28 of the same year because of a software error \citep{nature2016}.
+
+\section{Context}
+
+Obviously, the dependability of a system is critical, and a dependable system should have the ability to function strictly according to its specification in the stated period \citep{avivzienis2004basic}. Software verification and validation is the process of measuring this ability and evaluating the software quality \citep{ieeestd2012}.
+
+Runtime verification \citep{leucker2009brief} is an approach of software verification and validation which is applicable for checking whether the behavior of a computing system satisfies or violates certain property. Normally runtime verification does not influence the execution of the running system, even if it detects a violation of the properties. For this purpose, a monitor is employed to analyze the collected finite trace and then produce a verdict which is generally a truth value. Therefore a runtime verification system should have at least two crucial components: data collection and formul\ae{} evaluation. 
+
+% Some variants of linear temporal logic (LTL) \citep{pnueli97} are used as high-level specification to synthesize monitors automatically. PathExplorer \citep{havelund2001java}, Eagle \citep{barringer2004rule} and MOP \citep{chen2007mop} are runtime verification frameworks for monitoring based on various logics, most of which are derived from LTL.
+
+Nowadays in order to meet the demand of analyzing rapidly growing amount of the trace data, a variety of solutions have been proposed. Some researchers like \cite{barre2012mapreduce} ported existing methodologies to distributed computing frameworks. However, no matter how many processors and memory a cloud system has, there is always a limit of their usages. Thus some other researchers managed to optimize the algorithms, such as \cite{havelund2001monitoring}.
+
+Bitmap is an efficient method to reduce the space overhead of data thanks to the concise structure, and the bit-level parallel and cache friendly feature is able to boost the performance of operations \citep{culpepper2010efficient}. It is widely applied in the applications which have serious demand of space and efficiency, e.g. database and search engines \citep{lemire2014}. If a bitmap is sparse, i.e. the fraction of used bits is low, the bitmap may use less storage space with the aid of the bitmap compression algorithms \citep{antoshenkov1995byte}.
+
+Before monitors analyzing the traces, data gathering plays an important role \citep{casley1988collection}. For different systems, there are corresponding solutions of data collection. \cite{zwijze2005auditing} reviewed the data collection techniques for network analysis. \cite{calabrese2011real} presented a real-time monitoring system with high-resolution and high-definition data collection of the cellphone usage of an Italian city. \cite{shabtai2010applying} developed a host-based intrusion detection system for Android mobile devices by gathering the data of system events and user interaction. As is indicated in the examples, various mediums are utilized to retrieve and transfer data to the location where the verification takes place. Visible light is also an efficient communication medium, as is suggested in \cite{komine2004fundamental}, especially in some restricted environment where cable or radio communication are inconvenient, like \cite{vasilescu2005data}.
+
+Various barcodes have been applied in diverse areas from traditional e-commerce systems to rapidly increasing mobile devices \citep{gao2007understanding}, for the digital barcodes provide a simple but accurate method with low cost of distribution and recognition. Compared with the well-known 1-D UPC barcode which can only encode numbers, 2-D barcodes which appeared at the end of 1980s are able to not only encode alphanumeric data and even binary data, but also supply much larger data capacity. Quick Response Code (QR code) \citep{qrcode-about} has become one of the most popular 2-D barcodes owing to its accuracy, considerable capacity, relatively small printout and high efficiency. It has been put on nearly every kind of visible surface, like paper, phone and computer screen, store windows \citep{okazaki2012benchmarking}.
+
+\section{Thesis objectives}
+
+The objectives of this research center around the development of methods or techniques which is able to give assistance to the two mentioned aspects of runtime verification: data collection and formul\ae{} evaluation.
+
+The first principle objective and contribution was to present a new method of data collection and discuss about its feasibility and performance. QR Code is considered fast and large-capacity, and more important is that its utilization needs only a surface (e.g. screen) as the transmitter and a camera as the receiver, both of which have become mainstream configuration of nearly every laptop and mobile phone in recent years. If a QR code containing certain amount of data is considered as a network data packet, a sequence of QR codes is like a network data stream. Our main concern here was the bandwidth of the one-way communication channel consisting of QR Codes and the critical factors which affect the performance, and also the method of applying this communication channel to our runtime verification practice.
+
+The second objective was to propose a solution of improving the performance of runtime verification system. Bitmap has been proved by many solutions for its ability to improve the performance, and for the temporal logic states are often expressed with boolean values, i.e. true or false, Bitmap was anticipated to enhance the calculation of LTL formul\ae{}s. Therefore, one of our contributions was the solution of mapping temporal logic states to bits and design necessary algorithms to implement the operations of LTL. As \cite{lemire2014} suggests, a sparse bitmap is a waste of space. An additional contribution was thus the observation of the impact of the bitmap compression algorithms on the calculation of LTL formul\ae{}s.
+
+It is important to mention that our work and achievement of the QR Code communication channel has been published in the journal IEEE Access, vol. 4, pp. 284-298, 2016. Another part of our research, LTL Formul\ae{} with Bitmap Manipulations, is under review for publication in the proceedings of the International Conference: Runtime Verification 2016 (RV'16) in Madrid, Spain in 2016.
+
+\section{Methodology}
+
+This research followed a three-steps methodology.
+
+The first step was to develop the one-way QR-Codes communication channel which corresponds to our second principle objective. The data packet was encoded to and decoded from QR codes with an open source library, and a specific protocol dedicated to the serialization and transmission of structured data over limited communication channels was introduced. As the experiment was running, we kept optimizing our solution based on the early experiment result to improve the correction rate and the recognition speed. To take well knowledge of the performance with general devices, a common webcam and a 19-inch LED monitor were used as the receiver and the transmitter in the experiment. In the last part of this step, QR codes were printed on the office papers and swiped before the webcam in order to verify a claim that the protocol can accept incoming data packet without order.
+
+The second step had for goal to define the mapping relationship between temporal logic states and bitmap and also to design the algorithms of the temporal logic operators. The temporal sequence of states of an atomic proposition can be mapped into a bitmap where the value of each bit is either 0 or 1, which rightly corresponds to the boolean-type value of temporal logic states. We categorized the usual LTL operators defined in \cite{huth2004} into three groups: propositional logic operators, unary temporal operators and binary temporal operators. Each group had its feature and difficult, especially the binary temporal operators which have to enumerate two bitmaps together and take care of more conditions than other groups.
+
+In the last step, we implemented our solution with a popular computer programming language. An interface of the bitmap operation was abstracted in order to adapt with the bitmap compression algorithms all of which are implemented in open source libraries. After the programming job, a throughout benchmark was made to observe the process speed without compression and also the performance of both speed and space in condition with the compress algorithms.
+
+\section{Thesis organization}
+
+This thesis consists of five chapters. The content of each chapter is as follows:
+
+Chapter one is an introduction to the background of the thesis, presents the tasks, describes the methods applied in the research and in the end states the thesis' structure.
+
+Chapter two briefs the relevant knowledge of runtime verification, linear temporal logics and introduces some runtime verification systems.
+
+Chapter three is one of the contributions from this research. It presents the solution of one-way communication channel consisting of flickering QR Codes. It is actually a reformatted version of the publication ``Real-Time Streaming Communication with Optical Codes'' \citep{kxie7370891}.
+
+Chapter four is another contribution, the solution of calculating LTL formul\ae{}s with the assistance of bitmaps. The chapter details the definition of mapping, the algorithms and the experiment. It is based on the paper ``Offline Evaluation of LTL Formul\ae{} with Bitmap Manipulations''.
+
+Finally, chapter five concludes this research with the summary of our contributions and looks forward to our future work.

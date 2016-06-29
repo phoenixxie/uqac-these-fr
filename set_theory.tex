@@ -1,0 +1,233 @@
+\cleardoublepage
+\phantomsection
+\chapter*{Set Theory} \nocite{Anderson:2001aa}
+% \addcontentsline{toc}{chapter}{Set Theory}
+
+\begin{definition}
+  If $a$ is one of the objects of the set $A$, we say that $a$ is an \bem{element} of $A$ or $a$ belongs to $A$. The statement that $a$ belongs to $A$ is denoted by $a \in{} A$. If it is not true that $a$ is an element of $A$, we write $a \not\in{} A$.
+\end{definition}
+
+\begin{definition}
+  A set $A$ is a \bem{subset} of a set $B$ (denoted by $A \subseteq B$) if every element of $A$ is an element of $B$; that is, if $x \in A$, then $x \in B$. In particular, every set is a subset of itself. If it is not true that $A$ is a subset of $B$, we write $A \not\subseteq B$. Thus, $A \not\subseteq B$ is tehre is an element of $A$ that is not in $B$.
+\end{definition}
+
+\begin{definition}
+  If A and B are sets, then we say that $A$ \bem{equals} $B$, written $A == B$, whenever, for any $x, x \in A$ if and only if $x \in B$. An alternative definition is that $A == B$ if and only if $A \subseteq B$ and $B \subseteq A$. If $A \subseteq B$ and $A \neq B$, we write $A \subset B$ and say that $A$ is a \bem{proper subset} of $B$.
+\end{definition}
+
+\begin{definition}
+  The \bem{empty set}, denoted by $\varnothing$ or by $\{\}$, is the set which contains no elements. The \bem{universal set U} is a set which has the property that all sets under consideration are subsets of it.
+\end{definition}
+
+\begin{definition}
+  The \bem{intersection} of sets $A$ and $B$ is the set of all elements that are in both $A$ and $B$. The intersection of sets $A$ and $B$ is denoted $A \cap B$. Equivalently, $A \cap B = \{x : x \in A\ \mathrm{and}\ x \in B\}$.
+\end{definition}
+
+\begin{definition}
+ If $I = \{1, 2, 3, \dots, k\}$, then
+ \begin{eqnarray*}
+   \bigcap_{i \in I} A_i & = & A_1 \cap A_2 \cap A_3 \cap \cdots \cap A_k\\
+   & = & \{x : x \in A_i\ \mathrm{for\ all}\ i \in I\}.
+ \end{eqnarray*}
+\end{definition}
+
+\begin{definition}
+  If $I = \{1, 2, 3, \dots, k\}$ then
+  \begin{eqnarray*}
+  \bigcup_{i \in I} A_i & = & A_1 \cup A_2 \cup A_3 \cup \cdots \cup A_k \\
+  & = & \{x :\ \mathrm{there\ is\ an}\ i \in I\ \mathrm{such\ that}\ x \in A_i\}
+  \end{eqnarray*}
+\end{definition}
+
+\begin{definition}
+  Let $A$ and $B$ be sets. The \bem{set difference} $A - B$ is the set of all elements which are in $A$ but are not in $B$. Equivalently, $A - B = \{x : x \in A\ \mathrm{and}\ x \not\in B\}$. The \bem{symmetric difference} of $A$ and $B$, denoted by $A \triangle B$, is the set $(A - B) \cup (B - A)$.
+\end{definition}
+
+\begin{definition}
+  The \bem{complement} of a set $A$, denoted by $A'$, is the set of all elements of the universe which are not in $A$. Hence
+  \[A' = U - A = \{x : x \in U\ \mathrm{and}\ x \not\in A\}\]
+\end{definition}
+
+\begin{theorem}
+  For arbitrary sets $A$ and $B$, $A - B = A \cap B'$.
+\end{theorem}
+
+\begin{theorem}
+  For arbitrary sets $A$ and $B$,
+  \begin{enumerate}
+    \item[(a)] $(A \cap B)' = A' \cup B'$.
+    \item[(b)] $(A \cup B)' = A' \cap B'$.
+  \end{enumerate}
+\end{theorem}
+
+\begin{theorem}
+  For arbitrary sets $A$, $B$, and $C$,
+  \begin{enumerate}
+    \item[(a)] $A \cap (B \cup C) = (A \cap B) \cup (A \cap C)$
+    \item[(b)] $A \cup (B \cap C) = (A \cup B) \cap (A \cup C)$
+  \end{enumerate}
+\end{theorem}
+
+\begin{definition}
+  The \bem{power set} of a set $A$, denoted by $\mathcal{P}(A)$, is the set consisting of all subsets of $A$.
+\end{definition}
+
+\begin{definition}
+  The \bem{Cartesian product} of the sets $A$ and $B$, denoted by $A \times B$, is the set $\{(a, b) : a \in A and b \in B \}$. The object $(a, b)$ is called an \bem{ordered pair} with first component $a$ and second component $b$.
+\end{definition}
+
+\begin{theorem}
+  Let $A$, $B$, and $C$ be the subsets of the universal set $U$.
+  \begin{enumerate}[label=\textbf{(\alph*)}]
+    \item \bem{Idempotent Laws}
+    \begin{eqnarray*}
+    A \cap A & = & A\\
+    A \cup A & = & A
+    \end{eqnarray*}
+    \item \bem{Double Complement}
+    \begin{eqnarray*}
+      (A')' & = & A
+    \end{eqnarray*}
+    \item \bem{De Morgan's Laws}
+    \begin{eqnarray*}
+      (A \cup B)' & = & A' \cap B'\\
+      (A \cap B)' & = & A' \cup B'
+    \end{eqnarray*}
+    \item \bem{Commutative Properties}
+    \begin{eqnarray*}
+      A \cap B & = & B \cap A\\
+      A \cup B & = & B \cup A
+    \end{eqnarray*}
+    \item \bem{Associative Properities}
+    \begin{eqnarray*}
+      A \cap (B \cap C) & = & (A \cap B) \cap C\\
+      A \cup (B \cup C) & = & (A \cup B) \cup C
+    \end{eqnarray*}
+    \item \bem{Distributive Properties}
+    \begin{eqnarray*}
+      A \cap (B \cup C) & = & (A \cap B) \cup (A \cap C)\\
+      A \cup (B \cap C) & = & (A \cup B) \cap (A \cup C)
+    \end{eqnarray*}
+    \item \bem{Identity Properties}
+    \begin{eqnarray*}
+      A \cup \varnothing & = & A\\
+      A \cap U & = & A
+    \end{eqnarray*}
+    \item \bem{Complement Properties}
+    \begin{eqnarray*}
+      A \cup A' = U
+      A \cap A' = \varnothing
+    \end{eqnarray*}    
+  \end{enumerate}
+\end{theorem}
+
+\begin{definition}
+  An operator on a set is \bem{binary} if it combines or operates on two elements of a set of produce another element of the set.
+\end{definition}
+
+\begin{definition}
+  An operator on a set is \bem{unary} if it operates on one element of a set to produce another element of the set.
+\end{definition}
+
+\begin{definition}
+  A \bem{Boolean algebra} is a set $B$ containing special elements $1$ and $0$ together with binary operators, $+$ and $\cdot$ and a unary operator $'$ on $B$, which satisfy the following axioms for all $x$, $y$, and $z$ in $B$:
+  \begin{enumerate}[label=\alph*.]
+    \item \bem{Commutative Laws}
+    \begin{eqnarray*}
+    x \cdot y & = & y \cdot x \\
+    x + y & = & y + x
+    \end{eqnarray*}
+    \item \bem{Associative Laws}
+    \begin{eqnarray*}
+      x \cdot (y \cdot z) & = & (x \cdot y) \cdot z\\
+      x + (y + z) & = & (x + y) + z
+    \end{eqnarray*}
+    \item \bem{Distributive Laws}
+    \begin{eqnarray*}
+      x \cdot (y + z) & = & (x \cdot y) + (x \cdot z)\\
+      x + (y \cdot z) & = & (x + y) \cdot (x + z)
+    \end{eqnarray*}
+    \item \bem{Identity Laws}
+    \begin{eqnarray*}
+      x + 0 & = & x \\
+      x \cdot 1 & = & x
+    \end{eqnarray*}
+    \item \bem{Complement Laws}
+    \begin{eqnarray*}
+      x + x' & = & 1 \\
+      x \cdot x' & = & 0
+    \end{eqnarray*}
+  \end{enumerate}
+  The element $1$ is called \bem{unity}, the element $0$ is called \bem{zero}, and $x'$ is called the complement of $x$. The binary operator $\cdot$ is often omitted so $x \cdot y$ is written simply as $xy$.
+\end{definition}
+
+\begin{theorem}
+  For all elements $x$ and $y$ of a Boolean algebra:
+  \begin{enumerate}[label=\textbf{(\alph*)}]
+    \item \bem{Idempotent Laws}
+    \begin{eqnarray*}
+    x + x & = & x \\
+    x \cdot x & = & x
+    \end{eqnarray*}
+    \item \bem{Null Laws}
+    \begin{eqnarray*}
+    x + 1 & = & 1 \\
+    x \cdot 0 & = & 0
+    \end{eqnarray*}
+    \item \bem{Absorption Laws}
+    \begin{eqnarray*}
+    x + (x \cdot y) & = & x \\
+    x \cdot (x + y) & = & x
+    \end{eqnarray*}
+  \end{enumerate}
+\end{theorem}
+
+\begin{theorem}
+  \textbf{(Uniqueness of Complement Law)} The complement of an element $x$ of a Boolean algebra is uniquely defined by its properties; that is, if $x + x' = 1$, $x \cdot x' = 0$, $x + x^* = 0$, then $x' = x^*$.
+\end{theorem}
+
+\begin{theorem}
+  For all elements $x$ and $y$ of a Boolean algebra:
+  \begin{enumerate}[label=\textbf{(\alph*)}]
+    \item \bem{Ivolution Law}
+    \[(x')' = x\]
+    \item \bem{Complement of Identities Laws}
+    \begin{eqnarray*}
+      0' & = & 1\\
+      1' & = & 0
+    \end{eqnarray*}
+    \item \bem{De Morgan's Laws}
+    \begin{eqnarray*}
+      (x + y)' & = & x' \cdot y'\\
+      (x \cdot y)' & = & x' + y'
+    \end{eqnarray*}
+  \end{enumerate}
+\end{theorem}
+
+\begin{definition}
+  A \bem{relation R between A and B} is a subset of $A \times B$. If $(a, b) \in \mathbf{R}$, we write $a\mathbf{R}b$ and say that $a$ is related to $b$ by means of $\mathbf{R}$ or simply $a$ is \bem{related} to $b$. If $A = B$, so that the relation is a subset of $A \times A$, then the relation is said to be a \bem{relation on A}.
+\end{definition}
+
+\begin{definition}
+  The \bem{domain} of a relation $R$ between $A$ and $B$ is the set of all $x \in A$ such $(x, y) \in R$ for some $y \in B$; that is, the domain of R is the set of all first coordinates of ordered pairs in $R$. The \bem{range} of a relation $R$ between $A$ and $B$ is the set of all $y \in B$ such $(x, y) \in R$ for some $x \in A$; that is, the range of $R$ is the set of all second coordinates of ordered pairs in $R$.
+\end{definition}
+
+\begin{definition}
+  Let $R \subseteq A \times B$ be a relation on $A \times B$. Then the relation $R^{-1}$ on $B \times A$ is defined by
+  \[R^{-1} = \{(b, a): (a, b) \in R\}\]
+  That is, $(b, a) \in R^{-1}$ if and only if $(a, b) \in R$; or, equivalently, $bR^{-1}a$ if and only if $aRb$. The relation $R^{-1}$ is called the inverse relation of $R$.
+\end{definition}
+
+\begin{definition}
+  Let $R \subseteq A \times B$ be a relation on $A \times B$ and $S \subseteq B \times C$ be a relation on $B \times C$. The \bem{composition} of $S$ and $R$ is the relation $T \subseteq A \times C$ defined by
+  \[T = \{(a, c):\ \mathrm{there\ is\ an\ element}\ b\ \mathrm{of}\ B\ \mathrm{such\ that}\ (a, b) \in R\ \mathrm{and}\ (b, c) \in S \}\]
+  This set is denoted by $T = S \circ R$.
+\end{definition}
+
+\begin{theorem}
+  Composition of relations is associative; this is, if $A$, $B$, and $C$ are sets and if $R \subseteq A \times B$, $S \subseteq B \times C$, and $T \subseteq C \times D$, then $T \circ (S \circ R) = (T \circ S) \circ R$.
+\end{theorem}
+
+\begin{definition}
+  A relation $R$ on $A \times A$ is \bem{reflexive} if for all $a$ in $A$, $(a, a)$ is in $R$. A relation $R$ is \bem{antireflexive} if $(a, b) \in R$ implies $a \neq b$. $R$ is \bem{symmetric} if for all $a$ and $b$ in $A$, $(a, b)$ in $R$ implies that $(b, a)$ is in $R$. $R$ is \bem{transitive} if for all $a$, $b$, and $c$ in $A$, whenever $(a, b)$ and $(b, c)$ are in $R$, then $(a, c)$ is in $R$. $R$ is \bem{antisymmetric} if for all $a$ and $b$ in $A$, whenever $(a, b)$ and $(b, a)$ are in $R$, then $a = b$.
+\end{definition}

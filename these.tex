@@ -1,0 +1,226 @@
+%% -----------------------------------------------------------------------
+%% Modèle de thèse/mémoire/essai UQAC
+%% 
+%% Options de la classe:
+%%   - times: pour utiliser Times/Helvetica plutôt que Computer Modern
+%%   - these, memoire, essai, projetthese: crée une page titre libellée
+%%        "thèse" (resp. "mémoire", "essai", etc.)
+%%   - Toutes les options de la classe "book"
+%% -----------------------------------------------------------------------
+\documentclass[times,twoside,memoire]{uqac-these}
+
+%% ------------------------
+%% Packages usuels
+%% ------------------------
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{natbib}
+\usepackage{setspace}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{amsmath,amsfonts,amsthm,multirow,multicol,amssymb,wasysym}
+\usepackage{subfig}
+\newcommand{\nospellcheck}[1]{#1}
+\let\labelindent\relax
+\usepackage{enumitem}
+\usepackage{caption}
+%\usepackage{graphicx}
+\usepackage[x11names]{xcolor}
+\usepackage{morefloats}
+\usepackage{adjustbox}
+\usepackage[utf8]{inputenc}  % UTF-8 input encoding
+\usepackage[T1]{fontenc}     % Type1 fonts
+\usepackage{mathptmx}        % Times with math support
+\usepackage{microtype}       % Better handling of typo
+\usepackage{hyperref}        % Better handling of references in PDFs
+\usepackage{comment}         % To comment out blocks of text
+\usepackage{algorithm,algorithmicx,algpseudocode}
+\usepackage[page,titletoc]{appendix}
+
+\setlist{parsep=0pt,listparindent=\parindent}
+
+\usepackage{float}
+\usepackage{pbox}
+\usepackage{epstopdf}
+\usepackage[autostyle]{csquotes}
+
+\setlength{\headheight}{15pt} 
+
+\def\og{{\fontencoding{T1}\selectfont\char19}}
+\def\fg{{\fontencoding{T1}\selectfont\char20}}
+
+\renewcommand{\topfraction}{0.9}    % max fraction of floats at top
+\renewcommand{\bottomfraction}{0.8} % max fraction of floats at bottom
+
+%% Parameters for TEXT pages (not float pages)
+\setcounter{topnumber}{2}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{4}                 % 2 may work better
+\setcounter{dbltopnumber}{2}                % for 2-column pages
+\renewcommand{\dbltopfraction}{0.9}         % fit big float above 2-col. text
+\renewcommand{\textfraction}{0.07}          % allow minimal text w. figs
+
+% Parameters for FLOAT pages (not text pages)
+\renewcommand{\floatpagefraction}{0.7}      % require fuller float pages
+% N.B.: floatpagefraction MUST be less than topfraction !!
+\renewcommand{\dblfloatpagefraction}{0.7}   %require fuller float pages
+
+\newenvironment{abstract}%
+    {\cleardoublepage\thispagestyle{empty}\null\vfill\begin{center}%
+    \bfseries\abstractname\end{center}}%
+    {\vfill\null}
+
+\newenvironment{acknowledgements}%
+    {\cleardoublepage\thispagestyle{empty}\null\vfill\begin{center}%
+    \bfseries Acknowledgements\end{center}}%
+    {\vfill\null}
+
+\providecommand{\keywords}[1]{\textbf{\textit{Keywords: }} #1}
+
+%% Définition de "todos" pour annoter le texte
+\usepackage{todonotes}
+\newcommand{\todosylvain}[1]{\todo[inline,color=LightBlue2]{\sf\small @Sylvain: #1}}
+\newcommand{\todoraphael}[1]{\todo[inline,color=LavenderBlush2]{\sf\small @Raphaël: #1}}
+\newcommand{\todokun}[1]{\todo[inline,color=Khaki1]{\sf\small @Kun: #1}}
+%\newcommand{\todosimon}[1]{\todo[inline,color=Khaki1]{\sf\small @Simon #1}}
+\newcommand{\todotous}[1]{\todo[inline,color=yellow]{\sf\small #1}}
+
+\newcommand{\imagevide}{\framebox(200,200){IMAGE}}
+
+\newcommand{\listequationnumber}{\refstepcounter{equation}(\theequation)}
+\newcommand{\listequation}[1]{$\displaystyle #1$\hfill\listequationnumber}
+
+\newcommand{\G}{\ensuremath{\mathop{\mbox{\textbf{G}}}\,}}
+\newcommand{\F}{\ensuremath{\mathop{\mbox{\textbf{F}}}\,}}
+\newcommand{\X}{\ensuremath{\mathop{\mbox{\textbf{X}}}\,}}
+\newcommand{\U}{\ensuremath{\mathrel{\mbox{\,\textbf{U}}}\,}}
+\newcommand{\R}{\ensuremath{\mathrel{\mbox{\,\textbf{R}}}\,}}
+\newcommand{\W}{\ensuremath{\mathrel{\mbox{\,\textbf{W}}}\,}}
+
+\newcommand{\squeeze}{\vskip -8pt}
+\newcommand{\squeezemore}{\vskip -20pt}
+
+\newcommand{\etal}{et al.}
+
+\graphicspath {{imgs/}}
+
+\theoremstyle{definition}
+\newtheorem{theo}{Theorem}
+\newenvironment{Qtheorem}[1][]
+  {\quote\begin{theo}[#1]}
+  {\end{theo}\endquote}
+\newenvironment{Btheorem}[1][]
+  {\begin{theo}[#1]\begin{leftbar}}
+  {\end{leftbar}\end{theo}}
+
+% Pour l'index
+\makeindex
+
+%% ------------------------
+%% Quelques définitions
+%% ------------------------
+
+%% Titre du document
+\newcommand{\UqacTheseTitre}{Improvements to data collection and formul\ae evaluation of runtime verification}
+
+%% Auteur du document
+\newcommand{\UqacTheseAuteur}{Kun Xie}
+
+%% Date (mois année) du document
+\newcommand{\UqacTheseDate}{May 2016}
+
+%% ------------------------
+%% Création des méta-données PDF
+%% ------------------------
+\hypersetup{%
+  pdfauthor = {\UqacTheseAuteur},
+  pdftitle = {\UqacTheseTitre}
+}
+
+\begin{document}
+  
+%% ------------------------
+%% Création de la page titre
+%% ------------------------
+\title{\UqacTheseTitre}
+\author{\UqacTheseAuteur}
+\date{\UqacTheseDate}
+\thispagestyle{empty}
+\maketitle
+
+%% ------------------------
+%% Pages préliminaires
+%% ------------------------
+\frontmatter
+
+\doublespacing
+
+\include{abstract}
+\input{acknowledgements}
+
+\singlespacing
+%% \include{avant-propos} %% Facultatif
+\cleardoublepage
+\pdfbookmark{\contentsname}{\contentsname}
+\label{\contentsname}
+\tableofcontents
+\newpage
+
+\phantomsection
+\label{\listfigurename}
+\addcontentsline{toc}{chapter}{\listfigurename}
+\listoffigures
+\newpage
+
+\phantomsection
+\label{\listtablename}
+\addcontentsline{toc}{chapter}{\listtablename}
+\listoftables
+\newpage
+
+%% ------------------------
+%% Document principal
+%% ------------------------
+\mainmatter
+\doublespacing
+% \include{resume}
+\include{introduction}
+\include{review}
+\include{qrcode}
+\include{bitmap}
+
+%% ...
+%% Ajoutez autant de commandes include qu'il y a de chapitres à
+%% inclure dans votre document
+%% ...
+\include{conclusion}
+
+% \begin{appendices}
+% \include{appendices}
+% \end{appendices}
+
+\begin{appendices}
+\chapter{Experiment results of calculating LTL formul\ae{}s with bitmap compression}
+\label{appendixa}
+\input{appendices}
+\end{appendices}
+
+%% ------------------------
+%% Pages liminaires
+%% ------------------------
+\backmatter
+%% Style des références bibliographiques
+% \bibliographystyle{theseuqam}
+
+%% Liste des fichiers source pour la bibliograhpie.
+%% On peut inclure plus d'un fichier en séparant leurs noms par des
+%% virgules.
+\clearpage
+\phantomsection
+\bibliographystyle{theseuqam}
+\bibliography{bibliographie}
+
+%% Décommenter cette ligne pour afficher l'index
+% \printindex
+\end{document}
