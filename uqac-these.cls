@@ -199,7 +199,7 @@
 \titleformat{\chapter}%
 [block]%
 {\centering\fontfamily{phv}\bfseries\selectfont}%
-{\MakeTextUppercase{Chapter \thechapter}}% Titre du chapitre
+{\MakeTextUppercase{Chapitre \thechapter}}% Titre du chapitre
 {0cm}% Séparation d'avec le corps du chapitre
 {\vskip 24pt\MakeTextUppercase{#1}}% Code à exécuter avant le titre
 {}% Code à exécuter après le titre
@@ -234,7 +234,7 @@
 %% pour le mot "Figure"; on doit donc le redéfinir
 %% (cf. http://tex.stackexchange.com/questions/73639/caption-formatting-with-babel-french)
 \captionsetup[figure]{name=Figure}
-\captionsetup[table]{name=Table}
+\captionsetup[table]{name=Tableau}
 \renewcommand{\captionfont}{\normalfont\small\bfseries}
 
 %% ------------------------

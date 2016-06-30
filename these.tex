@@ -14,8 +14,9 @@
 %% ------------------------
 
 \usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
+\usepackage[french]{babel}
 \usepackage{natbib}
+\usepackage{caption}
 \usepackage{setspace}
 \usepackage{hyperref}
 \usepackage{graphicx}
@@ -24,7 +25,6 @@
 \newcommand{\nospellcheck}[1]{#1}
 \let\labelindent\relax
 \usepackage{enumitem}
-\usepackage{caption}
 %\usepackage{graphicx}
 \usepackage[x11names]{xcolor}
 \usepackage{morefloats}
@@ -73,10 +73,18 @@
 
 \newenvironment{acknowledgements}%
     {\cleardoublepage\thispagestyle{empty}\null\vfill\begin{center}%
-    \bfseries Acknowledgements\end{center}}%
+    \bfseries Remerciements\end{center}}%
     {\vfill\null}
 
-\providecommand{\keywords}[1]{\textbf{\textit{Keywords: }} #1}
+\providecommand{\keywords}[1]{\textbf{\textit{Mots-clefs: }} #1}
+
+\makeatletter
+\let\ORG@NAT@sort@cites\NAT@sort@cites
+\def\NAT@sort@cites#1{%
+  \edef\@tempa{\detokenize{#1}}%
+  \ORG@NAT@sort@cites\@tempa
+}
+\makeatother
 
 %% Définition de "todos" pour annoter le texte
 \usepackage{todonotes}
@@ -122,7 +130,7 @@
 %% ------------------------
 
 %% Titre du document
-\newcommand{\UqacTheseTitre}{Improvements to data collection and formul\ae evaluation of runtime verification}
+\newcommand{\UqacTheseTitre}{L'amélioration de la collecte de données et de l'évaluation de formules pour la vérification à l'exécution}
 
 %% Auteur du document
 \newcommand{\UqacTheseAuteur}{Kun Xie}
