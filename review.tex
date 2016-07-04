@@ -1,112 +1,112 @@
 %!TEX root = these.tex
 
-\chapter{Review of runtime verification and related work}
+\chapter{Revue de la vérification à l'exécution et des travaux associés}
 
-In this chapter, we firstly review the common information of runtime verification, including the history, the definition and the comparison with other verification techniques. Secondly, linear temporal logic, as the common specification formalism of runtime verification, is presented with the syntax, the operators and the semantics. At last, a few well-known runtime verification frameworks are introduced, as well as a simple comparison of them.
+Dans ce chapitre, on revoit tout d'abord la vérification à l'exécution, y compris son histoire, sa définition et le comparaison avec d'autres techniques de vérification. D'autre part, la logique temporelle linéaire, en tant que la spécification formalisme commun de la vérification à l'exécution, est présenté avec la syntaxe, les opérateurs et la sémantique. Enfin, quelques cadres de la vérification à l'exécution bien connus sont introduits, ainsi que d'une comparaison simple d'entre eux.
 
-\section{Runtime verification}
+\section{Vérification à l'exécution}
 
-\subsection{Conception}
+La vérification et la validation de logiciels, en tant qu'un aspect important de la gestion de projet et de l'ingénierie du logiciel, est le processus d'employer diverses techniques nécessaires pour détecter les violations ou les satisfactions et d'évaluer la qualité des logiciels et la performance d'un système \citep{ieeestd2012}.
 
-Software verification and validation, as an important aspect of project management and software engineering, is the process of employing various necessary techniques to detect the violations or satisfactions and to evaluate the software quality and the performance of a system \citep{ieeestd2012}.
+\subsection{Concepts fondamentaux}
 
-There are normally two kinds of verification techniques: static and dynamic analysis. Some well-knowns traditional techniques of static analysis are model checking \citep{clarke1999model} and theorem proving \citep{heisel1990tactical}. Static analysis is usually applied to verify the behaviors of a system before its execution, but such techniques have natural shortcomings. For example, model checking cannot work on a system of which the size or the number of states might grow beyond the capacity of computational power owing to the ``state-explosion problem''.
+Il y a normalement deux types de techniques de vérification: analyse statique et dynamique. Certains techniques traditionnelles bien connues d'analyse statique sont la vérification de modèles \citep{clarke1999model} et la démonstration de théorèmes \citep{heisel1990tactical}. L'analyse statique est généralement appliquée pour vérifier les comportements d'un système avant son exécution, mais ces techniques ont les lacunes naturelles. Par exemple, la vérification de modèles ne peut pas fonctionner sur un système dont la taille ou le nombre d'états pourraient se développer au-delà de la capacité de puissance de calcul en raison de la ``state-explosion problem''.
 
-Dynamic analysis is to monitor running systems. Although sometimes its result might be false negatives because of its incompleteness, this incompleteness enables the techniques of dynamic analysis to break the limitation of static methods and thus become their complementary verification
-methods. \citep{falcone2013tutorial}
+L'analyse dynamique est destinée de surveiller les systèmes en cours d'exécution. Bien que parfois le résultat pourrait être faux négatifs à cause de son inachèvement, cette incomplétude permet aux techniques d'analyse dynamique de briser la limitation de méthodes statiques et devenir ainsi les méthodes complémentaires de la vérification. \citep{falcone2013tutorial}
 
-Runtime verification (RV) is a kind of verification technique based on dynamic analysis. In 2001, the Runtime verification workshop \footnote{http://www.runtime-verification.org/} was founded, as the terminology ``runtime verification'' was officially introduced \citep{wiki:rv}. It is a relatively new technique which is lightweight and aims to complement other traditional verification techniques like model checking and testing.
+La vérification à l'exécution est une sorte de technique de vérification sur la base de l'analyse dynamique. En 2001, le Runtime Verification workshop\footnote{http://www.runtime-verification.org/} a été fondée, comme la terminologie ``runtime verification'' était officiellement introduite \citep{wiki:rv}. Elle est une technique relativement nouvelle qui est légère et qui vise à compléter d'autres techniques traditionnelles de vérification comme ``model checking'' et ``testing''.
 
-\cite{leucker2009brief} defines runtime verification as follows:
+\cite{leucker2009brief} définissent la vérification à l'exécution comme suit:
+
 \begin{displayquote}
 Runtime verification is the discipline of computer science that deals with the study, development, and application of those verification techniques that allow checking whether a run of a system under scrutiny satisfies or violates a given correctness property.
 \end{displayquote}
 
-Normally when a violation is observed, runtime verification does not fix the detected program itself, but its result is an important guide and basis for other component in the same system to deal with the problem.
+Normalement, lorsqu'une violation est observée, la vérification à l'exécution ne résout pas le programme détecté elle-même, mais son résultat est un guide et base importante pour d'autre composants dans le même système pour régler le problème.
 
-\cite{leucker2009brief} also defines a \emph{run} of a system as a sequence of infinite traces of the system, and an \emph{execution} of a system as a finite trace and also a \emph{finite prefix} of a \emph{run}. The work of runtime verification mainly focuses on the analysis of \emph{executions} which are performed by \emph{monitors}.
+\cite{leucker2009brief} définissent également un \emph{run} d'un système en tant qu'une séquence de traces infinies du système, et une \emph{exécution} d'un système comme une trace finie et aussi un \emph{préfixe fini} de un \emph{run}. Le travail de vérification à l'exécution se concentre principalement sur l'analyse de \emph{exécutions} qui sont effectuées par les \emph{moniteurs}.
 
-A \emph{monitor} is a decision procedure generated (or ``synthesized'') from one of the formal properties which is to be verified against the execution of the given system. During verification, a \emph{monitor} enumerates the finite traces of an \emph{execution}, checks whether they satisfy the correctness properties and produces a \emph{verdict} as the result. A \emph{verdict}, which is normally a truth value, indicates the satisfaction of the property against the gathered events.
+Un \emph{moniteur} est une procédure de décision générée (ou ``synthétisée'') à partie de l'une des propriétés formelles qui doit être vérifiée contre l'exécution du système donné. Lors de la vérification, un \emph{moniteur} énumère les traces finies d'un \emph{exécution}, vérifie si elles satisfont aux propriétés d'exactitude et produit un \emph{verdict} comme le résultat. Un \emph{verdict}, qui est normalement une valeur de vérité, indique la satisfaction de la propriété contre les événements recueillis.
 
-A verdict in most simple cases normally can be expressed as true/value, yes/no or 1/0, depending on the context. But actually many runtime verification systems have to introduce other values to provide a more accurate result. For example, thanks to the incompleteness of runtime verification system, a verdict cannot be easily issued when the monitor needs more successive events, so a \emph{inconclusive} (written as ``?'') value is introduced to indicate the current status of the monitored system. \citep{falcone2013tutorial}
+Un verdict dans la plupart des cas simples peut être normalement exprimée comme vrai/faux, oui / non ou 1/0, selon le contexte. Mais en réalité, de nombreux systèmes de la vérification à l'exécution doivent introduire d'autres valeurs pour fournir un résultat plus précis. Par exemple, grâce à l'incomplétude du système de la vérification à l'exécution, un verdict ne peut pas être facilement émis lorsque le moniteur a besoin de plus d'événements successifs, donc une valeur \emph{inconcluante} (écrite comme ``?'') est introduite pour indiquer l'état présent du système surveillé. \citep{falcone2013tutorial}
 
-\subsection{Procedure}
+\subsection{Procédure}
 
 \begin{figure}[h]
 \begin{center}
 \centering
 \includegraphics[width=80mm]{rvstruct.png}
-\caption{Runtime verification process (from \cite{falcone2013tutorial})}
+\caption{Processus de la vérification à l'exécution (de \cite{falcone2013tutorial})}
 \label{img:rvstruct}
 \end{center}
 \end{figure}
 
-Figure \ref{img:rvstruct} describes the process of a typical runtime verification system which contains the following four steps \citep{falcone2013tutorial}:
+La figure \ref{img:rvstruct} décrit le processus d'un système typique de la vérification à l'exécution qui contient quatre étapes suivantes \citep{falcone2013tutorial}:
 \begin{enumerate}
-\item \emph{Monitor synthesis}: A monitor is synthesized from a property.
-\item \emph{System instrumentation}: Extra instruments are integrated with the system under scrutiny in order to generate the events for the \emph{monitor}.
-\item \emph{Execution}: The system is executed and starts to generate events and send them to the monitor.
-\item \emph{Analysis and response}: The monitor analyzes the collected events, emits a \emph{verdict} and sends additional information, i.e. \emph{feedback} to the system if necessary.
+\item \emph{Synthèse du moniteur}: Un moniteur est synthétisé à partir d'une propriété.
+\item \emph{Instrumentation du système}: Les instruments supplémentaires sont intégrés au système sous surveillance afin de générer les événements pour le \emph{moniteur}.
+\item \emph{Exécution}: Le système est exécuté et commence à générer les événements et les envoie au moniteur.
+\item \emph{Analyse et réponse}: Le moniteur analyse les événements collectés, émet un \emph{verdict} et envoie les informations supplémentaires, disons les \emph{commentaires}, au système si nécessaire.
 \end{enumerate}
 
-Monitors can be classified into several modes from different aspects \citep{chen2007mop}:
+Les moniteurs peuvent être classés en plusieurs modes d'aspects différents \citep{chen2007mop}:
 \begin{itemize}
-\item \emph{online/offline} depends on when the monitors and the system work. \emph{Online} if they work at the same time, and \emph{offline} if the monitors start to work after the termination of the execution of the system.
-\item \emph{inline/outline} depends on where the monitors are executed. \emph{inline} if the monitors are embedded into the system and \emph{outline} if the monitors run all alone while receiving the event traces from the system by certain methods, e.g. via file system or wireless signal.
-\item \emph{violation/validation} is determined by the specification of the verdict.
+\item \emph{online/offline} dépend du moment où les moniteurs et le système fonctionnent: \emph{Online} s'ils travaillent en même temps, et \emph{offline} si les moniteurs commencent à travailler après la fin de l'exécution du système.
+\item \emph{inline/outline} dépend de l'endroit où les moniteurs sont exécutés: \emph{Inline} si les moniteurs sont embarqués dans le système et \emph{outline} si les moniteurs fonctionnent tout seuls en recevant les traces d'événements du système par certaines méthodes, par exemple par un système de fichiers ou par un signal sans fil.
+\item \emph{violation/validation} est déterminé par la spécification du verdict.
 \end{itemize}
 
-From the definitions of the modes, we can see that a monitor working in offline mode is also working in outline mode and the inline mode implies the online mode.
+D'après les définitions des modes, on peut apercevoir qu'un moniteur travaillant en mode \emph{offline} travaille également en mode \emph{outline} et le mode \emph{inline} implique le mode \emph{online}.
 
-\subsection{Comparison with other techniques}
+\subsection{Comparaison avec d'autres techniques}
 
-Comparing with model checking \citep{clarke1999model} which aims to verify finite state systems, the methods of generating monitors in runtime verification and generating automatas in model checking have similarities. However, whereas model checking deals mainly with infinite traces, runtime verification deals only with finite traces, i.e. the executions. For this reason, the monitors of runtime verification working in online monitoring mode have to be able to accept incremental traces.
+Comparant avec la vérification de modèle \citep{clarke1999model} qui vise à vérifier les systèmes d'états finis, on voit que les méthodes de génération de moniteurs dans la vérification à l'exécution et de la génération d'automates dans la vérification de modèle ont des similitudes. Cependant, alors que la vérification de modèle traite principalement les traces infinies, la vérification à l'exécution ne traite que les traces finies, i.e. les \emph{exécutions}. Pour cette raison, les moniteurs de la vérification à l'exécution travaillant en mode \emph{online} doivent être en mesure d'accepter les traces supplémentaires.
 
-Another important difference between model checking and runtime verification is that, unlike model checking which checks if all executions of a system satisfy a correctness property, runtime verification is interested only with whether existing an execution which belongs to a set of valid executions. Moreover, runtime verification only requires to analyze the observed events of a given system without having to watch its internal running information, but in model checking, the proper model of the system must be acknowledged in order to prepare every possible execution before running the system. \citep{leucker2009brief}
+Une autre différence importante entre la vérification de modèle et la vérification à l'exécution est que, contrairement à la vérification de modèle qui vérifie si toutes les \emph{exécutions} d'un système satisfont une propriété d'exactitude, la vérification à l'exécution est intéressée uniquement par le fait qu'il y a ou non une \emph{exécution} qui appartient à un ensemble d'exécutions valides. En outre, la vérification à l'exécution ne nécessite qu'analyser les événements observés d'un système donné, sans avoir à regarder ses informations intérieures, mais dans la vérification de modèle, le modèle correct du système doit être reconnu afin de préparer chaque exécution possible avant de l'exécution du le système. \citep{leucker2009brief}
 
-Software testing \citep{broy2005model} is another verification technique. It is a process of running a program with a finite set of input-output sequences which is also namely test suite. Comparing with runtime verification, test suites are defined directly, unlike properties of runtime verification which are generated from formalism specification. Besides, ``exhaustive testing'' which is a common method in software testing, is normally not an option of runtime verification.
+Le test du logiciel \citep{broy2005model} est une autre technique de vérification. Elle est un processus de l'exécution d'un programme avec un ensemble fini de séquences entrée-sortie qui est nommé ``la suite de tests''. Comparant avec la vérification à l'exécution, les suites de test sont définies directement, à la différence des propriétés de la vérification à l'exécution qui sont générées à partir des spécifications de formalisme. En outre, ``le test exhaustif'' qui est une méthode courante dans le test du logiciel, n'est normalement pas une option de la vérification à l'exécution.
 
-\section{Linear temporal logics}
+\section{Logique Temporelle Linéaire}
 
-In runtime verification, a monitor is translated from a correctness property, and correctness properties are specified in linear-time temporal logics, such as LTL.
+Dans la vérification à l'exécution, un moniteur est traduit à partir d'une propriété d'exactitude, et les propriétés d'exactitude sont spécifiés dans les logiques temporelles en temps linéaire, telles que la logique temporelle linéaire.
 
-Temporal logic is an extension of classical logic, and it provides a convenient language with the expressions of the properties to reason about the change of the states in terms of time. Although there are a lot of different temporal logics invented to meet various requirements, the temporal logics are normally classified by whether the time is linear or branching. The temporal logic with linear time is called \emph{Linear Temporal Logic} (LTL) which was first proposed by \cite{pnueli97}. Time in LTL is turned into a sequence of states which extend to the infinite future. The sequence of states is a computation \emph{path}. \citep{clarke1999model} \citep{huth2004}
+La logique temporelle est une extension de la logique classique, et elle fournit un langage pratique avec les expressions des propriétés pour raisonner sur le changement des états en termes de temps. Bien qu'il y ait beaucoup de logiques temporelles différentes qui sont inventées pour satisfaire aux exigences diverses, les logiques temporelles sont normalement classées par le fait que le temps est linéaire ou en ramification. La logique temporelle avec le temps linéaire est appelé \emph{Logique Temporelle Linéaire} (LTL), qui a d'abord été proposé par \cite{pnueli97}. le temps dans la LTL est transformé en une séquence d'états qui s'étendent vers le futur infini. La séquence d'états est un \emph{chemin} de calcul. \citep{clarke1999model} \cite{huth2004}
 
-\cite{leucker2009brief} summarizes LTL as a well-accepted linear-time temporal logic used to specify properties of infinite traces. However, in runtime verification, LTL is employed to check finite executions.
+\cite{leucker2009brief} résument la LTL comme une logique temporelle en temps linéaire qui est bien acceptée et utilisée pour spécifier les propriétés de traces infinies. Néanmoins, dans la vérification à l'exécution, la LTL est employée pour vérifier les exécutions finies.
 
-\subsection{Syntax}
+\subsection{Syntaxe}
 
-A well-formed \emph{LTL} formula consists of a finite set of atomic propositions, boolean operators $\neg, \wedge, \vee, \rightarrow$ and temporal logic operators \textbf{F}(future), \textbf{G}(global), \textbf{X}(next), \textbf{U}(until), \textbf{W}(weak-until) and \textbf{R}(release). It can be represented in the Backus Naur form as follows \citep{huth2004}:
+Une formule bien formée de la LTL consiste en un ensemble fini de propositions atomiques, des opérateurs booléens $\neg, \wedge, \vee, \rightarrow$ et des opérateurs de logiques temporelles \textbf{F}(future), \textbf{G}(global), \textbf{X}(next), \textbf{U}(until), \textbf{W}(weak-until) et \textbf{R}(release). Elle peut être représenté sous la forme Backus Naur comme suit \citep{huth2004}:
 \begin{align}
 \phi ::= & \top | \bot | p | (\neg\phi) | (\phi \wedge \phi) | (\phi \vee \phi) | (\phi \rightarrow \phi) \nonumber \\
 & | (\X \phi) | (\F \phi) | (\G \phi) | (\phi \U \phi) | (\phi \W \phi) | (\phi \R \phi)
 \end{align}
 
-\subsection{Semantics}
+\subsection{Sémantiques}
 
-For a sequence of states $s_0, s_1, s_2, ..., s_i, s_{i + 1}, ...$ where $s_{i + 1}$ is a future state of $s_i$, we define a path with $\pi^i = s_i \rightarrow s_{i + 1} \rightarrow ...$ where $i$ is the first state in this path. Given that $\pi(i)$ is the set of atomic propositions which are true at the $i$th state, whether a path $\pi^i$ satisfies an \emph{LTL} formula is defined as follows \citep{rozier2011linear}:
+Pour une séquence d'états $s_0, s_1, s_2, ..., s_i, s_{i + 1}, ... $ où $s_{i + 1}$ est un état futur de $s_i$, on définit un chemin avec $\pi^i = s_i \rightarrow s_{i + 1} \rightarrow ... $ où $i$ est le premier état dans ce chemin. Étant donné que $\pi(i)$ est l'ensemble de propositions atomiques qui sont vraies au $i$ème état, le fait qu'un chemin $\pi^i$ satisfait ou non une formule de la LTL est définie comme suit \citep{rozier2011linear}:
 
 \begin{itemize}
   \item \listequation{\pi^i \vDash \top} \label{eq:true}
   \item \listequation{\pi^i \nvDash \bot} \label{eq:false}
   \item \listequation{\pi^i \vDash p \iff p \in \pi(i)} \label{eq:ap}
   \item \listequation{\pi^i \vDash \neg\psi \iff \pi^i \nvDash \psi} \label{eq:not}
-  \item \listequation{\pi^i \vDash \psi \wedge \varphi \iff \pi^i \vDash \psi \text{ and } \pi^i \vDash \varphi} \label{eq:and}
-  \item \listequation{\pi^i \vDash \psi \vee \varphi \iff \pi^i \vDash \psi \text{ or } \pi^i \vDash \varphi} \label{eq:or}
-  \item \listequation{\pi^i \vDash \psi \rightarrow \varphi \iff \pi^i \vDash \varphi \text{ whenever } \pi^i \vDash \psi} \label{eq:then}
+  \item \listequation{\pi^i \vDash \psi \wedge \varphi \iff \pi^i \vDash \psi \text{ et } \pi^i \vDash \varphi} \label{eq:and}
+  \item \listequation{\pi^i \vDash \psi \vee \varphi \iff \pi^i \vDash \psi \text{ ou } \pi^i \vDash \varphi} \label{eq:or}
+  \item \listequation{\pi^i \vDash \psi \rightarrow \varphi \iff \pi^i \vDash \varphi \text{ chaque fois que } \pi^i \vDash \psi} \label{eq:then}
   \item \listequation{\pi^i \vDash \X \psi \iff \pi^{i + 1} \vDash \psi} \label{eq:next}
   \item \listequation{\pi^i \vDash \G \psi \iff \forall j \geq i, \pi^j \vDash \psi} \label{eq:global}
   \item \listequation{\pi^i \vDash \F \psi \iff \exists j \geq i, \pi^j \vDash \psi} \label{eq:future}
-  \item \listequation{\pi^i \vDash \psi \U \varphi \iff \exists j \geq i, \pi^j \vDash \varphi$ and $\forall k, i \leq k < j, \pi^k \vDash \psi} \label{eq:until}
-  \item \listequation{\pi^i \vDash \psi \W \varphi \iff$ either $\exists j \geq i, \pi^j \vDash \varphi$ and $\forall k, i \leq k < j, \pi^k \vDash \psi$, or $\forall k \geq i, \pi^k \vDash \psi} \label{eq:wuntil}
-  \item \listequation{\pi^i \vDash \psi \R \varphi \iff$ either $\exists j \geq i, \pi^j \vDash \psi$ and $\forall k, i \leq k \leq j, \pi^k \vDash \varphi$, or $\forall k \geq i, \pi^k \vDash \varphi} \label{eq:release}
+  \item \listequation{\pi^i \vDash \psi \U \varphi \iff \exists j \geq i, \pi^j \vDash \varphi$ et $\forall k, i \leq k < j, \pi^k \vDash \psi} \label{eq:until}
+  \item \listequation{\pi^i \vDash \psi \W \varphi \iff$ soit $\exists j \geq i, \pi^j \vDash \varphi$ et $\forall k, i \leq k < j, \pi^k \vDash \psi$, $ \\ $soit $\forall k \geq i, \pi^k \vDash \psi} \label{eq:wuntil}
+  \item \listequation{\pi^i \vDash \psi \R \varphi \iff$ soit $\exists j \geq i, \pi^j \vDash \psi$ et $\forall k, i \leq k \leq j, \pi^k \vDash \varphi$, $ \\ $soit $\forall k \geq i, \pi^k \vDash \varphi} \label{eq:release}
 \end{itemize}
 
-Formul\ae{}s \ref{eq:true} and \ref{eq:false} suggest that the states in the path $\pi^i$ should be always true or false.
+Les formules \ref{eq:true} et \ref{eq:false} suggèrent que les états dans le chemin $\pi^i$ devraient toujours être vrais ou faux.
 
-In formul\ae{} \ref{eq:ap}, $p$ is an atomic proposition belonging to the finite set of atomic propositions of LTL, and this formul\ae{} demands to check only the $i$th state.
+Dans la formule \ref{eq:ap}, $p$ est une proposition atomique appartenant à l'ensemble fini de propositions atomiques de la LTL, et cette formule demande de vérifier seulement le $i$ème état.
 
-Formul\ae{}s \ref{eq:not}---\ref{eq:then} are boolean operators of propositional logic following the rules of Table \ref{table:prologic}
+Les formules \ref{eq:not}---\ref{eq:then} sont les opérateurs booléens de la logique propositionnelle qui respectent les règles du tableau \ref{table:prologic}.
 
 \begin{table}[h]
 \centering
@@ -114,45 +114,44 @@ Formul\ae{}s \ref{eq:not}---\ref{eq:then} are boolean operators of propositional
 \hline
 $\psi$ & $\varphi$ & $\neg\psi$ & $\psi \wedge \varphi$ & $\psi \vee \varphi$ & $\psi \rightarrow \varphi$ \\
 \hline
-True & True & False & True & True & True \\
+Vrai & Vrai & Faux & Vrai & Vrai & Vrai \\
 \hline
-True & False & False & False & True & False \\
+Vrai & Faux & Faux & Faux & Vrai & Faux \\
 \hline
-False & True & True & False & True & True \\
+Faux & Vrai & Vrai & Faux & Vrai & Vrai \\
 \hline
-False & False & True & False & True & True \\
+Faux & Faux & Vrai & Faux & Faux & Vrai \\
 \hline
 \end{tabular}
-\caption{The truth table of boolean operators of propositional logic}
+\caption{La table de vérité des opérateurs booléens de la logique propositionnelle}
 \label{table:prologic}
 \end{table}
 
-Formul\ae{}s \ref{eq:next}, \ref{eq:future} and \ref{eq:global} are unary temporal logic connectives.
-\X means ``next time'' and it skips the $i$th state and evaluates the path $\pi^{i+1}$. \F stands for ``sometimes in the future'' which requires that from the $i$th state, a property holds in a future state on the path. And \G (``globally'' or ``always'') denotes that a property should hold on the every state from the $i$th state until the end or the infinite future.
+Les formules \ref{eq:next}, \ref{eq:future} et \ref{eq:global} sont les conjonctions unaires de logiques temporelles . L'opérateur\X signifie ``la prochaine fois'' et il saute le $i$ème état et évalue le chemin $\pi^{i + 1}$. L'opérateur\F signifie ``parfois dans l'avenir'' qui exige que dès le $i$ème état, une propriété reste valide dans un état futur sur le chemin. Et l'opérateur\G (``globalement'' ou ``toujours'') indique qu'une propriété devrait reste valide dans chaque état depuis la $i$ème état jusqu'à la fin ou le futur infini.
 
-Formul\ae{}s \ref{eq:until}, \ref{eq:wuntil} and \ref{eq:release} are binary temporal logic operators. \U is the abbreviation of ``until''. The formul\ae{} $\psi \U \varphi$ holds if $\varphi$ holds at a future state on the path, and before this state the property $\psi$ holds at every state. \W, ``weak-until'', is a weak version of \U, except that for the formul\ae{} $\psi \W \varphi$, $\varphi$ does not have to hold eventually in some future state. \R, which stands for ``release'', is actually a logic dual of \U, i.e. $\psi \U \varphi \equiv \neg(\neg\psi \R \neg\varphi)$. \R requires that for the formul\ae{} $\psi \R \varphi$, the property $\varphi$ should hold continuously until $psi$ holds or $psi$ does not hold eventually.
+Les formules \ref{eq:until}, \ref{eq:wuntil} et \ref{eq:release} sont les opérateurs binaires de logiques temporelles. L'opérateur\U est l'abréviation de ``until''. La formule $\psi \U \varphi$ reste valide si $\varphi$ reste valide à un état futur sur le chemin, et avant cet état, la propriété $\psi$ reste valide à chaque état. L'opérateur\W est une version faible de l'opérateur\U, sauf que pour la formule $\psi \W \varphi$, $\varphi$ n'a pas besoin de rester valide à terme dans un état futur. L'opérateur\R, qui signifie ``libérer'', est en fait une logique duale de l'opérateur\U, i.e. $\psi \U \varphi \equiv \neg (\neg \psi \R \neg \varphi)$. L'opérateur\R exige que pour la formule $\psi \R \varphi$, la propriété $\varphi$ devrait continuellement rester valide jusqu'à $\psi$ devient valide et $\psi$ n'a pas besoin de rester valide à terme.
 
-It is worth noting that in LTL, the two-valued logics might yield a premature result which is either true or false. As is mentioned above, LTL is defined to work with infinite traces whereas monitoring of runtime verification is only able to treat finite traces, which might lead to a conflict, especially in some running system. For instance, $\F \psi$ states that $\psi$ should hold in a future state. In a running system, as long as $\psi$ does not hold in the observed states, the results of the formul\ae{} are always $false$, but if $\psi$ holds in the next observation, the former results will become corrupted and obsolete. Therefore, \cite{bauer2006monitoring} proposed the three-valued logic LTL$_3$ which introduces an new value \emph{inconclusive} for the cases where the property cannot be evaluated immediately.
+Il convient de noter que dans la LTL, les logiques à deux valeurs pourraient donner un résultat prématuré qui est vrai ou faux. Tel que mentionné précédemment, la LTL est définie pour travailler avec les traces infinies tandis que le monitoring de la vérification à l'exécution est seulement capable de traiter les traces finies, ce qui pourrait conduire à un conflit, en particulier dans un système en cours d'exécution. Par exemple, $\F \psi$ indique que $\psi$ devraient rester valide dans un état futur. Dans un système actif, tant que $\psi$ ne reste pas valide dans les états observés, les résultats de la formule sont toujours $faux$, mais si $\psi$ devient valide dans l'observation suivante, les résultats précédents deviendra corrompus et obsolètes. Par conséquent, \cite{bauer2006monitoring} ont proposé la logique à trois valeurs (LTL$_3$) qui introduit une nouvelle valeur \emph{inconcluant} pour les cas où la propriété ne peut pas être évaluée immédiatement.
 
-\subsection{Various LTLs}
+\subsection{Diverses logiques temporelles}
 
 \subsubsection{Metric Temporal Logic}
 
-Metric Temporal Logic (MTL) \citep{chang1994compositional} was invented to reason about real-time properties. To precise time accurately, MTL cuts the time into numbered pieces which is also called timed transition modules, and employs boundary operators to constrain the temporal logic operators. Its formul\ae{} is defined as follows:
+Metric Temporal Logic (MTL) \citep{chang1994compositional} a été inventé pour raisonner sur les propriétés en temps réel. Pour préciser le temps avec précision, MTL coupe le temps en morceaux numérotés qui sont également appelés les modules de transition chronométrés, et emploie les opérateurs aux limites pour contraindre les opérateurs de logiques temporelles. Ses formules sont définies comme suit:
 \begin{align*}
 \phi ::= & \bot | p | (\phi \rightarrow \phi) | (\fullmoon_{\sim{}c}\phi) | (\circleddash_{\sim{}c}\phi) | (\phi \mathrel{U}_{\sim{}c} \phi) | (\phi \mathrel{S}_{\sim{}c} \phi) \\
-& \mbox{where } \sim \in \{<, =, >, \equiv_d\} \mbox{ and } c \geq 0, d \geq 2
+& \mbox{où } \sim \in \{<, =, >, \equiv_d\} \mbox{ et } c \geq 0, d \geq 2
 \end{align*}
 
-$\fullmoon_{\sim{}c}\phi$ means ``Next'', $\circleddash_{\sim{}c}\phi$ means ``Previous'', $\phi \mathrel{U}_{\sim{}c} \phi$ means ``Until'' and $\phi \mathrel{S}_{\sim{}c} \phi$ means ``Since'' \citep{chang1994compositional}. Given that $T_i$ indicates the time of the $i$th state of the path $\pi^i$, whether a formul\ae{} holds at the position $j$ of the path $\pi$ is defined as follows (we ignore the propositional operators here):
+$\fullmoon_{\sim{}c}\phi$ signifie ``Suivant'', $\circleddash_{\sim{}c}\phi$ signifie ``Précédent'', $\phi \mathrel{U}_{\sim{}c} \phi$ signifie ``Jusqu\'a'' et $\phi \mathrel{S}_{\sim{}c} \phi$ signifie ``Depuispas'' \citep{chang1994compositional}. Étant donné que $T_i$ indique le temps du $i$ème état du chemin $\pi^i$, le fait qu'une formule reste ou non valide à la position $j$ du chemin $\pi$ est défini comme suit (on ignore les opérateurs propositionnels ici):
 \begin{eqnarray*}
-\pi^i \vDash \fullmoon_{\sim{}c}\psi & \iff & \pi^{i+1} \vDash \psi \mbox{ and } T_{i+1} - T_i \sim c \\
-\pi^i \vDash \circleddash_{\sim{}c}\psi & \iff & i \geq 1 \mbox{ and } \pi^{i-1} \vDash \psi \mbox{ and } T_i - T_{i-1} \sim c \\
-\pi^i \vDash \psi \mathrel{U}_{\sim{}c} \varphi & \iff & \exists j \mbox{ where } i \leq j, \pi^j \vDash \varphi \mbox{ and } T_k - T_j \sim c, and \forall k \mbox{ where } i \leq k < j, \pi^k \vDash \psi \\
-\pi^i \vDash \psi \mathrel{S}_{\sim{}c} \varphi & \iff & \exists j \mbox{ where } 0 \leq j \leq i, \pi^j \vDash \varphi \mbox{ and } T_j - T_k \sim c, and \forall k \mbox{ where } j < k \leq j, \pi^k \vDash \psi \\
+\pi^i \vDash \fullmoon_{\sim{}c}\psi & \iff & \pi^{i+1} \vDash \psi \mbox{ et } T_{i+1} - T_i \sim c \\
+\pi^i \vDash \circleddash_{\sim{}c}\psi & \iff & i \geq 1 \mbox{ et } \pi^{i-1} \vDash \psi \mbox{ et } T_i - T_{i-1} \sim c \\
+\pi^i \vDash \psi \mathrel{U}_{\sim{}c} \varphi & \iff & \exists j \mbox{ où } i \leq j, \pi^j \vDash \varphi \\ & & \mbox{ et } T_k - T_j \sim c, et \forall k \mbox{ où } i \leq k < j, \pi^k \vDash \psi \\
+\pi^i \vDash \psi \mathrel{S}_{\sim{}c} \varphi & \iff & \exists j \mbox{ où } 0 \leq j \leq i, \pi^j \vDash \varphi \\ & & \mbox{ et } T_j - T_k \sim c, et \forall k \mbox{ où } j < k \leq j, \pi^k \vDash \psi \\
 \end{eqnarray*}
 
-\subsubsection{Past time LTL}
+\subsubsection{Past Time LTL}
 
 Whereas LTL mentioned in the last part is defined to check the future states, Past time LTL (ptLTL) aims to verify the states in the past. A ptLTL formul\ae{} is defined as follows \citep{havelund2004efficient}:
 \begin{align*}
