@@ -143,7 +143,7 @@ Metric Temporal Logic (MTL) \citep{chang1994compositional} a été inventé pour
 & \mbox{où } \sim \in \{<, =, >, \equiv_d\} \mbox{ et } c \geq 0, d \geq 2
 \end{align*}
 
-$\fullmoon_{\sim{}c}\phi$ signifie ``Suivant'', $\circleddash_{\sim{}c}\phi$ signifie ``Précédent'', $\phi \mathrel{U}_{\sim{}c} \phi$ signifie ``Jusqu\'a'' et $\phi \mathrel{S}_{\sim{}c} \phi$ signifie ``Depuispas'' \citep{chang1994compositional}. Étant donné que $T_i$ indique le temps du $i$ème état du chemin $\pi^i$, le fait qu'une formule reste ou non valide à la position $j$ du chemin $\pi$ est défini comme suit (on ignore les opérateurs propositionnels ici):
+$\fullmoon_{\sim{}c}\phi$ signifie ``Suivant'', $\circleddash_{\sim{}c}\phi$ signifie ``Précédent'', $\phi \mathrel{U}_{\sim{}c} \phi$ signifie ``Jusqu'à'' et $\phi \mathrel{S}_{\sim{}c} \phi$ signifie ``Depuispas'' \citep{chang1994compositional}. Étant donné que $T_i$ indique le temps du $i$ème état du chemin $\pi^i$, le fait qu'une formule reste ou non valide à la position $j$ du chemin $\pi$ est défini comme suit (on ignore les opérateurs propositionnels ici):
 \begin{eqnarray*}
 \pi^i \vDash \fullmoon_{\sim{}c}\psi & \iff & \pi^{i+1} \vDash \psi \mbox{ et } T_{i+1} - T_i \sim c \\
 \pi^i \vDash \circleddash_{\sim{}c}\psi & \iff & i \geq 1 \mbox{ et } \pi^{i-1} \vDash \psi \mbox{ et } T_i - T_{i-1} \sim c \\
@@ -153,47 +153,47 @@ $\fullmoon_{\sim{}c}\phi$ signifie ``Suivant'', $\circleddash_{\sim{}c}\phi$ sig
 
 \subsubsection{Past Time LTL}
 
-Whereas LTL mentioned in the last part is defined to check the future states, Past time LTL (ptLTL) aims to verify the states in the past. A ptLTL formul\ae{} is defined as follows \citep{havelund2004efficient}:
+Considérant que dans la dernière partie la LTL est définie pour vérifier les états futurs, Past Time LTL (ptLTL) vise à vérifier les états dans le passé. Les formules de la ptLTL sont définies comme suit \citep{havelund2004efficient}:
 \begin{align*}
 \phi ::= & \top | \bot | p | (\neg\phi) | (\phi \wedge \phi) | (\phi \vee \phi) | (\phi \rightarrow \phi) \\
 & | (\odot \phi) | (\diamond \phi) | (\boxdot \phi) | (\phi \mathrel{S_s} \phi) | (\phi \mathrel{S_w} \phi) \\
 & | (\uparrow \phi) | (\downarrow \phi) | [\phi, \phi)_s | [\phi, \phi)_w
 \end{align*}
 
-As can be seen in the definition of the formul\ae{}, ptLTL keeps several basic operators as LTL and introduces five standard part time operators and four monitoring operators.
+Comme on le voit dans la définition de formules, la ptLTL conserve plusieurs opérateurs fondamentaux comme la LTL et introduit cinq opérateurs du temps passé et quatre opérateurs de monitoring.
 
-The five standard part time operators are $\odot $ which means ``previous'', $\diamond$ ``eventually in the past'', $\boxdot$ ``always in the past'', $\mathrel{S_s}$ ``strong since'' and $\mathrel{S_w}$ ``weak since''.
+Les cinq opérateurs du temps passé sont $\odot$ qui signifie ``précédent'', $\diamond$ ``finalement dans le passé'', $\boxdot$ ``toujours dans le passé'', $\mathrel{S_s}$ ``forte depuis'' et $\mathrel{S_w}$ ``faible depuis''.
 
-The monitoring operators $\uparrow \downarrow [,)_s [,)_w$ mean respectively ``start'', ``end'', ``strong  interval'' and ``weak  interval''.
+Les opérateurs de monitoring $\uparrow \downarrow [,)_s [,)_w$ désignent respectivement ``le début'', ``la fin'', `` intervalles fort'' et ``intervalle faible''.
 
-The temporal operators' semantics are described as follows, in the same form of the last section:
+Les sémantiques des opérateurs temporels sont décrites comme suit, dans la même forme que la dernière section:
 \begin{eqnarray*}
-\pi^i \vDash \odot \psi & \iff & \mbox{ if } i > 0, \pi^{i - 1} \vDash \psi, or \mbox{ if } i = 0, \pi^0 \vDash \psi \\
-\pi^i \vDash \diamond \psi & \iff & i > 0 \mbox{ and } \exists j \mbox{ where } 0 \leq j \leq i, \pi^j \vDash \psi \\
-\pi^i \vDash \boxdot \psi & \iff & i > 0 \mbox{ and } \forall j \mbox{ where } 0 \leq j \leq i, \pi^j \vDash \psi \\
-\pi^i \vDash \psi \mathrel{S_s} \varphi & \iff & \exists 0 \leq j \leq i, \pi^j \vDash \varphi \mbox{ and } \forall k, j < k \leq i, \pi^k \vDash \psi \\
-\pi^i \vDash \psi \mathrel{S_w} \varphi & \iff & \pi^i \vDash \psi \mathrel{S_s} \varphi \mbox{ or } \pi^i \vDash \boxdot\psi \\
-\pi^i \vDash \uparrow \psi & \iff & \pi^i \vDash \psi \mbox{ and } \pi^{i - 1} \nvDash \psi \\
-\pi^i \vDash \downarrow \psi & \iff & \pi^i \nvDash \psi \mbox{ and } \pi^{i - 1} \vDash \psi \\
-\pi^i \vDash [\psi, \varphi)_s & \iff & \exists j \mbox{ where } 0 \leq j \leq i, \pi^j \vDash \psi, \mbox{ and } \forall k \mbox{ where } j \leq k \leq i, \pi^k \nvDash \varphi \\
-\pi^i \vDash [\psi, \varphi)_w & \iff & \pi^i \vDash [\psi, \varphi)_s \mbox{ or } \pi^i \vDash \boxdot\neg\varphi \\
+\pi^i \vDash \odot \psi & \iff & \mbox{ if } i > 0, \pi^{i - 1} \vDash \psi, ou \mbox{ if } i = 0, \pi^0 \vDash \psi \\
+\pi^i \vDash \diamond \psi & \iff & i > 0 \mbox{ et } \exists j \mbox{ où } 0 \leq j \leq i, \pi^j \vDash \psi \\
+\pi^i \vDash \boxdot \psi & \iff & i > 0 \mbox{ et } \forall j \mbox{ où } 0 \leq j \leq i, \pi^j \vDash \psi \\
+\pi^i \vDash \psi \mathrel{S_s} \varphi & \iff & \exists 0 \leq j \leq i, \pi^j \vDash \varphi \mbox{ et } \forall k, j < k \leq i, \pi^k \vDash \psi \\
+\pi^i \vDash \psi \mathrel{S_w} \varphi & \iff & \pi^i \vDash \psi \mathrel{S_s} \varphi \mbox{ ou } \pi^i \vDash \boxdot\psi \\
+\pi^i \vDash \uparrow \psi & \iff & \pi^i \vDash \psi \mbox{ et } \pi^{i - 1} \nvDash \psi \\
+\pi^i \vDash \downarrow \psi & \iff & \pi^i \nvDash \psi \mbox{ et } \pi^{i - 1} \vDash \psi \\
+\pi^i \vDash [\psi, \varphi)_s & \iff & \exists j \mbox{ où } 0 \leq j \leq i, \pi^j \vDash \psi, \mbox{ et } \forall k \mbox{ où } j \leq k \leq i, \pi^k \nvDash \varphi \\
+\pi^i \vDash [\psi, \varphi)_w & \iff & \pi^i \vDash [\psi, \varphi)_s \mbox{ et } \pi^i \vDash \boxdot\neg\varphi \\
 \end{eqnarray*}
 
 \subsubsection{EAGLE}
 
-EAGLE \citep{barringer2004rule} is a temporal finite trace monitoring logic supporting parameterized equations by combining minimal/maximal fix-point semantics with temporal operators.
+EAGLE \citep{barringer2004rule} il est une logique temporelle de monitoring de traces finies supportant les équations paramétrées par combiner les sémantiques de points fixes minimales/maximales avec les opérateurs temporels.
 
-Online runtime verification requires to accept incremental traces which means there are possible boundaries between traces. Minimal/maximal fix-point rules were designed to treat this problem. Before evaluating the next trace, the equations with maximal rules are required to be always right and the ones with minimal rules are only needed to be eventually right.
+La vérification de l'exécution en mode \emph{online} nécessite d'accepter les traces incrémentales, ce qui signifie qu'il y a des limites possibles entre les traces. les règles de points fixes minimales/maximales ont été conçues pour résoudre ce problème. Avant d'évaluer la prochaine trace, les équations avec les règles maximales sont nécessaires pour être toujours valides et ceux avec les règles minimales nécessitent seulement d'être finalement valides.
 
-\section{Runtime verification frameworks}\label{sec:rv:frameworks}
+\section{Cadre de la vérification à l'exécution}\label{sec:rv:frameworks}
 
-In runtime verification, monitors are generated from formal specifications by runtime verification frameworks. There are four monitoring modes: offline, online, inline and outline as we discussed in the early part of this section. Many frameworks and systems using some variant or extension of LTL have been proposed, as Table \ref{table:rvframeworks} shows. 
+Dans la vérification à l'exécution, les moniteurs sont générés à partir des spécifications formelles par les cadres de la vérification à l'exécution. Il y a quatre modes de monitoring: \emph{offline}, \emph{online}, \emph{inline}, et \emph{outline} comme nous l'avons discuté plus tôt dans cette section. De nombreux cadres et systèmes utilisant des variantes ou des extension de la LTL ont été proposés, comme le montre le tableau \ref{table:rvframeworks}.
 
 \begin{table}[h]
 \centering
 \begin{tabular}{|c|c|c|}
 \hline
-Name & Logic & Mode \\
+Non & Logique & Mode \\
 \hline
 JPax\citep{havelund2001java} & LTL \& Past-time LTL & outline \\
 \hline
@@ -203,57 +203,57 @@ Hawk \citep{d2005event} & Hawk & outline \\
 \hline
 Temporal Rover\citep{drusinsky2000temporal} & LTL \& MTL & outline \\
 \hline
-MOP \citep{chen2007mop} & Various & inline/outline/offline \\
+MOP \citep{chen2007mop} & Divers & inline/outline/offline \\
 \hline
 \end{tabular}
-\caption{Runtime Verification Frameworks}
+\caption{Cadre de la vérification à l'exécution}
 \label{table:rvframeworks}
 \end{table}
 
-Java PathExplorer (JPaX) \citep{havelund2001java} is an online runtime verification system aiming to monitor the execution traces of Java program. It has three modules (shown in Figure \ref{img:jpax}): an instrumentation module, an observe module and an interconnection module. The program working with the instrumentation module sends necessary event traces to the interconnection module which then transmits the traces to the observe module possibly running on another computer. The instrumentation module is driven by a user-specified script written in Java or Maude which is applicable for the specification of runtime monitoring.
+Java PathExplorer (JPaX) \citep{havelund2001java} est un système de la vérification à l'exécution en ligne en vue de surveiller les traces d'exécution de programmes Java. Il dispose de trois modules (le montre la figure \ref{img:jpax}): un module d'instrumentation, un module d'observation et un module d'interconnexion. Le programme travaillant avec le module d'instrumentation envoie les traces nécessaires d'événements au module d'interconnexion, qui transmet ensuite les traces au module d'observation qui fonctionne éventuellement sur un autre ordinateur. Le module d'instrumentation est fait fonctionner par un script spécifié par l'utilisateur en Java ou en Maude qui est destiné pour la spécification du monitoring de l'exécution.
 
 \begin{figure}[h]
 \begin{center}
 \centering
 \includegraphics[width=100mm]{jpax.png}
-\caption{JPaX Architecture (from \cite{havelund2001java})}
+\caption{L'architecture de JPaX \citep{havelund2001java}}
 \label{img:jpax}
 \end{center}
 \end{figure}
 
-JavaMaC \citep{kim2004java} is a ``run-time assurance system'' for Java programs while Mac means Monitoring and Checking. Its architecture is shown in Figure \ref{img:javamac}. Two definition languages are proposed: one for high-level specification which specifies required properties, another for low-level specification which defines the events and conditions. During the preparation, a ``filter'' and an ``event recognizer'' which are used to collect the necessary event traces are generated from the low-level specification, and a ``run-time checker'' is generated from the high-level spec. When running with the target program, events collected by the ``filter'' and ``event recognizer'' are sent to the ``run-time'' checker which is then responsible for the runtime verification work.
+JavaMaC \citep{kim2004java} est un ``système d'assurance d'exécution'' pour les programmes Java tandis que Mac signifie monitoring et vérification. Son architecture est représentée dans la figure \ref{img:javamac}. Deux langues de définition sont proposées: une pour les spécifications de haut niveau qui spécifie les propriétés requises, un autre pour la spécification de bas niveau qui définit les événements et les conditions. Pendant la préparation, un ``filter'' et un ``reconnaisseur d'événement'' qui sont utilisés pour recueillir les traces d'événements nécessaires sont générés à partir de la spécification de bas niveau, et un ``vérificateur d'exécution'' est généré à partir de la spécification de haut niveau. Lors de l'exécution du programme cible, les événements collectés par le ``filtre'' et le ``reconnaisseur d'événement'' sont envoyés au ``vérificateur d'exécution'' qui est alors responsable pour les travaux de la vérification à l'exécution.
 
 \begin{figure}[h]
 \begin{center}
 \centering
 \includegraphics[width=100mm]{javamac.png}
-\caption{MaC Architecture (from \cite{kim2004java})}
+\caption{L'architecture de MaC \citep{kim2004java}}
 \label{img:javamac}
 \end{center}
 \end{figure}
 
-\cite{d2005event} presents a logic named HAWK and its tools for RV of Java programs. HAWK is in fact built on EAGLE, another temporal logic which is considered more expressive \citep{barringer2004rule}. Although HAWK is event-based in contrast to state-based EAGLE, HAWK specifications are translated to EAGLE monitors. As Figure \ref{img:eagle} describes, during program execution, the EAGLE state is updated by instrumented program which then notifies the EAGLE observer. After that, the observer assesses the formul\ae{} in the current state to produce a result. 
+\cite{d2005event} présentent une logique nommée HAWK et ses outils de programmes Java pour la vérification à l'exécution. La HAWK est en fait construite sur l'EAGLE, une autre logique temporelle qui est considérée comme plus expressive \citep{barringer2004rule}. Bien que la HAWK soit basée sur les événements en contraste avec l'EAGLE qui est basée sur les états, les spécifications de la HAWK sont convertis aux moniteurs de l'EAGLE. Comme le décrit la figure \ref{img:eagle}, pendant l'exécution du programme, l'état de la EAGLE est mis à jour par le programme instrumenté qui notifie alors l'observateur de l'EAGLE. Après cela, l'observateur évalue la formule dans l'état actuel pour produire un résultat.
 
 \begin{figure}[h]
 \begin{center}
 \centering
 \includegraphics[width=100mm]{eagle.png}
-\caption{Eagle Architecture (from \cite{d2005event})}
+\caption{L'architecture d'Eagle \citep{d2005event}}
 \label{img:eagle}
 \end{center}
 \end{figure}
 
-Temporal Rover \citep{drusinsky2000temporal} is a commercial runtime verification tool based on LTL and MTL (Metric Temporal Logic). The specification code of Temporal Rover is inserted into the source code of Java, C, C++ or HDL and then converted into a compilable source file of corresponding language. A Temporal-Rover runtime verification system normally has two parts: host and target. The host is responsible for the verification while the target performs the computation of propositional formul\ae{} and sends back the results to the host via serial port, RPC or other customizable protocol.
+Temporal Rover \citep{drusinsky2000temporal} est un outil commercial de la vérification à l'exécution basé sur LTL et MTL. Le code de spécification de Temporal Rover est inséré dans le code source Java, C, C ++ ou HDL, puis converti en un fichier source compilable du langage correspondant. Un système de la vérification à l'exécution de Temporal-Rover a normalement deux parties: l'hôte et la cible. L'hôte est responsable de la vérification alors que la cible effectue le calcul de formules propositionnelles et renvoie les résultats à l'hôte via le port en série, RPC ou un autre protocole configurable.
 
-Each of the frameworks discussed above hardwires a different specification formalism, which suggests that a general specification formalism serving all purposes does not exist. To be more expressive and generic, \cite{chen2007mop} introduced customizable and extensible ``logic-plugins'' in their runtime framework MOP and designed its architecture shown in Figure \ref{img:mop} with two layers: one is called ``language clients'' which support different programming languages, while another is ``logic repository'' which includes and manages various ``logic-plugins'' to support different specification formalisms, such as : Linear Temporal Logic (ltl), Finite State Machines (fsm), Extended Regular Expressions (ere), Context Free Grammars (cfg) and String Rewriting Systems (srs).
+Chacun des cadres évoqués ci-dessus utilise une spécification formalisme différente, ce qui suggère qu'il n'y a pas une spécification formalisme général qui peut servir tous les objectifs. Pour être plus expressif et générique, \cite{chen2007mop} apportent les ``logic-plugins'' personnalisable et extensible dans leur cadre de l'exécution MOP et a conçu son architecture qui est représentée sur la figure \ref{img:mop} avec deux couches: l'une est appelée ``language clients'' qui soutiennent de différents langages de programmation, tandis que l'autre est nommée ``logic repository'' qui comprend et gère divers ``logic-plugins'' pour soutenir différents formalismes de spécification, tels que: Linear Temporal Logic (LTL), Finite State Machines (FSM), Extended Regular Expressions (ERE), Context Free Grammars (CFG) and String Rewriting Systems (SRS).
 
 \begin{figure}[h]
 \begin{center}
 \centering
 \includegraphics[width=130mm]{mop.png}
-\caption{MOP Architecture (from \cite{chen2007mop})}
+\caption{L'architecture de MOP \citep{chen2007mop}}
 \label{img:mop}
 \end{center}
 \end{figure}
 
-Besides the frameworks presented above, there are also lots of other frameworks invented for their corresponding requirements or specific temporal logics. Comparing these frameworks, we can find that they have their specialties as well as they share some common characters. For example, nearly all frameworks support online monitoring mode, Java programming language and network communication perhaps because these features are the most popular requirement in industry. Temporal Rover is a commercial RV framework, so it has to support more programming languages and supply more data collection options in order to expand its marketing. MOP was designed to be extremely general, resulting that most components can be changed or separately optimized.
+Outre les cadres présentés ci-dessus, il y a aussi beaucoup d'autres cadres inventés pour leurs exigences correspondantes ou leur logiques temporelles spécifiques. En comparant ces cadres, on peut trouver qu'ils ont leurs spécialités aussi bien qu'ils partagent des caractéristiques communes. Par exemple, presque tous les cadres appuient le mode \emph{online} de monitoring, le langage de programmation Java et la communication du réseau, peut-être parce que ces caractéristiques sont l'exigence la plus populaire dans l'industrie. Temporal Rover est un cadre commerciale, donc il doit prendre en charge plus de langages de programmation et fournir plus d'options de collecte de données pour son expansion de commercialisation. MOP est conçu pour être extrêmement générale, et ainsi la plupart des composants peuvent être échangés ou séparément optimisés.
