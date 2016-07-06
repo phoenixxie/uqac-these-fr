@@ -1,55 +1,49 @@
 %!TEX root = these.tex
 
-\chapter{Real-Time Streaming Communication with Optical Codes}
+\chapter{Communication en streaming et en temps réel avec les codes optiques}
 
-This chapter represents a reformatted version of a paper published in 2016 in IEEE Access, v.4, p. 284-298 by K. Xie, S. Gaboury and S. Hallé.
-
-\section*{Abstract}
-Optical codes have long been used to carry small amounts of static data, such as URLs, IDs or other short binary sequences. In this chapter, we experiment on the use of sequences of optical codes to form a one-way communication channel. In this context, a sender is made of a surface displaying rapidly changing codes, which are picked up by a receiver's camera and converted back into a binary data stream. After presenting experimental results seeking the combination of frame rate, code size and error correction level maximizing effective bandwidth, we describe the implementation of a robust communication protocol designed specifically for lossy, simplex, and low-bandwidth data links. Our findings indicates that such a protocol is sufficient for carrying at least voice-quality audio in realtime.
+Ce chapitre présente une version reformatée et traduite d'un article publié en 2016 dans IEEE Access, v.4, p.284-298 par K. Xie, S. Gaboury et S. Hallé.
 
 %% -----------------------
 %% Section: intro
 %% -----------------------
 \section{Introduction}\label{sec:qr:intro} %% {{{
 
-Wireless communication is a technology that allows two or more peers to communicate without electric cables or conductors \citep{tse2005fundamentals}. While the majority of wireless communication technologies uses radio waves as their transmission medium, a few others use light, especially in situations where radio technology is difficult to apply. Optical communication in itself reaches back to the use of flags, smoke signals and signal lamps to communicate information between two points with the use of a specific code~\citep{burns2004}.
+La communication sans fil est une technologie qui permet à deux ou plusieurs pairs de communiquer sans câbles électriques ou conducteurs \citep{tse2005fundamentals} . Alors que la majorité de technologies de communication sans fil utilise les ondes radio comme leurs milieux de transmission, quelques autres utilisent la lumière, en particulier dans les situations où la technologie radio est difficile à fonctionner. La communication optique en elle-même remonte à l'utilisation de drapeaux, les signaux de fumée et les lampes signalétiques pour communiquer de l'information entre deux points avec l'utilisation d'un code spécifique \citep{burns2004}.
 
-Recently, a simple form of optical communication, called \emph{Quick Response Code} (QR code) \citep{qrcode-about}, emerged as a refinement over the existing technology of one-dimensional barcodes. Owing to their accuracy and their considerable capacity, QR codes have been used in many areas; applications for handling such codes have also been ported to a variety of devices, including desktop computers, smartphones, and even television sets.
+Récemment, une forme simple de communication optique, appelé \emph{Quick Response Code} (code QR) \citep{qrcode-about}, a émergé comme un raffinement de la technologie existante de code-barres unidimensionnels. En raison de leur exactitude et leur grande capacité, les codes QR ont été utilisés dans de nombreux domaines; les applications du traitement de tels codes ont également été portés à une variété de dispositifs, y compris les ordinateurs de bureau, les smartphones, et même les télévisions.
 
-However, so far QR codes have been used for the transmission of \emph{static} data. Generally a code is printed on a physical medium, such as a sheet of paper, and is read by an optical device (typically a camera) for decoding at a later time. In this chapter, we explore the idea of extending QR codes and turn them into a dynamic, one-way communication channel. In such a channel, a stream of data is transmitted through a \emph{sequence} of codes; typically, these codes are continuously generated and displayed on one device, and simultaneously captured and decoded by another, hence performing the same task as other kinds of communication technologies.
+Cependant, jusqu'au présent les codes QR ont été utilisés pour la transmission de données statique. En général, un code est imprimée sur un milieu physique, tel qu'une feuille de papier, et il est lu par un appareil optique (généralement une caméra) pour le décodage à un moment ultérieur. Dans ce chapitre, nous explorons l'idée de l'expansion de codes QR et les transformons en un canal dynamique de communication unidirectionnelle. Dans un tel canal, un flux de données est transmis par une \emph{séquence de codes}; généralement, ces codes sont continuellement générés et affichés sur un appareil, et simultanément capturés et décodés par un autre, ce qui est similaire aux autres types de technologies de communication.
 
-After briefly describing in Section~\ref{sec:qr:reading} the basics of QR codes and other wireless communication technologies, we shift our focus in Section~\ref{sec:qr:qrcode} to the principle of raw QR code communication. In particular, we attempt to find the intrinsic limits of such a communication channel, by analyzing the influence of a variety of factors, such as code density, number of codes displayed per second, etc. The results of an experimental benchmark considering more than a hundred different combinations of parameters allow us to extract optimal conditions that minimize the rate of error in decoding the images, while maximizing the amount of data that can be transmitted per unit of time.
+Après avoir brièvement décrit dans la Section~\ref{sec:qr:lecture} les bases de codes QR et d'autres technologies de communication sans fil, nous nous concentrons dans la Section~\ref{sec:qr:qrcode} sur le principe de communication de codes QR bruts. Particulièrement, nous essayons de trouver les limites intrinsèques d'un tel canal de communication, par l'analyse de l'influence de divers facteurs, tels que la densité de code, le nombre de codes affichés par seconde, etc. Les résultats d'un benchmark qui couvert plus de cent combinaisons différentes de paramètres permettent d'extraire les conditions optimales qui minimisent le taux d'erreur dans le décodage des images, tout en maximisant la quantité de données qui peuvent être transmises par unité de temps.
 
-%The code decoding depends on the quality and the complexity of the captured image. If the image is broken or blurred, it will be difficult to decode. And the algorithms of image recognition may have the probability of failure\cite{adel2006}. Therefore, at first, we did a benchmark with combinations of the parameters, such as the camera configuration, the frame rate, and the data size in one code. According to the benchmark result, we selected an optimal combination for our second step.
+Ces premiers résultats indiquent que les flux de code QR peuvent en effet être utilisés comme un canal simple et unidirectionnel, mais que la communication sans erreur et la bande passante élevée sont plus ou moins impossible. Par conséquent, en tant qu'un deuxième temps, nous concevons un protocole qui est approprié pour la nature spécifique de communication de codes QR. Ce protocole, appelé BufferTannen, est décrit dans la section~\ref{sec:qr:protocol}. Il est capable d'encapsuler les données brutes, de fournit diverses capacités de signalisation, de pouvoir représenter les données semi-structurées (telles que JSON) sous une forme binaire compacte, et prend en charge le cadrage/décadrage et le streaming de données.
 
-These first results indicate that QR code streams can indeed be used as a simple, one-way channel, but that error-free communication and high-bandwidth are more or less impossible. Therefore, as a second step, we design a protocol suitable for the specific nature of QR code communication. This protocol, called BufferTannen, is described in Section~\ref{sec:qr:protocol}. It is able to encapsulate raw data, provides various signaling capabilities, can represent semi-structured data (such as JSON) in a compact binary form, and supports data framing/deframing and streaming.
+Une seconde expérience révèle la robustesse de ce schéma de transmission: en utilisant notre protocole spécialement conçu, le canal de communication créé par une personne qui pointe un smartphone à bout du bras vers un écran avec les code QR des codes QR vacillants, produit une bande passante suffisante pour transmettre l'audio à usage vocal en temps réel. La Section~\ref{sec:qr:experiments} présente l'environnement et les résultats des expériences de cette deuxième étape. Nous montrons aussi comment un morceau de données, coupé en plusieurs codes avec l'utilisation de BufferTannen, peut être reconstruit automatiquement par un utilisateur qui passe sa caméra sur une feuille de ces codes imprimés dans aucun ordre particulier.
 
-A second experiment reveals the robustness of this transmission scheme: using our specially designed protocol, the communication channel created by a person pointing a smartphone at arm's length towards a flickering QR display produces sufficient bandwidth to transmit voice-quality audio in real time. Section~\ref{sec:qr:experiments} presents the environment and the results of the experiments of this second step. We also show how a piece of data, cut into multiple codes with the use of BufferTannen, can be reconstructed automatically by a user hovering his camera over a sheet of such printed codes in no particular order.
+Ce travail a été motivé par une application pratique dans le domaine de la vérification à l'exécution. Dans les recherches antérieures, nous avons proposé et officieusement expérimenté l'utilisation de codes optiques comme une forme de communication à couplage lâche entre un système logiciel et un moniteur externe qui reçoit les événements produits par ce système-là \citep{DBLP_conf/rv/LavoieLVGH14}. Dans ce contexte, la communication par les milieux optiques assure un isolement complet entre le système et son moniteur.
 
-This work was originally motivated by a practical application in the field of runtime verification. In past research, we suggested and informally experimented the use of optical codes as a form of loosely coupled communication between a software system and an external monitor receiving events produced by that system \citep{DBLP_conf/rv/LavoieLVGH14}. In this context, communication through optical means ensured a complete isolation between the system and its monitor.
+Bien que l'utilisation de séquences de codes QR a été officieusement suggéré dans le passé, au mieux de notre connaissance, notre recherche est la première enquête systématique du potentiel de codes QR pour envoyer les flux de données en temps réel.
 
-Although the use of sequences of QR codes has been informally suggested in the past, to the best of our knowledge, our study is the first systematical investigation of the potential of QR codes to send streams of data in real time. %Because QR codes are basically images, besides being displayed on the screen, they can be also distributed in other ways, for example, they can be printed on the papers or other printable surfaces. 
-
-The solution we propose provides a method for distributing streaming data without dedicated communication devices. The only required devices are a common camera (such as a webcam or the camera on any cellphone) and a small flat surface to display the sequential QR codes ---for example, a computer, television or smartphone screen, or even a sheet of paper.
-
+La solution que nous proposons fournit une méthode de distribuer les données en streaming sans dispositifs dédiés de communication. Les appareils requis sont seulement une caméra commune (comme une webcam ou la caméra dans un téléphone portable) et une petite surface plane pour afficher les codes QR séquentielles --- par exemple, un écran d'ordinateur, une télévision ou un smartphone, ou même une feuille de papier.
 %% }}} --- Section
 
 %% -----------------------
 %% Section: comment on lit les codes QR
 %% -----------------------
-\section{Wireless Communications}\label{sec:qr:reading} %% {{{
+\section{Communications sans fil}\label{sec:qr:reading} %% {{{
 
-This section recalls a few common wireless communication technologies. Despite their popularity and performance, each has its own limitations and application scenarios. %, which leads to our problematic: find another communicating solution and prove its feasibility.
+Cette section rappelle quelques technologies communes de communication sans fil. Malgré leur popularité et leur performance, chacun a ses propres limites et les scénarios d'application.
 
-\subsection{Radio Waves}
+\subsection{Ondes Radio}
 
-The first obvious means of wireless communication is through the use of radio waves, and is best exemplified through WiFi \citep{Comer:2008:CNI:1816918}, used for local area wireless networking. Its variants are based on the IEEE 802.11 family of standards, and support both centralized (routing) and decentralized (\textit{ad hoc}) networking. Table \ref{tab:qr:wifi-protocol} shows popular 802.11 standards and part of their specifications.
+Le premier milieu évident de communication sans fil est grâce à l'utilisation d'ondes radio, dont le meilleur exemple est WiFi \citep{Comer:2008:CNI:1816918}, utilisé pour la mise en réseau sans fil de la zone locale. Ses variantes sont basées sur la famille de standards IEEE 802.11, et prennent en charge la mise en réseau centralisée (routage) et décentralisée (\textit{ad hoc}). Le Tableau \ref{tab:qr:wifi-protocol} montre les standards populaires de 802.11 et une partie de leurs spécifications.
 
 \begin{table}[ht]
 \begin{center}
-\begin{tabular}{|l|l|l|l|}
+\begin{tabular}{|c|c|c|c|}
 \hline
-Protocol &	Frequency & 	Max. physical data rate &	Indoor range\\
+Protocole &	Fréquence & Débit maximal de données physique	&	Portée intérieur \\
 \hline
 802.11a &	5 GHz &	54 Mbps &	35 m \\
 \hline
@@ -62,20 +56,20 @@ Protocol &	Frequency & 	Max. physical data rate &	Indoor range\\
 802.11ac &	5 GHz &	866.7 Mbps & 35 m\\
 \hline
 \end{tabular}
-\caption{A summary of WiFi protocols\citep{theng2008ubiquitous,perahia2013next}}
+\caption{Résumé de protocoles WiFi \citep{theng2008ubiquitous,perahia2013next}}
 \label{tab:qr:wifi-protocol}
 \end{center}
 \end{table}
 
-A second contender in this family is Bluetooth \citep{Comer:2008:CNI:1816918}, which is used for short-range and generally point-to-point communication between devices. Its range varies from about 1 to 100 meters depending on the class of power. Table \ref{tab:qr:bluetooth} shows different versions of Bluetooth and their specific data rates.
+Un deuxième concurrent dans cette famille est Bluetooth \citep{Comer:2008:CNI:1816918}, qui est utilisé à courte portée et généralement point à point entre les appareils. Sa portée varie d'environ 1 à 100 mètres en fonction de la classe d'énergie. Le Tableau \ref{tab:qr:bluetooth} montre différentes versions de Bluetooth et leurs débits de données spécifiques.
 
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{|l|r|c|}
 \hline
-Version &	Data rate	&	Range\\
+Version &	Débit de données	&	Portée \\
 \hline
-Version 1.2 &	1 Mbps &	\multirow{4}{*}{\pbox{20\textwidth}{Class 1: 100 m; \\ Class 2: 10 m; \\ Class 3: 1 m}}\\
+Version 1.2 &	1 Mbps &	\multirow{4}{*}{\pbox{20\textwidth}{Classe 1: 100 m; \\ Classe 2: 10 m; \\ Classe 3: 1 m}}\\
 \cline{1-2}
 Version 2.0 + EDR &	3 Mbps & \\
 \cline{1-2}
@@ -84,46 +78,46 @@ Version 3.0 + HS &	24 Mbps & \\
 Version 4.0 &	24 Mbps & \\
 \hline
 \end{tabular}
-\caption{Bluetooth specifications \citep{gupta2013inside}}
+\caption{Spécifications de Bluetooth \citep{gupta2013inside}}
 \label{tab:qr:bluetooth}
 \end{center}
 \end{table}
 
-Finally, ZigBee \citep{farahani2011zigbee}, based on the IEEE 802.15.4 standard, aims to implement short-range wireless communication with low power and long battery life. Table \ref{tab:qr:zigbee} shows its performance in different frequency bands.
+Enfin, ZigBee \citep {farahani2011zigbee}, basé sur le standard IEEE 802.15.4, vise à mettre en œuvre une communication sans fil à courte portée avec une faible énergie et une batterie longue durée. Le Tableau \ref{tab:qr:zigbee} montre ses performances dans différentes bandes de fréquences.
 
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{|l|r|c|}
 \hline
-Frequency Band  &	Data rate	&	Range\\
+Bande de fréquence & Débit de données	&	Portée \\
 \hline
-868--870 MHz &	20 kbps &	\multirow{3}{*}{\pbox{3cm}{10--100 m, depending on power output and environment}}\\
+868--870 MHz &	20 kbps &	\multirow{3}{*}{\pbox{5 cm}{10--100 m, en fonction de la puissance de sortie et de l'environnement}}\\
 \cline{1-2}
 902--928 MHz &	40 kbps & \\
 \cline{1-2}
 2.4--2.4835 GHz  &	250 kbps & \\
 \hline
 \end{tabular}
-\caption{ZigBee specifications \citep{lee2007comparative}}
+\caption{Spécifications de ZigBee \citep{lee2007comparative}}
 \label{tab:qr:zigbee}
 \end{center}
 \end{table}
 
-All these protocols have on point in common: before allowing any form of communication between two endpoints, some form of \emph{discovery} or \emph{setup} of devices is necessary. This process is generally finalized through the establishment of a long-running and stateful \emph{connection} between the endpoints.
+Tous ces protocoles partagent un commun point: avant d'autoriser toute forme de communication entre deux extrémités, une certaine forme de \emph{découverte} ou \emph{configuration} de dispositifs est nécessaire. Ce processus est généralement achevé à travers l'établissement d'une \emph{connexion} avec états à long terme entre les extrémités.
 
 \subsection{IrDA}
 
-In a different family, we find technologies using infrared waves instead of radio \citep{sarkar2007ad}. In addition to the different wavelength, these technologies generally relax the requirements on the establishment of a connection, and allow for a more ``on-the-fly'' communication between two devices. Typically, one end of an infrared link waits for incoming data, while periodically, another device ``points'' at the receiver and beams short bursts of data without requiring prior notice.
+Dans une autre famille, on trouve les technologies utilisant les ondes infrarouges au lieu du signal radio \citep{sarkar2007ad}. Outre les longueurs d'onde différentes, ces technologies se détendre généralement les exigences de l'établissement d'une connexion, et permettent une communication plus ``on-the-fly'' entre deux appareils. En règle générale, une extrémité d'une liaison infrarouge attend les données entrantes, tandis que périodiquement, un autre appareil pointe au récepteur et émet les rayons infrarouges transformés à partir des petit morceaux de données sans nécessité de préavis.
 
-Of particular importance is the IrDA standard (Infrared Data Association); its transceivers send infrared pulses with a cone angle and a moderate irradiance while its receivers can be less than one meter or several meters away depending on the power of the transceivers and the position in the cone. The IrDA communication is half-duplex and provides basic CRC. Table \ref{tab:qr:irda-rate} shows several IrDA schemas and their data rates in the specific range.
+Une importance particulière est le standard IrDA (Infrared Data Association); ses émetteurs envoient les impulsions infrarouges avec un angle de cône et une irradiance modérée alors que ses récepteurs peuvent être à moins d'un mètre ou plusieurs mètres de ceux-là, en fonction de l'énergie des émetteurs et de la position dans le cône. La communication IrDA est semi-duplex et fournit CRC de base. Le Tableau \ref{tab:qr:irda-rate} montre plusieurs schémas IrDA et leurs débits de données dans la portée spécifique.
 
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{|l|c|c|}
 \hline
-Schema & Data rate & Range\\
+Schéma & Débit de données & Portée \\
 \hline
-SIR &	2.4--115.2 kbps &	\multirow{4}{*}{\pbox{3cm}{Up to one meter}} \\
+SIR &	2.4--115.2 kbps &	\multirow{4}{*}{\pbox{3 cm}{jusqu'à un mètre}} \\
 \cline{1-2}
 MIR &	0.576--1.152 Mbps & \\ 
 \cline{1-2}
@@ -132,42 +126,43 @@ FIR &	4 Mbps & \\
 GigaIR &	512 Mbps--1 Gbps & \\
 \hline
 \end{tabular}
-\caption{Data rates for IrDA Physical Layer schemas\citep{millar1998irda}}
+\caption{Débits de données de schémas de couche physique de IrDA \citep{millar1998irda}}
 \label{tab:qr:irda-rate}
 \end{center}
 \end{table}
 
 \subsection{Visible Light Communication}
 
-As its name implies, Visible Light Communication (VLC) \citep{komine2004fundamental} uses wavelengths in the visible range (from 400 to 700 nm) to communicate data between peers ---this is typically achieved by rapidly switching a light source on and off, enabling a form of Morse-like encoding of data. A receiver (such as a photo-electrical cell) pointed at the light source detects this flickering and converts it back into digital data. With fluorescent lamps as the light source, the data rate can reach 10 kbps, while with LED technology, the data rate can be as high as 500 Mbps.  The range depends mostly on different specifications, but because it cannot penetrate walls and can also be impacted by dense weather or other light sources, its range and reliability are limited~\citep{arnon2015visible}.
+Comme l'indique son nom, Visible Communication Light (VLC) \citep{komine2004fundamental} utilise les longueurs d'onde dans la gamme visible (400-700 nm) pour communiquer les données entre les pairs --- ceci est généralement réalisé par allumer et fermer rapidement une source de lumière, ce qui permet une forme de codage des données comme les codes Morse. Un récepteur (par exemple une cellule photo-électrique) pointé par la source de lumière détecte ce vacillement et le convertit en données numériques. Avec les lampes fluorescentes comme la source lumineuse, le débit de données peut atteindre 10 kbps, tandis qu'avec la technologie LED, le débit de données peut être aussi élevé que 500 Mbps. La gamme dépend surtout des spécifications différentes, mais parce que la lumière ne peut pas traverser les murs et peut également être affectée par le mauvais temps ou d'autres sources de lumière, sa portée et la fiabilité sont limitées~\citep{arnon2015visible}.
 
-This mode of communication is intrinsically one-way, as one cannot reply back to the light source, acknowledge reception of information, or request for a retransmission in case of lost data. Therefore, this technology is also the one that requires the least coupling between a transmitter and a receiver; by all practical means, the transmitter is unaware of the presence of a receiver, which, on its side, may elect to start listening at any point in time. We shall see later on that this characteristic is also shared with the QR communication channel we attempt to design.
+Ce mode de communication est intrinsèquement unidirectionnel, car on ne peut pas répondre à la source de lumière, reconnaître la réception de l'information, ou demander d'une retransmission en cas de la perte de données. Par conséquent, cette technologie est aussi celle qui nécessite le moins couplage entre un émetteur et un récepteur; Selon tous les moyens pratiques, l'émetteur n'a pas connaissance de la présence d'un récepteur, qui, de son côté, peut choisir de commencer à recevoir à tout moment. Nous verrons plus loin que cette caractéristique est également partagée avec le canal de communication de codes QR que nous essayons de concevoir.
 
 %% }}} --- Section
 
 %% -----------------------
 %% Section: le protocole
 %% -----------------------
-\section{Reading Streams of QR codes}\label{sec:qr:qrcode} %% {{{
+\section{Flux de codes QR}\label{sec:qr:qrcode} %% {{{
 
-Not mentioned in the previous short survey of wireless communication technologies are optical codes, which are also a means of carrying data without the need for a physical media. In this section, we review the concept of QR codes, and discuss the idea of producing streams of data through sequences of such codes.
+Dans le court sondage précédent de technologies de communication sans fil sont mentionné les codes optiques, qui sont aussi un moyen de transport de données sans nécessité d'un milieu physique. Dans cette section, nous passons en revue le concept de codes QR, et discute l'idée de produire les flux de données par les séquences de tels codes.
 
-\subsection{Overview of QR codes}
+\subsection{Aperçu de codes QR}
 
-A QR code (officially called ``Quick Response Code'') \citep{qrcode-about} is a two-dimensional barcode that stores data, as shown in Figure \ref{fig:qr:helloqr}. Compared with the well-known UPC barcode, which is a linear (i.e.\ one-dimensional) barcode, a QR code can store more information in a smaller printout size.\footnote{\url{http://www.qrcode.com/en/}} The QR code standard stipulates that these codes can have a capacity as high as 7,089 numeric characters or 2,953 8-bit characters, represented in a square array of a maximum of 177$\times$177 ``pixels'', called \emph{modules} \citep{iso18004}. 
+Un code QR (officiellement appelé ``Quick Response Code'') \citep{qrcode-about} est un code-barre à deux dimensions qui stocke des données, comme le montre la figure \ref{fig:qr:helloqr}. En comparaison avec le code-barre bien connu UPC, qui est linéaire (i.e.\ unidimensionnel), un code QR peut stocker plus d'informations dans une impression plus petit. \footnote{\url{http://www.qrcode.com/en/}} Le standard du code QR stipule que ces codes peuvent avoir une capacité aussi élevée que 7089 caractères numériques ou 2953 caractères à 8 bits, et qu'un code est représenté dans un tableau carré d'un maximum de 177 $\times$ 177 ``pixels'', appelé \emph{modules} \citep{iso18004}.
 
 \begin{figure}
 \centering
 \includegraphics[width=1in]{helloqr.png}
-\caption{A QR code with the text ``Hello world!''}
+\caption{Un code QR avec le texte ``Hello world!''}
 \label{fig:qr:helloqr}
 \end{figure}
 
 \begin{table}[t]
 \begin{center}
-\begin{tabular}{|l|l|l|l|l|l|}
+\begin{tabular}{|c|c|c|c|c|c|}
 \hline
-\pbox[c][25pt][c]{\textwidth}{Error correction \\level} & Data bits & Numeric &	Alphanumeric & Binary & Kanji\\
+Niveau de & Bits de & Caractère  & Caractère  & Caractère & Kanji \\
+correction d'erreur & données & numérique & alphanumérique & binaire & \\
 \hline
 L &	23,648 & 7,089 & 4,296 & 2,953 & 1,817\\
 \hline
@@ -178,38 +173,34 @@ Q & 13,328 & 3,993 & 2,420 & 1,663 & 1,024\\
 H & 10,208 & 3,057 & 1,852 & 1,273 & 784\\
 \hline
 \end{tabular}
-\caption[Capacities]{Maximum storage capacities for Version-40 codes}
+\caption[Capacités]{Capacités maximales de stockage de codes de la version 40}
 \label{tab:qr:qrcode-capacity}
 \end{center}
 \end{table}
 
-The capacity of a QR code mainly depends on its data type, version and error correction level. The data type can be \emph{Numeric only},  \emph{Alphanumeric},  \emph{Binary}, or \emph{Kanji}. The version, from 1 to 40, determines a code's dimensions, which range from 21$\times$21 to 177$\times$177 modules. QR codes use a form of error-correction coding which can take four levels: \emph{Low} (L),  \emph{Medium} (M),  \emph{Quartile} (Q), and  \emph{High} (H), as is shown in Table~\ref{tab:qr:qrcode-capacity}. Obviously, as the level increases, more redundancy is introduced in the code's content, which decreases its storage capacity; however, more data can be restored if the code is dirty or damaged. With position detection patterns included in the symbol, a QR code can be decoded in 360 degrees.
+La capacité d'un code QR dépend principalement de son type de données, de sa version et de son niveau de correction d'erreur. Le type de données peut être \emph {uniquement numérique}, \emph{alphanumérique}, \emph{binaire}, ou \emph{Kanji}. La version de 1 à 40, détermine les dimensions d'un code, qui varient de 21 $\times$ 21 à 177 $\times$ 177 modules. Les codes QR utilisent une forme de codage à correction d'erreur qui peut choisir parmi quatre niveaux: \emph{Low} (L), \emph{Medium} (M), \emph{Quartile} (Q), et \emph{High} (H), comme il est indiqué dans le Tableau~\ref{tab:qr:qrcode-capacity}. Évidemment, comme le niveau augmente, plus de redondance est introduite dans le contenu du code, ce qui diminue sa capacité de stockage; Cependant, plus de données peuvent être restaurées si le code est sale ou endommagé. Avec les formes de détection de position inclus dans le symbole, un code QR peut être décodé en 360 degrés.
 
-Before generating a QR code from a piece of data, a code generator needs to analyze that input data to decide the most efficient mode and version. In the data encoding, the characters are converted into a bit stream, and in this progress, some \emph{mode indicators} and \emph{terminators} are inserted for the mode changes. The bit stream is then split into 8-bit codewords, and pad characters are required to fill the number of codewords for the chosen version. The generated codeword sequence is divided into blocks according to the specific error correction level and an error correction codeword is generated for each block. Then the codewords from each block are interleaved and some remainder bits are added as necessary.
+Avant de générer un code QR à partir d'un morceau de données, un générateur de code doit analyser les données d'entrée pour décider le mode et la version la plus efficace. Dans le codage de données, les caractères sont convertis en un flux de bits, et dans ce progrès, certains \emph{indicateurs de mode} et \emph{terminateurs} sont insérés pour les changements de mode. Le flux de bits est ensuite divisé en mots de code à 8-bits, et les caractères de remplissage sont nécessaires pour combler le nombre de mots de code de la version choisie. La séquence de mots de code générée est divisée en blocs selon le niveau de correction d'erreur spécifique et un mot de code de correction d'erreurs est généré pour chaque bloc. Ensuite, les mots de code de chaque bloc sont entrelacés et quelques bits restants sont ajoutés selon le besoin.
 
-In the next step, the generator places the codeword modules in a black-and-white matrix with the finder pattern, separators, timing pattern and alignment Patterns; it applies the masking patterns, evaluates and then selects the appropriate pattern. Finally, it generates the \emph{Format} and \emph{Version Information} and completes the QR code \citep{iso18004}.
+Dans l'étape suivante, le générateur met les modules de mots de code dans une matrice en noir et blanc avec la forme de recherche, les séparateurs, le forme de synchronisation et les forme d'alignement; il applique les formes de masquage, évalue et sélectionne ensuite la forme appropriée. Enfin, il génère le \emph{format} et \emph{l'information de version} et complète le code QR \citep{iso18004}.
 
-The decoding steps are simply the reverse of the encoding procedure. At first, the QR code needs to be located and the black and white modules are recognized as 0s and 1s that form a binary array. From the binary array, the decoder gets the format information and version information. With that information, it can begin to read the characters and the error correction codewords, and then tries to detect and correct the errors with the error correction codewords according to the appropriate error correction level. In the next step, the data codewords are divided according to the \emph{Mode Indicators} and \emph{Character Count Indicators}, and the data characters are finally decoded and output.
+Les étapes de décodage ne sont que tout simplement l'inverse de la procédure de codage. Dans un premier temps, le code QR doit être situé et les modules noirs et blancs sont reconnus comme 0s et 1s qui forment un tableau binaire. De ce tableau binaire, le décodeur reçoit l'information du format et de la version. Avec ces informations, il peut commencer à lire les caractères et les mots de code de correction d'erreurs, puis tente de détecter et de corriger les erreurs avec les mots de code de correction d'erreur selon le niveau de correction d'erreur approprié. Dans l'étape suivante, les mots de code de données sont divisés selon le \emph{indicateurs de mode} et les \emph{indicateurs de nombre de caractères}, et les caractères de données sont finalement décodés et sortis.
 
-\subsection{The Case for QR code Communication}
+\subsection{Le cas du code QR Communication}
 
-The aforementioned process applies for the encoding and decoding of a single code containing static data. We now investigate the idea of using QR codes as a communication channel, where realtime data would be transformed on-the-fly as a \emph{sequence} of QR codes, which could then be optically picked up by some device, and converted back into the original data stream at the receiving end.
+Le processus précité s'applique au codage au décodage d'un code unique contenant les données statiques. Nous enquêtons maintenant l'idée de l'utiliser les codes QR en tant qu'un canal de communication, où les données en temps réel seraient transformées en situation réelle comme une \emph{séquence} de codes QR, qui pourraient ensuite être optiquement capturés par un dispositif, et reconverti en flux de données d'origine à l'extrémité de réception.
 
-The use of QR code communication presents several advantages in a handful of scenarios. For example, the US Navy has investigated the use of QR codes as a ``digital semaphore''. The proposed technology focuses on the detection of low-resolution codes from very long ranges, and highlights the interest and possible use cases for this technology in a military context:
+L'utilisation de communication de codes QR présente plusieurs avantages dans une poignée de scénarios. Par exemple, la Marine américaine a enquêté l'utilisation de codes QR comme un ``sémaphore numérique''. La technologie proposée se concentre sur la détection de codes à basse résolution à partir de très longues distances, et souligne l'intérêt et les cas possibles d'utilisation de cette technologie dans un contexte militaire:
 
 \begin{quote}
-Arguably the most significant advantage of QR code LOS [line of sight] communications is the fact that they can be conducted without emitting energy in the RF spectrum. In an emissions controlled (EMCON) environment, this will provide a critical ability to communicate between ships without increasing the possibility of position detection. \citep[p.\ 46]{richter-msc}
+``Arguably the most significant advantage of QR code LOS [line of sight] communications is the fact that they can be conducted without emitting energy in the RF spectrum. In an emissions controlled (EMCON) environment, this will provide a critical ability to communicate between ships without increasing the possibility of position detection.'' \citep[p.\ 46]{richter-msc}
 \end{quote}
 
-However, in the cited work, the codes are considered to be \emph{static}, i.e.\ they do not change over time to form a stream of data, and more or less act as a substitute for flags or signs. Nevertheless, the absence of any emission of radio waves in QR code communication proves to be an appealing advantage in some scenarios.
+Cependant, dans l'ouvrage cité, les codes sont considérés comme \emph{statique}, c'est-à-dire qu'ils ne changent pas au fil du temps pour former un flux de données, et plus ou moins agissent comme un substitut de drapeaux ou de signes. Néanmoins, l'absence de toute émission d'ondes radio dans la communication de codes QR s'avère un avantage attrayant dans certains scénarios.
 
-We have also seen in the previous section how all other technologies, such as  Bluetooth or IrDA, require dedicated hardware. In contrast, using QR codes to communicate can be done through codes printed on a hard surface, or through any device capable of displaying images in sufficient resolution: TV screens, computer monitors, tablets and cell phones. Similarly, reception can be done through any device equipped with a standard, off-the-shelf camera. This can turn devices equipped with this common hardware into communicating devices, even though they were not designed for that purpose in the first place. One can even imagine emergency situations in which all digital means of communications between two points are not working. If line of sight can be established and a display and a camera are available, the use of QR codes nevertheless makes it possible to transmit digital data ---arguably much faster than the manual handwriting/transcribing that would otherwise need to be done.
+Nous avons également vu dans la section précédente comment toutes les autres technologies, telles que Bluetooth ou IrDA, nécessitent un matériel dédié. En revanche, la communication de codes QR peut être réalisée à travers les codes imprimés sur une surface dure, ou par un dispositif capable d'afficher les images à une résolution suffisante: les écrans de télévision, les écrans d'ordinateur, les tablettes et les téléphones cellulaires. De même, la réception peut être faite par un appareil équipé d'une caméra commerciale normale. Cela peut convertir les appareils équipés de ce matériel courant en dispositifs de communication, même s'ils ne sont pas conçus à cet effet en premier lieu. On peut même imaginer les situations d'urgence dans lesquelles tous les moyens numériques de communication entre deux points ne fonctionnent pas. Si la ligne de vision peut être établie et un affichage et une caméra sont disponibles, l'utilisation de codes QR permet néanmoins de transmettre les données numériques --- sans doute beaucoup plus rapidement que le manuel écriture ou transcription.
 
-\begin{comment}
-Preliminary experiments show the technique can work on an inexpensive webcam with a low resolution of $640\times480$ (0.3 megapixels).
-\end{comment}
-
-Finally, we have mentioned in the beginning how the use of an optical and strictly one-way communication channel can also be desirable, even in situations where radio or cable communication is available. For example, in the context of runtime verification, the execution of a system is being observed by an external  process called a \emph{monitor}. To prevent the monitor from interfering with the execution of the system, it is often placed on a separate machine, with some communication channel carrying events from the former to the latter. However, in traditional protocols such as TCP, the bidirectional nature of a connection presents too high a risk of attacks on the program to monitor. Moreover, some software setup is required to hook up the monitor to the program: defining IP addresses, pipe names, ports, etc., which represents too much coupling in many scenarios. We have argued in past work \citep{DBLP_conf/rv/LavoieLVGH14} how the use of an optical communication channel can alleviate these problems by providing greater isolation between the system and its monitor.
+Enfin, nous avons mentionné au début comment l'utilisation d'un canal de communication optique et strictement unidirectionnelle peut également être souhaitable, même dans les situations où la communication radio ou câble est disponible. Par exemple, dans le contexte de la vérification à l'exécution, l'exécution d'un système est actuellement observée par un processus externe appelé \emph{moniteur}. Pour empêcher le moniteur d'interférer avec l'exécution du système, il est souvent placé sur une machine séparée, avec un canal de communication qui transporte les événements d'une en faveur de l'autre. Cependant, dans les protocoles traditionnels tels que TCP, la nature bidirectionnelle d'une connexion présente un risque trop élevé d'attaques contre le programme de monitoring. En outre, certaines configurations de logiciels sont nécessaires pour brancher le moniteur au programme: les adresses IP, les noms de tube, les ports, etc., ce qui représentent trop de couplage dans de nombreux scénarios. Nous avons discuté dans le travail passé \citep{DBLP_conf /rv/LavoieLVGH14} comment l'utilisation d'un canal de communication optique peut atténuer ces problèmes en fournissant un plus grand isolement entre le système et son moniteur.
 
 \subsection{Estimating Bandwidth and Error Rate}
 

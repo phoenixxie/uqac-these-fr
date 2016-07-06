@@ -18,9 +18,9 @@ La vérification à l'exécution est une sorte de technique de vérification sur
 
 \cite{leucker2009brief} définissent la vérification à l'exécution comme suit:
 
-\begin{displayquote}
-Runtime verification is the discipline of computer science that deals with the study, development, and application of those verification techniques that allow checking whether a run of a system under scrutiny satisfies or violates a given correctness property.
-\end{displayquote}
+\begin{quote}
+``Runtime verification is the discipline of computer science that deals with the study, development, and application of those verification techniques that allow checking whether a run of a system under scrutiny satisfies or violates a given correctness property.''
+\end{quote}
 
 Normalement, lorsqu'une violation est observée, la vérification à l'exécution ne résout pas le programme détecté elle-même, mais son résultat est un guide et base importante pour d'autre composants dans le même système pour régler le problème.
 
@@ -70,7 +70,7 @@ Le test du logiciel \citep{broy2005model} est une autre technique de vérificati
 
 Dans la vérification à l'exécution, un moniteur est traduit à partir d'une propriété d'exactitude, et les propriétés d'exactitude sont spécifiés dans les logiques temporelles en temps linéaire, telles que la logique temporelle linéaire.
 
-La logique temporelle est une extension de la logique classique, et elle fournit un langage pratique avec les expressions des propriétés pour raisonner sur le changement des états en termes de temps. Bien qu'il y ait beaucoup de logiques temporelles différentes qui sont inventées pour satisfaire aux exigences diverses, les logiques temporelles sont normalement classées par le fait que le temps est linéaire ou en ramification. La logique temporelle avec le temps linéaire est appelé \emph{Logique Temporelle Linéaire} (LTL), qui a d'abord été proposé par \cite{pnueli97}. le temps dans la LTL est transformé en une séquence d'états qui s'étendent vers le futur infini. La séquence d'états est un \emph{chemin} de calcul. \citep{clarke1999model} \cite{huth2004}
+La logique temporelle est une extension de la logique classique, et elle fournit un langage pratique avec les expressions des propriétés pour raisonner sur le changement des états en termes de temps. Bien qu'il y ait beaucoup de logiques temporelles différentes qui sont inventées pour satisfaire aux exigences diverses, les logiques temporelles sont normalement classées par le fait que le temps est linéaire ou en ramification. La logique temporelle avec le temps linéaire est appelé \emph{Logique Temporelle Linéaire} (LTL), qui a d'abord été proposé par \cite{pnueli97}. le temps dans la LTL est transformé en une séquence d'états qui s'étendent vers le futur infini. La séquence d'états est un \emph{chemin} de calcul. \citep{clarke1999model,huth2004}
 
 \cite{leucker2009brief} résument la LTL comme une logique temporelle en temps linéaire qui est bien acceptée et utilisée pour spécifier les propriétés de traces infinies. Néanmoins, dans la vérification à l'exécution, la LTL est employée pour vérifier les exécutions finies.
 
