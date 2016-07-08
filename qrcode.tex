@@ -21,7 +21,7 @@ Ces premiers résultats indiquent que les flux de code QR peuvent en effet être
 
 Une seconde expérience révèle la robustesse de ce schéma de transmission: en utilisant notre protocole spécialement conçu, le canal de communication créé par une personne qui pointe un smartphone à bout du bras vers un écran avec les code QR des codes QR vacillants, produit une bande passante suffisante pour transmettre l'audio à usage vocal en temps réel. La Section~\ref{sec:qr:experiments} présente l'environnement et les résultats des expériences de cette deuxième étape. Nous montrons aussi comment un morceau de données, coupé en plusieurs codes avec l'utilisation de BufferTannen, peut être reconstruit automatiquement par un utilisateur qui passe sa caméra sur une feuille de ces codes imprimés dans aucun ordre particulier.
 
-Ce travail a été motivé par une application pratique dans le domaine de la vérification à l'exécution. Dans les recherches antérieures, nous avons proposé et officieusement expérimenté l'utilisation de codes optiques comme une forme de communication à couplage lâche entre un système logiciel et un moniteur externe qui reçoit les événements produits par ce système-là \citep{DBLP_conf/rv/LavoieLVGH14}. Dans ce contexte, la communication par les milieux optiques assure un isolement complet entre le système et son moniteur.
+Ce travail a été motivé par une application pratique dans le domaine de la vérification de l'exécution. Dans les recherches antérieures, nous avons proposé et officieusement expérimenté l'utilisation de codes optiques comme une forme de communication à couplage lâche entre un système logiciel et un moniteur externe qui reçoit les événements produits par ce système-là \citep{DBLP_conf/rv/LavoieLVGH14}. Dans ce contexte, la communication par les milieux optiques assure un isolement complet entre le système et son moniteur.
 
 Bien que l'utilisation de séquences de codes QR a été officieusement suggéré dans le passé, au mieux de notre connaissance, notre recherche est la première enquête systématique du potentiel de codes QR pour envoyer les flux de données en temps réel.
 
@@ -148,7 +148,7 @@ Dans le court sondage précédent de technologies de communication sans fil sont
 
 \subsection{Aperçu de codes QR}
 
-Un code QR (officiellement appelé ``Quick Response Code'') \citep{qrcode-about} est un code-barre à deux dimensions qui stocke des données, comme le montre la figure \ref{fig:qr:helloqr}. En comparaison avec le code-barre bien connu UPC, qui est linéaire (i.e.\ unidimensionnel), un code QR peut stocker plus d'informations dans une impression plus petit. \footnote{\url{http://www.qrcode.com/en/}} Le standard du code QR stipule que ces codes peuvent avoir une capacité aussi élevée que 7089 caractères numériques ou 2953 caractères à 8 bits, et qu'un code est représenté dans un tableau carré d'un maximum de 177 $\times$ 177 ``pixels'', appelé \emph{modules} \citep{iso18004}.
+Un code QR (officiellement appelé ``Quick Response Code'') \citep{qrcode-about} est un code-barre à deux dimensions qui stocke des données, comme le montre la figure \ref{fig:qr:helloqr}. En comparaison avec le code-barre bien connu UPC, qui est linéaire (i.e.\ unidimensionnel), un code QR peut stocker plus d'informations dans une impression plus petit.\footnote{\url{http://www.qrcode.com/en/}} Le standard du code QR stipule que ces codes peuvent avoir une capacité aussi élevée que 7089 caractères numériques ou 2953 caractères à 8 bits, et qu'un code est représenté dans un tableau carré d'un maximum de 177 $\times$ 177 ``pixels'', appelé \emph{modules} \citep{iso18004}.
 
 \begin{figure}
 \centering
@@ -200,30 +200,30 @@ Cependant, dans l'ouvrage cité, les codes sont considérés comme \emph{statiqu
 
 Nous avons également vu dans la section précédente comment toutes les autres technologies, telles que Bluetooth ou IrDA, nécessitent un matériel dédié. En revanche, la communication de codes QR peut être réalisée à travers les codes imprimés sur une surface dure, ou par un dispositif capable d'afficher les images à une résolution suffisante: les écrans de télévision, les écrans d'ordinateur, les tablettes et les téléphones cellulaires. De même, la réception peut être faite par un appareil équipé d'une caméra commerciale normale. Cela peut convertir les appareils équipés de ce matériel courant en dispositifs de communication, même s'ils ne sont pas conçus à cet effet en premier lieu. On peut même imaginer les situations d'urgence dans lesquelles tous les moyens numériques de communication entre deux points ne fonctionnent pas. Si la ligne de vision peut être établie et un affichage et une caméra sont disponibles, l'utilisation de codes QR permet néanmoins de transmettre les données numériques --- sans doute beaucoup plus rapidement que le manuel écriture ou transcription.
 
-Enfin, nous avons mentionné au début comment l'utilisation d'un canal de communication optique et strictement unidirectionnelle peut également être souhaitable, même dans les situations où la communication radio ou câble est disponible. Par exemple, dans le contexte de la vérification à l'exécution, l'exécution d'un système est actuellement observée par un processus externe appelé \emph{moniteur}. Pour empêcher le moniteur d'interférer avec l'exécution du système, il est souvent placé sur une machine séparée, avec un canal de communication qui transporte les événements d'une en faveur de l'autre. Cependant, dans les protocoles traditionnels tels que TCP, la nature bidirectionnelle d'une connexion présente un risque trop élevé d'attaques contre le programme de monitoring. En outre, certaines configurations de logiciels sont nécessaires pour brancher le moniteur au programme: les adresses IP, les noms de tube, les ports, etc., ce qui représentent trop de couplage dans de nombreux scénarios. Nous avons discuté dans le travail passé \citep{DBLP_conf /rv/LavoieLVGH14} comment l'utilisation d'un canal de communication optique peut atténuer ces problèmes en fournissant un plus grand isolement entre le système et son moniteur.
+Enfin, nous avons mentionné au début comment l'utilisation d'un canal de communication optique et strictement unidirectionnelle peut également être souhaitable, même dans les situations où la communication radio ou câble est disponible. Par exemple, dans le contexte de la vérification de l'exécution, l'exécution d'un système est actuellement observée par un processus externe appelé \emph{moniteur}. Pour empêcher le moniteur d'interférer avec l'exécution du système, il est souvent placé sur une machine séparée, avec un canal de communication qui transporte les événements d'une en faveur de l'autre. Cependant, dans les protocoles traditionnels tels que TCP, la nature bidirectionnelle d'une connexion présente un risque trop élevé d'attaques contre le programme de monitoring. En outre, certaines configurations de logiciels sont nécessaires pour brancher le moniteur au programme: les adresses IP, les noms de tube, les ports, etc., ce qui représentent trop de couplage dans de nombreux scénarios. Nous avons discuté dans le travail passé \citep{DBLP_conf /rv/LavoieLVGH14} comment l'utilisation d'un canal de communication optique peut atténuer ces problèmes en fournissant un plus grand isolement entre le système et son moniteur.
 
-\subsection{Estimating Bandwidth and Error Rate}
+\subsection{Estimation de la bande passante et du taux d'erreur}
 
-However, one-way transmission introduces the possibility of losing frames during the process, due to the limitation of the physical devices or the vulnerability of the software. Moreover, it is impossible for the transmitter to be aware of any missing frames on the receiving end and resend them. Therefore, we need to analyze thoroughly this approach to estimate the \emph{recognition rate} and the \emph{transmission bandwidth} of such a communication channel.
+Cependant, la transmission unidirectionnelle introduit la possibilité de perte des trames pendant le procédure, en raison de la limitation des dispositifs physiques ou la vulnérabilité du logiciel. De plus, c'est impossible que l'émetteur puisse être conscient d'images manquantes à l'extrémité de réception et les renvoyer. Par conséquent, nous avons besoin d'analyser profondément cette approche pour estimer le \emph{taux de reconnaissance} et la \emph{bande passante de transmission} d'un tel canal de communication.
 
-The transmission of codes takes multiple parameters: each frame's data size, the number of generated frames per second (fps) and the error correction level. All three can have an important effect on the generation of QR codes and the resulting bandwidth. Larger data size leads to a higher symbol version of the QR code and more symbol modules, and with the same frame size, a higher correction level requires more symbol modules than a lower one.
+La transmission de codes utilise plusieurs paramètres: la taille de données de chaque image, le nombre d'images générées par seconde (fps) et le niveau de correction d'erreur. Tous les trois peuvent avoir un effet important de la génération de codes QR et de la bande passante en résulte. Une plus grande taille de données mène à une plus haute version de symbole de codes QR et plus de modules de symboles, et avec la même taille d'image, un plus élevé niveau de correction exige plus de modules de symboles qu'un moins élevé niveau.
 
-Because the sender cannot be aware of any codes missed by the receiver, this one-way communication channel is actually a lossy channel, of which the \emph{effective} bandwidth can be calculated with the measured frame recognition rate. This represents the number of bits that are correctly received.
-%
+Parce que l'émetteur ne peut pas détecter le fait que des codes sont manqués ou non par le récepteur, ce canal de communication unidirectionnel est en fait un canal avec perte, dont la bande passante actuelle peut être calculée avec le taux mesuré de reconnaissance d'images. Cela représente le nombre de bits qui sont reçus correctement.
+
 \begin{equation*}
-  bandwidth = \mathit{fps} \times \mathit{frame\_bits} \times \mathit{recognition\_rate}
+  bande\_passante = \mathit{fps} \times \mathit{bits\_de\_image} \times \mathit{taux\_de\_reconnaissance}
 \end{equation*}
 
-If the receiver finds that not all the frames are received, the only way is to make sure the sender sends all the frames again and again until the receiver gets all frames and stops; the actual bandwidth is:
-%
+Si le récepteur craint que les images ne sont pas tout reçues, la seule façon est de s'assurer que l'émetteur envoie toutes les images plusieurs fois jusqu'à ce que le récepteur reçoit toutes les images; alors la bande passante réelle est la suivante:
+
 \begin{equation*}
-  bandwidth = \mathit{fps} \times \mathit{frame\_bits} \div \mathit{actual\_sent\_times}
+  bande\_passante = \mathit{fps} \times \mathit{bits\_de\_image} \div \mathit{nombre\_de\_fois\_de\_envoi}
 \end{equation*}
 
-The recognition rate is normally determined by the ability of the camera and the screen, the accuracy of the recognition algorithm and the code's complexity (i.e.\ the number of the displayed modules). However, within the ability of the camera and the screen, if we can send the same frame for more than once, meanwhile the value of \emph{fps} doesn't need to change, the practical recognition rate can be improved.
+Le taux de reconnaissance est normalement déterminée par la capacité de la caméra et de l'écran, la précision de l'algorithme de reconnaissance et la complexité de codes (c.-à-d. le nombre des modules affichés). Cependant, dans la capacité de la caméra et de l'écran, si nous pouvons envoyer le même image plus d'une fois, et en ce moment la valeur de \emph{fps} n'a pas à changer, le taux pratique de reconnaissance peut être amélioré.
 
 \begin{equation*}
-\mathit{practical\_recognition\_rate} = 1 - (1 - \mathit{recognition\_rate})^{times}
+\mathit{taux\_pratique\_de\_reconnaissance} = 1 - (1 - \mathit{taux\_de\_reconnaissance})^{nombre\_de\_fois}
 \end{equation*}
 
 
@@ -232,55 +232,57 @@ The recognition rate is normally determined by the ability of the camera and the
 %% -----------------------
 %% Section: expériences
 %% -----------------------
-\section{Experiments}\label{sec:qr:experiments} %% {{{
+\section{Expériences}\label{sec:qr:experiments} %% {{{
 
-In this section, we describe experiments in which we measure the accuracy of reading sequences of QR codes in various conditions. The purpose of these experiments is threefold:
+Dans cette section, nous décrivons les expériences où nous mesurons la précision de reconnaissance de séquences de codes QR dans diverses conditions. Le but de ces expériences est triple:
 
 \begin{enumerate}
-\item assess whether data can be successfully transmitted through the reading of sequences of optical codes;
-\item determine the parameters that maximize the decoding rate and bandwidth of the transmitted data;
-\item from these results, determine the characteristics of a typical QR stream communication channel.
+\item évaluer si les données peuvent être transmises avec succès à travers la reconnaissance de séquences de codes optiques;
+\item trouver les paramètres qui maximisent la vitesse de décodage et la bande passante des données transmises;
+\item à partir de ces résultats, déterminer les caractéristiques d'un canal typique de communication de flux de codes QR.
 \end{enumerate}
 
-\subsection{Experimental Setup}
+\subsection{Préparation des expériences}
 
-Our set of experiments involves producing and displaying sequences of QR codes on one end, and capturing and decoding these sequences on the other. In our experimental environment, we used a Samsung 19-inch LED monitor as the transmitter and a high-definition Logitech webcam as the receiver. The camera was placed at a fixed distance of 50 cm from the screen. The resolution of the monitor was 1280$\times$1024 pixels. %The webcam can capture at most 30 frames per second with the highest resolution of 1920 pixels $\times$ 1080 pixels. Zooming was disabled. 
-The camera was placed on a stable surface, with the optical code zone correctly in focus and covering the whole field of view. The computer used for the experiments is a laptop with the Intel Core i7-3632QM processor and 16 GB of memory. Figure \ref{fig:qr:setup} shows the setup used for the experiments.
+Notre installation expérimental implique la production et l'affichage de séquences de codes QR à une extrémité, et la capture et le décodage de ces séquences à l'autre extrémité. Dans notre environnement expérimental, nous avons utilisé un écran LED de 19 pouces de Samsung comme émetteur et une webcam de Logitech à haute définition comme récepteur. La caméra était mise à une distance fixe de 50 cm de l'écran. La résolution de l'écran est de 1280 $\times$ 1024 pixels.
+
+La caméra était mise sur une surface stable, avec la zone de code optique correctement mise au point et couvrant tout le champ de vue. L'ordinateur utilisé dans les expériences est un ordinateur portable avec le processeur Intel Core i7-3632QM et 16 Go de mémoire. La Figure \ref{fig:qr:setup} montre l'installation utilisée dans les expériences.
 
 \begin{figure}
 \centering
 \includegraphics[width=\linewidth]{expsetup.jpg}
-\caption{Experimental setup for reading codes.}
+\caption{Installation expérimental pour lire les codes QR.}
 \label{fig:qr:setup}
 \end{figure}
 
-In the development, we chose OpenCV\footnote{\url{http://opencv.org/}} to capture the images from the camera and ZXing\footnote{\url{https://github.com/zxing/zxing}} to generate and decode the QR codes. To reduce the CPU and memory's overhead of capturing and decoding, the captured images were transformed to 16-level grayscale. The data used to generate QR codes were randomly generated \emph{alphanumerics}. All benchmarking code is implemented in Java and is freely available.\footnote{\url{http://github.com/sylvainhalle/GyroGearloose}}
+Dans le développement, nous avons choisi OpenCV\footnote{\url{http://opencv.org/}} pour capturer les images de la caméra et ZXing\footnote{\url{https://github.com/zxing/zxing}} pour générer et décoder les codes QR. Pour réduire la pression du CPU et du mémoire de capture et de décodage, les images capturées ont été transformées en 16 niveaux de gris. Les données utilisées pour générer les codes QR étaient les caractères alphanumériques aléatoirement générés. Tous les codes du benchmark est implémentés en Java et disponible gratuitement.\footnote {\url{http://github.com/sylvainhalle/GyroGearloose}}
 
-The code decoding depends on the quality and the complexity of the captured image. If the image is broken or blurred, it will be difficult to decode. And the algorithms of image recognition may have the probability of failure\citep{adel2006}. Therefore, our first step is to measure the ability of optical recognition libraries to properly read sequences of codes, irrespective of the actual data contained in these codes. Sequences of codes were generated by producing a character string of the form \verb+dddd#rrrr...+, where \verb+dddd+ is a sequential number starting from zero and incrementing by one on each successive code, and \verb+rrrr...+ is a random string of characters (different on each code) long enough to fill the code up to its maximum size. Each test consisted in filming the sequence of such codes and storing the sequential number of each correctly decoded image into a file. This allows us to determine the fraction of all codes that were correctly read; given the size of each code and the number of codes sent, this makes it possible to compute the bandwidth and decoding error rate.
+Le décodage de codes dépend de la qualité et de la complexité de l'image capturée. Si l'image est trouble ou cassée, elle sera difficile à décoder. Et les algorithmes de reconnaissance d'images peuvent avoir la probabilité de défaillance \citep{adel2006}. Par conséquent, notre première étape a pour but de mesurer la capacité des librairies de reconnaissance optique pour reconnaître correctement les séquences de codes, quelles que soient les données actuelles contenues dans ces codes. Les séquences de codes ont été générées par la production d'une chaîne de caractères de la forme \verb+dddd#rrrr...+, où \verb+dddd+ est un numéro séquentiel à partir de zéro et incrémenté par un dans chaque code successifs, et \verb+rrrr...+ est une chaîne de caractères aléatoires (différent dans chaque code) assez longue pour combler le code jusqu'à sa taille maximale. Chaque test a consisté à filmer la séquence des tels codes et stocker le numéro séquentiel de chaque image correctement décodée dans un fichier. Cela nous permet de calculer la fraction de tous les codes qui ont été correctement reconnus; compte tenu de la taille de chaque code et du nombre de codes envoyés, cela permet de calculer la bande passante et le taux d'erreur de décodage.
 
-Our experiments quickly tripped over what appears to be a bug in the ZXing image decoding library. When analyzing sequences of images captured by the camera to look for decoding errors, we discovered that a number of times, the decoding failed while the corresponding image seemed to have no apparent problem (no blurring, correct framing, etc.). Putting the offending codes back on screen and trying to properly decode them with the camera yielded no success, even after changing the code's size, the camera's position, lighting conditions, etc. This is all the more puzzling that codes immediately before and after the problematic one were correctly decoded in multiple frames, while being captured in the same conditions. Even sending the code's ``pure'' image directly back into the decoding algorithm, without going through a camera, produces a decoding error.
+Nos expériences ont rapidement trébuché par ce qui semble être un bogue dans de la librairie de décodage d'images ZXing. Lors de l'analyse de séquences d'images capturées par la caméra pour rechercher des erreurs de décodage, nous avons découvert que pour un nombre de fois, le décodage a échoué pendant que l'image correspondante semblait avoir aucun problème apparent (non trouble, correct image, etc.). L'essai d'afficher encore les codes échoués à l'écran et puis d'essayer de les décoder avec la caméra n'a donné aucun succès, même après avoir changé la taille des codes, la position de la caméra, les conditions d'éclairage, etc. Le plus curieux fait est que les codes immédiatement avant et après le code problématique ont été correctement décodées, tout en étant capturé dans les mêmes conditions. Même l'envoi de l'image ``pure''  du code directement à l'algorithme de décodage, sans aide de la caméra, produit une erreur de décodage.
 
-It therefore seems the library cannot recognize some of the codes it itself produces (Figure \ref{fig:qr:bad-code} shows such an example). This most probably indicates a bug in the library, which has persisted up to the latest version available at the time this chapter was written. Therefore, in the following, the reader should keep in mind that an unknown proportion of reading errors may be due to this purported bug, and not to the particular experimental conditions. This is the case, for example, for the gaps in the correction rate we shall observe in Figures \ref{img-exp1} and \ref{img-exp2}.
+Il semble donc la librairie ne peut pas reconnaître certains des codes qu'elle produit en soi (La Figure \ref{fig:qr:bad-code} montre un tel exemple). Cela indique très probablement un bogue de la librairie, qui persiste jusqu'à la dernière version disponible au moment où ce chapitre a été écrit. Par conséquent, dans ce qui suit, le lecteur doit garder à l'esprit qu'une proportion inconnue d'erreurs de reconnaissance soient causées être par ce bug prétendu, et non par les conditions expérimentales particulières. Tel est le cas, par exemple, pour les écarts dans le taux de correction que nous observerons dans les Figures \ref{img-exp1} et \ref{img-exp2}.
 
 \begin{figure}
 \centering
 \includegraphics[width=.8\linewidth]{badqr.png}
-\caption{A QR code generated by ZXing that ZXing itself cannot decode in the experiment.}
+\caption{Un code QR généré par ZXing que ZXing en soi ne peut pas décoder dans l'expérience.}
 \label{fig:qr:bad-code}
 \end{figure}
 
-\subsection{Experimental Parameters}
+\subsection{Paramètres des expériences}
 
-The experiment seeks the combination of parameters that could maximize the bandwidth and minimize the error rate for the transmission of codes. The parameters that were considered are the following.
+L'expérimentation vise à identifier la combinaison de paramètres qui permettraient de maximiser la bande passante et de  minimiser le taux d'erreur de transmission de codes. Les paramètres qui ont été considérés sont les suivants.
 
-\subsubsection{Code Resolution}
+\subsubsection{Résolution de codes}
 
-The first parameter is code data size (i.e.\ the number of data bits contained in each code) and physical size (number of pixels used to display the code on screen). We varied the data size in increments of 500 bits, from 500 up to 4,500 bits. As shown in Table \ref{tab:qr:sample-sizes}, the largest QR code, which contains 4,500 bits of data using the highest error correction level, is 101$\times$101 modules large. We also fixed the code's physical size to 700$\times$700 pixels, which makes each module a square of at least 6$\times$6 pixels.
+Le premier paramètre est la taille de données de codes (c.-à-d. le nombre de bits de données contenues dans chaque code) et la taille physique (le nombre de pixels utilisés pour afficher le code sur l'écran). Nous avons varié la taille des données par incréments de 500 bits, de 500 à 4500 bits. Comme le montre le tableau \ref{tab:qr:sample-sizes}, le plus grand code QR, qui contient 4500 bits de données en utilisant le plus élevé niveau de correction d'erreur, occupe 101 $\times$ 101 modules. Nous avons aussi fixé la taille physique de codes à 700 $\times$ 700 pixels sur l'écran, ce qui rend chaque module un carré d'au moins 6 $\times$ 6 pixels.
 
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{llll}
-Input data bits & Error correction level & Symbol version & Symbol size\\
+Nombre de bits & Niveau de correction & Version de symbole & Taille de symbole \\
+de données d'entrées & d'erreur & & \\
 \hline
 \multirow{2}{*}{500} & L & 3 & 29$\times$29\\
 & H & 5 & 37$\times$37\\
@@ -312,354 +314,353 @@ Input data bits & Error correction level & Symbol version & Symbol size\\
 \multirow{2}{*}{5800} & L & 19 & 93$\times$93\\
 & H & 30 & 137$\times$137\\
 \hline\end{tabular}
-\caption[Sample sizes]{Sample QR code sizes, according to their data size and error correction level \citep{iso18004}}
+\caption[Tailles d'échantillons]{Tailles d'échantillons de codes QR, selon leur tailles de données et les niveaux de correction d'erreur \citep{iso18004}}
 \label{tab:qr:sample-sizes}
 \end{center}
 \end{table}
 
-\subsubsection{Code Rate}
+\subsubsection{Fréquence de codes}
 
-The second experimental parameter we considered is the code rate, i.e.\ the number of codes displayed per unit of time. We initially selected 2, 4, 6, 8, and 10 codes per second (cps), and also considered up to 16 cps in a later phase of the experiment.
+Le deuxième paramètre expérimental nous avons considéré est la fréquence de codes, c'est-à-dire le nombre de codes affichés par unité de temps. Nous avons d'abord choisi 2, 4, 6, 8 et 10 codes par seconde (cps), et également considéré jusqu'à 16 cps dans une ultérieure phase de l'expérience.
 
-\subsubsection{Error Correction Level}
+\subsubsection{Niveau de correction d'erreur}
 
-As we have seen, QR codes include additional data intended for error correction. We hence also varied the level of error correction used in each experiment, using either its highest setting (H) or its lowest (L).
+Comme nous l'avons vu, les codes QR comprennent des données supplémentaires destinées à la correction d'erreur. Nous avons donc aussi varié le niveau de correction d'erreur dans chaque expérience, en utilisant soit son réglage le plus élevé (H) ou le plus bas (L).
 
-\subsubsection{Camera Resolution and Rate}
+\subsubsection{Résolution et fréquence de la caméra}
 
-The resolution of the camera was not considered as an experimental parameter. It was fixed to its maximal setting, 1920$\times$1080 pixels. Similarly, its frame rate was kept fixed at 30 frames per second. This corresponds to 1080p high-definition video, a setting expected to be found in the majority of recent and future video capture devices. We performed some informal tests with lower resolutions (down to 640$\times$480), which were globally conclusive, but did not deem relevant of including them in our detailed analysis.
+La résolution de la caméra n'a pas été considérée comme un paramètre expérimental. Elle était fixe à sa valeur maximale, 1920 $\times$ 1080 pixels. De même, la fréquence d'image était fixe à 30 images par seconde. Cela correspond à la vidéo à haute définition 1080p, un réglage qui devrait être trouvé dans la plupart d'appareils récents et futurs de capture vidéo. Nous avons effectué quelques tests informels avec des base résolutions (en baisse à 640 $\times$ 480), qui étaient mondialement concluants, mais qui n'étaient pas considérées pertinentes de les inclure dans notre analyse détaillée.
 
-\subsection{Experimental Results}
+\subsection{Résultats des expériences}
 
-The product of all combinations of code size, error correction level and code rate produces a total of 90 different experiments. These experiments were repeated in three sets, differing in the way in which codes were displayed.
+Le produit de toutes les combinaisons de tailles de codes, de niveaux d'erreur de correction et de fréquences de codes mène à un total de 90 expériences différentes. Ces expériences ont été répétées dans les trois ensembles, qui diffèrent par la façon dont les codes ont été affichés.
 
-\subsubsection{Single Display}
+\subsubsection{Affichage en une fois}
 
-In a first experiment, each code was displayed in sequence for a duration of $1/f$ second, where $f$ is the code rate. The bandwidth and decoding rate are shown in Figure \ref{img-exp1} for combinations of all parameters.
+Dans la première expérience, chaque code a été affiché en séquence pour une durée de $1/f$ seconde, où $f$ est la fréquence de codes. La bande passante et le taux de décodage sont présentés dans la Figure \ref{img-exp1} pour les combinaisons de tous les paramètres.
 
 \begin{figure}
 \begin{center}
 \centering
 \includegraphics[width=\linewidth]{data1.png}
-\caption{Bandwidth and decoding rate in the first experiment}
+\caption{Bande passante et taux de décodage dans la première expérience}
 \label{img-exp1}
 \end{center}
 \end{figure}
 
-As one can see, the recognition rates of higher correction level were lower than the ones of lower correction level, with all other parameters being equal. This can be explained by the fact that the same amount of data, carried inside a code with a higher correction level, has to display more modules. For example, according to Table \ref{tab:qr:sample-sizes}, the modules of a 2,000-bit, H-level code are as small as those of a 4,500-bit, L-level code. Smaller modules, in turn, yields increased difficulty in recognition by the camera. Therefore, a first conclusion one can draw is that, surprisingly, effective bandwidth seems to be improved by using a \emph{lower} level of error correction.
+Comme on peut le voir, les taux de reconnaissance de plus élevé niveaux de correction étaient inférieurs à ceux de plus bas niveaux de correction, avec tous les autres paramètres étant égaux. Ceci peut être expliqué par le fait que la même quantité de données, portées dans d'un code avec un niveau plus élevé de correction, doit afficher plus de modules. Par exemple, selon le Tableau \ref{tab:qr:sample-sizes}, les modules d'un code 2000 bits en niveau H, sont aussi petits que ceux d'un code de 4500 bits en niveau L. Les modules plus petits, à son tour, augmentent la difficulté de reconnaissance par la caméra. Par conséquent, une première conclusion que l'on peut tirer est que, de façon surprenante, la bande passante effective semble être améliorée en utilisant un bas niveau de correction d'erreur.
 
-With the same data sizes and correction levels, the figure shows that the recognition rate decreases as the code rate increases. This can be explained by the fact that, in a higher code rate, the same code occupies fewer camera frames, and hence has fewer chances of being correctly decoded in one of the frames. Moreover, the probability that a code change occurs at the moment a frame is taken (resulting in a blurry image showing part of two different codes) is also increased. In the L level, the decrease is slight, but in the H level, the decrease is dramatic when the code size reaches 3,000 bits. As the data size increases, the recognition rate drops constantly and considerably.
+Avec les mêmes tailles de données et les mêmes niveaux de correction, la figure montre que le taux de reconnaissance diminue alors que la fréquence de codes augmente. Ceci peut être expliqué par le fait que, dans une fréquence plus élevée de codes, le même code occupe moins d'images de la caméra, et a donc moins de chances d'être correctement décodé dans l'une des images. En outre, la probabilité qu'un changement de code se produise au moment où une image soit prise (entraînant d'une image trouble qui montre une partie de deux différents codes) est également augmentée. En niveau L, la diminution est légère, tandis que en niveau H, la diminution est dramatique lorsque la taille du codes atteint 3000 bits. Alors que la taille de données augmente, le taux de reconnaissance diminue constamment et considérablement.
 
-These figures seem to indicate that the ideal configuration for level L is 4,500 bits and 10 fps, which yields an effective bandwidth of 39.0 kbps; for level H, 4,000 bits and 10 fps result in a bandwidth of 24.6 kbps.
+Ces chiffres semblent indiquer que la configuration idéale pour le niveau L est 4500 bits et 10 fps, ce qui donne une bande passante effective de 39,0 kbps; pour le niveau H, 4000 bits et 10 fps mène à une bande passante de 24,6 kbps.
 
-\subsubsection{Double Display}
+\subsubsection{Affichage en deux fois}
 
-Considering that the camera might have missed several frames, we performed a second experiment in which every QR code is displayed twice within a small time window. Hence, instead of displaying each code once for $1/f$ second, each code was interleaved with neighbouring codes and displayed twice for $1/2f$ second each time. This results in the same total exposure time for each code, but increases the diversity in the images captured by the camera.
+Considérant que la caméra pourrait avoir manqué plusieurs images, nous avons réalisé une seconde expérience dans laquelle chaque QR code est affiché deux fois dans une petite fenêtre du temps. Par conséquent, au lieu d'afficher chaque code une fois en $1/f$ seconde, chaque code a été entrelacé avec ses voisins codes et affiché deux fois en $1/2f$ seconde chaque fois. Ceci a pour résultat le même temps total d'exposition pour chaque code, mais augmente la diversité des images capturées par la caméra.
 
 \begin{figure}[ht]
 \begin{center}
 \centering
 \includegraphics[width=\linewidth]{data2.png}
-\caption{Bandwidth and decoding rate in the second experiment, where each code is displayed twice}
+\caption{Bande passante et taux de décodage dans la deuxième expérience, où chaque code est affiché deux fois}
 \label{img-exp2}
 \end{center}
 \end{figure}
 
-The results are plotted in Figure \ref{img-exp2}. They show an increase in all recognition rates, which are now all higher than 90\%. This, in turn, increases the effective bandwidth; using the same settings as above, one can get a bandwidth of 43.0 kbps using level L, and 44.1 kbps using level H.
+Les résultats sont tracés sur la Figure \ref{img-exp2}. Ils montrent une augmentation de tous les taux de reconnaissance, qui sont maintenant tous supérieurs à 90\%. Ceci, à son tour, augmente la bande passante effective; en utilisant les mêmes paramètres que ci-dessus, on peut obtenir une bande passante de 43,0 kbps en utilisant le niveau L, et 44,1 kbps en utilisant le niveau H.
 
-\subsubsection{Random Padding}
+\subsubsection{Bourrage aléatoire}
 
-However, as we discussed earlier, not all QR codes are created equal; for the same resolution and error correction level, experimental results indicate that some codes seem to be more difficult to read than some others. Therefore, merely repeating the same image multiple times has no impact on that intrinsic ``hardness''. Our third experiment introduces yet another mechanism for boosting recognition rate.
+Cependant, comme nous avons discuté plus tôt, les codes QR ne sont pas tout créés égaux; Avec la même résolution et le même niveau de correction d'erreur, les résultats expérimentaux indiquent que certains codes semblent être plus difficiles à reconnaître que d'autres. Par conséquent, la simple répétition de la même image en plusieurs fois n'a aucun impact sur cette intrinsèque ``dureté''. Notre troisième expérience présente encore un autre mécanisme pour augmenter le taux de reconnaissance.
 
-This time, we tried to make the codes from the same input data different by appending, at the end of the data to be encoded, a small random string intended to change every time the code is to be displayed. Hence the same original data, if displayed twice, is prepended to a different random padding each time, yielding a slightly different array of bits. However, by virtue of the QR encoding schema, even a small change at the end of an array produces a completely different pattern of dots in the resulting QR code. Figure \ref{fig:qr:difcodes} shows an example of this phenomenon. Therefore, if a code is harder to read, the same data is also displayed in a largely different pattern of dots, increasing the odds of being properly picked up at least once.
+Cette fois, nous avons essayé de générer les codes à partir des mêmes données d'entrée différentes en ajoutant, à la fin des données, une petite chaîne de caractères aléatoires qui est destinée à changer chaque fois où le code doit être affiché. De ce fait, les mêmes données originales, si elles sont affichées deux fois, sont préfixées à un différent bourrage aléatoire chaque fois, ce qui donne un peu différent tableau de bits. Toutefois, en vertu du schéma de codage QR, même un petit changement à la fin d'un tableau produit une forme complètement différente de points dans le code QR généré. La Figure \ref{fig:qr:difcodes} montre un exemple de ce phénomène. Par conséquent, si un code est plus difficile à reconnaître, les mêmes données sont également affichées dans une forme largement différente de points, ce qui augmente les chances d'être correctement ramassées au moins une fois.
 
 \begin{figure}
 \centering
 \includegraphics[width=1in]{abcdefg.jpg}~\includegraphics[width=1in]{abcdeff.jpg}
-\caption{Examples of two codes with slightly different data, but widely different dot patterns. The code on the left contains the string ``abcdefg'', while the one on the right contains ``abcdeff''.}
+\caption{Exemples de deux codes avec les données légèrement différentes, mais très différentes formes de points. Le code à gauche contient la chaîne ``abcdefg'', tandis que celui à droite contient ``abcdefg''.}
 \label{fig:qr:difcodes}
 \end{figure}
 
-Although the objective reason for some codes being harder to read is unknown and out of the focus of this chapter, experimental results seem to confirm this hypothesis. We performed a third experiment where every input data was displayed three times with different generated QR codes. The recognition rate is better than before when the code rate is lower than 10 fps, as shown in Figure \ref{img-exp3}. % the best bandwidth in L level is 44.9 kbps and in H level is 43.4 kbps.
+Bien que la raison objective que certains codes sont plus difficile à reconnaître soit inconnue et hors du point de ce chapitre, les résultats expérimentaux semblent confirmer cette hypothèse. Nous avons effectué une troisième expérience où chaque donnée d'entrée a été affichée trois fois avec différents codes QR générés. Le taux de reconnaissance est meilleure qu'avant lorsque la fréquence de codes est inférieure à 10 fps, comme le montre la Figure \ref{img-exp3}.
 
 \begin{figure}[ht]
 \begin{center}
 \centering
 \includegraphics[width=\linewidth]{data3.png}
-\caption{Third experiment: triple display and random padding}
+\caption{Troisième expérience: affichage en trois fois avec bourrage aléatoire}
 \label{img-exp3}
 \end{center}
 \end{figure}
 
-These results led us to experiment with higher code rates; we added 12 cps, 14 cps and 16 cps. The codes were displayed twice. As the Figure \ref{img-exp4} shows, the maximum effective bandwidth in the result is 65.5 kbps using level L, and 68.3 kbps in level H level, using 16 cps and 4,500-bit codes.
+Ces résultats nous ont amenés à expérimenter avec les fréquences plus élevées de codes; nous avons ajouté 12 cps, 14 cps et 16 cps. Les codes ont été affichés deux fois. Comme la figure \ref{img-exp4} montre, la bande passante maximale du résultat est 65,5 kbps en niveau L, et 68,3 kbps en niveau H, en utilisant 16 cps et les codes de 4500 bits.
 
 \begin{figure}[ht]
 \begin{center}
 \centering
 \includegraphics[width=\linewidth]{data4.png}
-\caption{Fourth experiment: double display and higher code rates}
+\caption{Quatrième expérience: affichage en deux fois et les fréquences plus élevées de codes}
 \label{img-exp4}
 \end{center}
 \end{figure}
 
-\subsection{Partial Conclusions}
+\subsection{Conclusions partielles}
 
-These initial experiments allow us to draw a few conclusions on the nature of a QR-based communication channel. First, although higher code rate and code size have a negative impact on the recognition ratio, the increased data that can be carried globally compensates for the higher error rate in terms of \emph{effective} bandwidth. Second, introducing repetition and varying the dot pattern for the same data increases the effective bandwidth; that is, showing two different codes for half the time is more effective than a single code for the same interval. Third, even for the smallest code sizes, the error rate of the channel is never zero, indicating that the channel is intrinsically lossy. 
+Ces expériences initiales nous permettent de tirer quelques conclusions sur la nature d'un canal de communication de codes QR. Premièrement, bien que la fréquence plus élevé de codes et la taille plus élevé de codes aient un impact négatif sur le taux de reconnaissance, les données accrues qui peuvent être globalement portées compensent le taux plus élevé d'erreur en termes de la bande passante effective. Deuxièmement, l'introduction de répétition et la variation de formes de points pour les mêmes données augmentent la bande passante effective; cela montre que deux codes différents pour la moitié du temps est plus efficace qu'un seul code pour le même intervalle. Troisièmement, même pour les plus petites tailles de codes, le taux d'erreur du canal est jamais zéro, ce qui indique que le canal est intrinsèquement avec perte.
 
-From these findings, one can reasonably expect a QR code stream to provide a channel with an effective bandwidth of about 40 kbps, when displaying 10 4,000-bit codes per second using the random padding technique and L-level error correction. The decoding rate of the channel using these parameters should be of at least 95\%. Obviously, these findings apply to a fixed-camera setting. They do not take into account potential jitter, blurring or other effects that may occur in other contexts ---although an informal experiment described in Section \ref{subsub:swipe} tends to indicate the technology is relatively robust.
+A partir de ces constatations, on peut raisonnablement attendre d'un flux de QR code qui fournit un canal avec une bande passante effective d'environ 40 kbps, lors de l'affichage de 10 codes de 4000 bits par seconde en utilisant la technique de bourrage aléatoire et le niveau L de correction d'erreur. Le taux de décodage du canal avec ces paramètres doit être au moins 95\%. Évidement, ces constatations sont applicables à un réglage d'une caméra fixe. Elle ne prennent pas en considération la gigue potentielle, le flou ou d'autres effets qui peuvent se produire dans d'autres contextes ---bien une expérience informelle décrite dans la section \ref{subsub:swipe} tend à indiquer que la technologie est relativement robuste.
 
 %% }}} --- Section
 
 %% -----------------------
 %% Section: le protocole
 %% -----------------------
-\section{A Protocol for One-Way, Lossy Communication Channels}\label{sec:qr:protocol} %% {{{
+\section{Un protocole de canaux de communication unidirectionnelle avec perte} %% {{{
 
-In this section, we propose an approach which uses continuous QR codes as a medium to achieve one-way data transmission.
+Dans cette section, nous proposons une approche qui utilise les continus codes QR en tant qu'un moyen pour réaliser une transmission unidirectionnelle de données.
 
-\subsection{Design Goals}
+\subsection{Objectifs de la conception}
 
-In order to implement a communication channel, a specific protocol is essential; it should be well designed so that the data can be serialized and transferred without significant overhead. Besides, the protocol has to have the ability of splitting the to-be-transferred data into frames to generate the QR images. The result is BufferTannen, a Java software package dedicated to the serialization and transmission of structured data over limited communication channels.\footnote{\url{https://github.com/sylvainhalle/BufferTannen}} It provides a set of classes allowing the representation of structured data in a compact binary form. Contrarily to other systems, like Google's Protocol Buffers \footnote{\url{https://github.com/google/protobuf}}, defining new message types can be done at runtime and does not require compiling new classes to be used. Moreover, messages in BufferTannen cannot be encoded and decoded without prior knowledge of their structure. However, since messages do not contain information about their structure, they use much less space.
+Afin de mettre en \oe{}uvre un canal de communication, un protocole spécifique est essentielle; il doit être bien conçu de telle sorte que les données peuvent être sérialisées et transférées sans coût important. En outre, le protocole doit avoir la capacité de diviser les données transférées dans des images pour générer les codes QR. Le résultat est BufferTannen, un logiciel Java dédié à la sérialisation et à la transmission de données structurées sur des canaux limités de communication.\footnote{\url{https://github.com/sylvainhalle/BufferTannen}} Il fournit un ensemble de classes permettant la représentation de données structurées sous une forme binaire compacte. Contrairement à d'autres systèmes, comme Protocol Buffers de Google\footnote{\url{https://github.com/google/protobuf}}, la définition de nouveaux types de messages peuvent être effectuées lors de l'exécution et ne requiert pas la compilation de nouvelles classes utilisées. De plus, les messages dans BufferTannen ne peuvent pas être codés et décodés sans connaissance préalable de leur structure. Toutefois, étant donné que les messages ne contiennent pas d'information de leur structure, ils utilisent beaucoup moins d'espace.
 
-BufferTannen also defines a protocol allowing the transmission of messages.  Although any channel (TCP connection, etc.) can be used, BufferTannen was designed to operate on a channel with the following specifications, which are based on our initial experimental results:
+BufferTannen définit aussi un protocole permettant la transmission de messages. Malgré que tout canal (e.g. connexion TCP, etc.) peut être utilisé, BufferTannen a été conçu pour l'opération sur un canal avec les spécifications suivantes, qui sont basées sur nos premiers résultats expérimentaux:
 
 \begin{itemize}
-\item The channel is \emph{point-to-point}. The goal is to send information   directly from A to B; no addressing, routing, etc. is provided.
-\item The channel is \emph{low-bandwidth} (that is, able to transmit a few hundred bytes at a time, possibly less than 10 times per second).
-\item The channel is \emph{one-way}: typically, one side of the communication sends data that is to be picked up by some receiver. This entails that the receiver cannot acknowledge reception of data or ask the sender to transmit again, as in protocols like TCP.
-\item The channel is \emph{lossy}. However, we assume that the channel provides a mechanism (such as some form of checksum) to detect when a piece of data is corrupted and discard it.
-\item A receiver can start listening on the channel at any time, and be able to correctly receive messages from that point on. As such, the communication does not have a formal ``start'' that could be used, for example, to advertise parameters used for the exchange.
+\item Le canal est point à point. Le but est d'envoyer de l'information directement de A à B; il ne fourni pas d'adressage, de routage, etc.
+\item Le canal a une bande passante faible qui est en mesure de transmettre quelques centaines d'octets à un moment, peut-être moins de 10 fois par seconde).
+\item Le canal est unidirectionnelle: généralement, un côté de la communication envoie des données qui doivent être ramassées par un récepteur. Cela implique que le récepteur ne peut pas détecter la réception de données ou demander à l'expéditeur de transmettre une autre fois, comme dans des protocoles, e.g. TCP.
+\item Le canal entraîne une perte. Cependant, nous supposons que le canal fournit un mécanisme (comme une forme de somme de contrôle) pour détecter et jeter des morceaux de données corrompues.
+\item Un récepteur peut commencer à écouter sur le canal à tout moment, et être capable de recevoir correctement des messages à partir de ce moment-là. Ainsi, la communication n'a pas de formel ``début'' qui pourrait être appliqué, par exemple, pour annoncer des paramètres utilisés pour l'échange.
 \end{itemize}
 
-Therefore, the communication channel envisioned as the transmission medium for BufferTannen's messages can be likened in many ways to a slow broadcast signal, such as Hellschreiber \citep{hells}, slow-scan television \citep{slowtv}, Teletext \citep{teletext} or RBDS~\citep{rbds}.
+Par conséquent, le canal de communication envisagé comme le milieu de transmission pour les messages de BufferTannen peut être similaire, à bien des égards, à un signal de diffusion lente, comme Hellschreiber \citep{hells}, télévision à balayage lente \citep{slowtv}, Télétexte \citep{teletext} ou RBDS~\citep{rbds}.
 
-BufferTannen's protocol aims at transmitting messages as reliably as possible under these conditions, while preserving the integrity of data and the ordering of messages. The low-bandwidth nature of the channel explains the emphasis on serializing messages in a compact binary form. Since the receiver cannot ask for any form of re-transmission, the protocol must provide for automatic re-transmissions of each message to maximize their chances of being picked up, while at the same time not confusing a re-transmission with a new message with identical content. Moreover, as the receiver can start listening at any moment, and that the schema of messages must be known in order to decode them, the schemas used in the communication must also be transmitted at periodic intervals.
+Le protocole BufferTannen vise à transmettre des messages de manière aussi fiable que possible avec ces conditions, tout en préservant l'intégrité de données et l'ordonnancement de messages. La nature de la bande passante faible du canal explique l'accent de sérialisation de messages sous une forme binaire compacte. Puisque le récepteur ne peut pas demander de toute forme de re-transmission, le protocole doit fournir le mécanisme qui retransmet automatiquement les messages afin de maximiser leurs chances d'être ramassés, alors qu'en même temps il ne pas confondre une re-transmission avec un nouveau message qui ont le identique contenu. En outre, parce que le récepteur peut commencer à écouter à tout moment, et que le schéma de messages doit être connu afin de les décoder, les schémas de la communication doivent également être transmis à intervalles périodiques.
 
-\subsection{Schemas}
+\subsection{Schémas}
 \setcounter{paragraph}{0}
 
-The declaration of a data structure is called a \emph{schema}. Information can be represented in three different forms:
+La déclaration d'une structure de données est appelée \emph{schéma}. L'information peut être représentée sous trois formes différentes:
 
 \begin{itemize}
-\item Smallscii: A variable-length string of characters. Since BufferTannen is aimed towards limiting as much as possible the number of bits required to represent information, these strings are restricted to a subset of 63 ASCII characters (letters, digits and punctuation). Each character in a Smallscii string takes 6 bits, and each string ends with the 6-bit string \verb+000000+.
+\item Smallscii: Une chaîne de caractères avec la longueur variable. Puisque BufferTannen vise à limiter autant que possible le nombre de bits requis pour représenter de l'information, ces chaînes sont restreintes à un sous-ensemble de 63 caractères ASCII (lettres, chiffres et ponctuations). Chaque caractère dans une chaîne Smallscii occupe 6 bits, et chaque chaîne se termine avec la chaîne de 6-bit \verb+000000+.
 
-\item Integer: The only numerical type available in BufferTannen. When declared, integers are given a ``width'', i.e. the number of bits used to encode them. The width can be anything between 1 and 16 bits.
+\item Integer: Le seul type numérique disponible en BufferTannen. Lorsqu'il est déclaré, les entiers sont donnés une ``largeur'', c.-à-d. le nombre de bits utilisés pour encoder. La largeur peut être une valeur entre 1 et 16 bits.
 
-\item Enumeration: A list of predefined Smallscii constants. Enumerations can be used to further reduce the amount of space taken by a data element when its set of possible values is known in advance.
+\item Enum: Une liste de constantes prédéfinies de Smallscii. Une énumération est applicable pour réduire davantage la quantité d'espace occupé par un élément de données lorsque son ensemble de valeurs possibles est connu à l'avance.
 \end{itemize}
 
-These basic building blocks can be used to write schemas by combining them using compound data structures:
+Ces blocs de construction de base peuvent être utilisés pour écrire des schémas en les combinant avec l'aide de structures de données composées:
 
 \begin{itemize}
-\item List: a variable-length sequence of elements, all of which must be of the same type (or schema). List elements are accessed by their index, starting
-  with index 0.
-\item FixedMap: a table that associates strings to values. The structure is fixed and the exact strings that can be used as keys must be declared. However, each key can be associated to a value of a different type.
+\item List: une séquence d'éléments avec la longueur variable, qui doivent tous être du même type (ou schéma). Les éléments dans la liste sont accessibles par leur index, en commençant par l'index 0.
+\item FixedMap: une table qui associe des chaînes à des valeurs. La structure est fixe et les chaînes de caractères exactes qui peuvent être utilisés en tant que clés doit être déclarée. Cependant, chaque clé peut être associée à une valeur d'un type différent.
 \end{itemize}
 
-These constructs can be mixed freely. The following represents the declaration of a complex message schema:
+Ces constructions peuvent être mélangées librement. Ce qui suit représente la déclaration d'un schéma de messages complexes:
 
 \begin{verbatim}
 FixedMap {
-  "title" : Smallscii,
-  "price" : Integer(5),
-  "chapters" : List [
+  "titre" : Smallscii,
+  "prix" : Integer(5),
+  "chapitres" : List [
      FixedMap {
-       "name" : Smallscii,
-       "length" : Integer(8),
-       "type" : Enum {"normal", "appendix"}
+       "nom" : Smallscii,
+       "longueur" : Integer(8),
+       "type" : Enum {"normal", "appendice"}
      }
   ]
 }
 \end{verbatim}
 
-The top-level structure for this message is a map (delimited by \verb+{+\dots\verb+}+). This map has three keys: \verb+title+, whose associated value is a Smallscii string, \verb+price+, whose associated value is a integer in the range 0-32 (i.e. 5 bits), and \verb+chapters+, whose value is not a primitive type, but is itself a list (delimited by \verb+[+...\verb+]+). Each element of this list is itself a map with three keys: a string \verb+name+, an integer \verb+length+, and \verb+type+ whose possible values are \verb+normal+ or \verb+appendix+.
+La structure de haut niveau de ce message est un map (délimité par \verb+{+\dots\verb+}+). Ce map a trois clés: \verb+titre+, dont la valeur associée est une chaîne Smallscii, \verb+prix+, dont la valeur associée est un entier dans la gamme 0-32 (qui occupe 5 bits), et \verb+chapitres+, dont la valeur n'est pas un type primitif, mais en soi est une liste (délimitée par \verb+[+...\verb+]+). Chaque élément de cette liste est un map avec trois clés: une chaîne \verb+nom+, un entier \verb+longueur+, et une énumération \verb+type+ dont les valeurs possibles sont \verb+normal+ ou \verb+appendice+.
 
-Schemas can be represented in a compact and unequivocal binary representation as follows.
+Les schémas peuvent être représentés dans une représentation binaire compacte et sans équivoque comme suit.
 
-\paragraph{Integer} The declaration of an integer is encoded as the following sequence of bits:
+\paragraph{Integer} La déclaration d'un entier est encodée comme la séquence de bits suivants:
 %
 \begin{verbatim}
 ttt wwwww ddddd s
 \end{verbatim}
 
-The sequence \verb+ttt+ represents the element type, encoded on 3 bits. An integer contains the decimal value 6. The sequence of \verb+w+ indicates the integer's width in bits. The width itself is encoded over 5 bits. The sequence of \verb+d+ indicates the integer's width, in bits, when expressed as a delta value, i.e.\ as the difference with respect to an integer from a previous message. The width itself is encoded over 5 bits. The single bit \verb+s+ is the sign flag. If set to 0, the integer is unsigned; if set to 1, the integer is signed. Note that integers expressed as delta values are always encoded as signed integers; hence this flag only applies to integers occurring as full values.
+La séquence \verb+ttt+ représente le type d'élément, encodé sur 3 bits. Un entier contient la valeur décimale 6. La séquence de \verb+w+ indique la largeur de l'entier en bits. La largeur elle-même est encodée en 5 bits. La séquence de \verb+d+ indique la largeur de l'entier en bits, s'il est exprimé comme une valeur delta, c.-à-d. comme la différence par rapport à un entier d'un message précédent. La largeur elle-même est encodée en 5 bits. Le seul bit \verb+s+ est le signe drapeau. Si la valeur est 0, l'entier est non signé; si elle est 1, l'entier est signé. Notez que des entiers exprimés en valeurs delta sont toujours codés comme les entiers signés; par conséquent, ce drapeau applique uniquement aux entiers qui se produisent en tant que valeurs complètes.
 
-\paragraph{Smallscii string} The declaration of a Smallscii string is simply coded as three bits representing the element type; a string contains the decimal value 2.
+\paragraph{Smallscii} La déclaration d'une chaîne Smallscii est simplement encodé comme trois bits représentant le type d'élément; une chaîne contient la valeur décimale 2.
 
-\paragraph{Enumeration} An enumeration must provide the list of all possible values it can take. It is formally represented as:
+\paragraph{Enum} Une énumération doit fournir la liste de toutes les valeurs possibles qu'elle peut prendre. Elle est formellement représentée comme suit:
 %
 \begin{verbatim}
 ttt llll [ssssss ssssss ... 000000 ...
  ssssss ssssss ... 000000]
 \end{verbatim}
 
-The element type is the decimal value 1, and the sequence \verb+llll+ is the number of elements in the enumeration, encoded on 4 bits. What follows is a concatenation of Smallscii strings defining the possible values for the enumeration. Each character is encoded on 6 bits, and the end of a string is signalled by the 6-bit sequence \verb+000000+.
+Le type d'élément est la valeur décimale 1, et la séquence \verb+llll+ est le nombre d'éléments dans l'énumération, encodé sur 4 bits. Ce qui suit est une concaténation de chaînes Smallscii qui définissent les valeurs possibles de l'énumération. Chaque caractère est encodé sur 6 bits, et la fin d'une chaîne est signalée par la séquence de 6 bits \verb+000000+.
 
-\paragraph{List} The declaration of a list is as follows:
+\paragraph{List} La déclaration d'une liste est la suivante:
 %
 \begin{verbatim}
 ttt llllllll ...
 \end{verbatim}
 
-The element type is the decimal value 3; the 8-bit sequence \verb+llllllll+ defines the maximum number of elements in the list. What follows is the declaration of the element type for elements of that list.
+Le type d'élément est la valeur décimale 3; le 8-bit séquence \verb+llllllll+ définit le nombre maximal d'éléments dans la liste. Ce qui suit est la déclaration du type d'élément des éléments dans cette liste.
 
-\paragraph{Fixed Map} The last element type is the fixed map, declared as follows:
+\paragraph{FixedMap} Le dernier type d'élément est le map fixe, déclaré comme suit:
 %
 \begin{verbatim}
 ttt [ssssss ssssss ... 000000 ddd...]
 \end{verbatim}
 
-The element type is the decimal value 4; what follows is a Smallscii string defining the name of a key, followed by the declaration of the element type for that key; this is repeated for as many keys the map declares.
+Le type d'élément est la valeur décimale 4; ce qui suit est une chaîne Smallscii qui définit le nom d'une clé, suivie par la déclaration du type d'élément pour cette clé; ceci est répété pour autant de clés que le map déclare.
 
 \subsection{Messages}
 \setcounter{paragraph}{0}
 
-A \emph{message} is an instance of a schema. For example, the following is a possible message abiding by the previous schema:
+Un \emph{message} est une instance d'un schéma. Par exemple, ce qui suit est un message possible en respectant le schéma précédent:
 
 \begin{verbatim}
 {
-  "title" : "hello world",
-  "price" : 21,
-  "chapters" : [
+  "titre" : "hello world",
+  "prix" : 21,
+  "chapitres" : [
     {
-      "name" : "chapter 1",
-      "length" : 3,
+      "nom" : "chapitre 1",
+      "longueur" : 3,
       "type" : "normal"
     },
     {
-      "name" : "chapter 2",
-      "length" : 7,
+      "nom" : "chapitre 2",
+      "longueur" : 7,
       "type" : "normal"
     },
     {
-      "name" : "conclusion",
-      "length" : 2,
-      "type" : "appendix"
+      "nom" : "conclusion",
+      "longueur" : 2,
+      "type" : "chapitre"
     }
   ]
 }
 \end{verbatim}
 
-The reader familiar with JSON or similar notations will notice strong similarities between BufferTannen and these languages. As a matter of fact, elements of a message can be queried using a syntax similar to JavaScript. For example, assuming that \verb+m+ is an object representing the above message, fetching the length of the second chapter would be written as the expression:
+Le lecteur qui est familier avec JSON ou des notations similaires remarquerez des fortes similitudes entre BufferTannen et ces langages. Effectivement, les éléments d'un message peuvent être interrogés en utilisant une syntaxe similaire à JavaScript. Par exemple, en supposant que \verb+m+ est un objet qui représente le message ci-dessus, la récupération de la longueur du deuxième chapitre serait écrite comme l'expression:
 
 \begin{verbatim}
-m[chapters][1][length]
+m[chapitres][1][longueur]
 \end{verbatim}
 
-This fetches the \verb+chapters+ value in the top-level structure (a list), then the second element of that list (index 1), and then the \verb+length+ value of the corresponding map element.
+Ceci amène la valeur \verb+chapitres+ de la structure de haut niveau (une liste), puis le deuxième élément de cette liste (index 1), puis la valeur \verb+longueur+ de l'élément correspondant de map.
 
-As with schemas, messages can be represented in a compact binary form.
+Avec les schémas, les messages peuvent être représentés sous une forme binaire compacte.
 
-\paragraph{Smallscii string} Strings are represented as a sequence of 6-bit characters, terminated by the end of string delimiter \verb+000000+.
+\paragraph{Smallscii} Les chaînes sont représentés comme une séquence de caractères de 6 bits, terminée par la fin du délimiteur de chaîne \verb+000000+.
 
-\paragraph{Integer} Numbers are represented by the sequence of bits that encodes their value, without any terminating sequence: the number of bits to read is dictated by the size of the integer, as specified by the corresponding schema element. If the integer is signed, the first bit represents the sign (0 = positive, 1 = negative) and the remainder of the sequence represents the absolute value. %(Yes, this means that there are two ways of encoding 0 in a signed integer, either as -0 or as +0. Both will correctly be decoded as 0.)
+\paragraph{Integer} Les nombres sont représentés par la séquence de bits qui encode leur valeur, sans aucune séquence de terminaison: le nombre de bits à lire est dicté par la taille de l'entier, tel que spécifié par l'élément de schéma correspondant. Si l'entier est signé, le premier bit représente le signe (0 = positif, 1 = négatif) et le reste de la séquence représente la valeur absolue.
 
-\paragraph{Enumeration} An enumeration is simply made of the sequence bits corresponding to the appropriate value. Again, the number of bits to read is dictated by the size of the enumeration, as specified in the schema of the message to read. For example, if the enumeration defines 4 values, then 2 bits will be read. The numerical value $i$ corresponds to the $i$-th string declared in the enumeration.
+\paragraph{Enum} Une énumération est simplement fabriquée en bits de séquence correspondant à la valeur appropriée. Encore, le nombre de bits à lire est dicté par la taille de l'énumération, tel que spécifié dans le schéma du message à lire. Par exemple, si l'énumération définit 4 valeurs, alors 2 bits seront lus. La valeur numérique $i$ correspond à la $i$-ème chaîne déclarée dans l'énumération.
 
-\paragraph{List} A list begins by 8 bits recording the number of elements in the list. The remainder of the list is the concatenation of the binary representation of each list element. Since the type of each element and the number of such elements to read are both known, no delimiter is required between each element or at the end of the list.
+\paragraph{List} Une liste commence par 8 bits qui enregistre le nombre d'éléments de la liste. Le reste de la liste est la concaténation de la représentation binaire de chaque élément de la liste. Puisque le type de chaque élément et le nombre de ces éléments à lire sont tous deux connus, aucun délimiteur n'est nécessaire entre chaque élément ou à la fin de la liste.
 
-\paragraph{Fixed Map} The contents of a fixed map is simply the concatenation of the binary representation of each map value. The key to which each value is associated, and the value type to read, are specified in the schema of the message to read, and are expected to appear exactly in the order they were declared. This spares us from repeating the map's keys in each message.
+\paragraph{FixedMap} Le contenu d'un map fixe est simplement la concaténation de la représentation binaire de valeur de chaque map. La clé auquel chaque valeur est associée, et le type de valeur à lire, sont précisés dans le schéma du message à lire, et devraient apparaître exactement dans l'ordre où ils ont été déclarés. Cela nous évite de répéter les clés de maps dans chaque message.
 
-\subsection{Reading and Writing Messages}
+\subsection{Lire et écrire des messages}
 
-In BufferTannen, both schemas and instances of schemas are represented by the same object, called \verb+SchemaElement+. An empty SchemaElement must first be instantiated using some schema; this can be done by either:
-
-\begin{itemize}
-\item Reading a character string formatted as above; or
-
-\item Reading a binary string containing an encoding of the schema. As a matter of fact, in BufferTannen both messages \emph{and} schemas can be transmitted in binary form over a communication channel, and a method is provided to export the schema of some message into a sequence of bits.
-\end{itemize}
-
-Once an empty SchemaElement is obtained, it can be filled with data, again in two ways:
+En BufferTannen, les deux schémas et des instances de schémas sont représentés par le même objet, appelé \verb+SchemaElement+. Un SchemaElement vide doit d'abord être instancié en utilisant certains schémas; cela peut être effectué soit par:
 
 \begin{itemize}
-\item By reading a character string formatted as above; or
+\item Lire une chaîne de caractères formatée comme ci-dessus; soit par
 
-\item By reading a binary string containing an encoding of the data.
+\item Lire une chaîne binaire qui contient un codage du schéma. En effet, en BufferTannen les messages et les schémas peuvent être transmis sous une forme binaire sur un canal de communication, et une méthode est fournie pour exporter le schéma d'un message dans une séquence de bits.
 \end{itemize}
 
-Similar methods exist to operate in the opposite way, and to \emph{write} a message's schema or data contents either as a character string or as a binary string. This way, messages and schemas can be freely encoded/decoded using human-readable text strings or compact binary strings.
+Une fois qu'un SchemaElement vide est obtenu, il peut être rempli avec des données, encore de deux façons:
 
-As one can see, for a message to be read or written, it is necessary first to instantiate an object with a schema. As a matter of fact, trying to decode a stream of data without first advertising the underlying schema will cause an error, even if the stream contains properly formatted data. Similarly, trying to read data that uses some schema with an object instantiated with another schema will also cause an error. In other words, no data can be read or written without knowledge of the proper schema to use.
+\begin{itemize}
+\item Lire une chaîne de caractères formatée comme ci-dessus; ou
 
-This might seem restrictive, but it allows BufferTannen to heavily optimize the binary representation of messages. In the absence of a known schema, each message would require to carry, in addition to its actual data, information about its own structure. %Since a reader receiving a sequence of bits would not know in advance how to read it, special sequences would need to be added to notify the reader that what follows is a map with some number of keys, and then in turn each value for each key would also need to declare the structure of its own type, and so on.
-%
-Practically speaking, this amounts to repeating within each message the description of its schema, interspersed through the message data. On the contrary, if the schema is known, all this signaling information can be discarded: when receiving a sequence of bits, a reader that possesses the schema knows exactly how many bits to read, what data this represents and where to place it in the message structure being populated. This entails, however, that a receiver that does not know the schema to apply has no clue whatsoever on how to process a binary string.
+\item Lire une chaîne binaire qui contient un codage des données.
+\end{itemize}
 
-To illustrate the interest of BufferTannen as a message encoding scheme, we consider the example of transmitting events from a video game to an external monitor.
+Il y a des méthodes similaires pour fonctionner en sens inverse, et pour \emph {écrire} le schéma ou le contenu de données d'un message comme une chaîne de caractères ou une chaîne binaire. De cette façon, les messages et les schémas peuvent être librement encodés/décodés en utilisant des chaînes de textes lisibles ou des chaînes binaires compactes.
+
+Comme on peut le voir, pour lire ou écrire un message, il faut d'abord instancier un objet avec un schéma. En fait, l'essai de décodage d'un flux de données sans publicité du schéma sous-jacent provoquera une erreur, même si le flux contient correctement des données formatées. De même, l'essai de lecture de données qui utilisent un  schéma avec un objet instancié avec un autre schéma provoquera également une erreur. En d'autres termes, aucune donnée ne peut être lue ou écrite sans connaissance du schéma correct.
+
+Cela peut sembler restrictive, mais il permet BufferTannen d'optimiser fortement la représentation binaire de messages. En l'absence d'un schéma connu, chaque message aurait besoin de porter, en plus de ses données réelles, de l'information de sa propre structure.
+
+En pratique, grâce à celui, les répétitions de la description de son schéma dans chaque message se trouvent tout dans les données du message. Au contraire, si le schéma est connu, toutes ces informations de signalisation peuvent être jetées: lors de la réception d'une séquence de bits, un lecteur qui possède le schéma connaît exactement le nombre de bits à lire, les données qu'il représente et la position où les données sont placées dans le structure de message. Cela implique toutefois que d'un récepteur qui ne connaît pas le schéma à appliquer n'a aucune idée sur la façon de traiter une chaîne binaire.
+
+Pour illustrer l'intérêt de BufferTannen comme un schéma de codage de messages, nous considérons l'exemple de transmettre de événements à partir d'un jeu vidéo à un moniteur externe.
 
 \subsection{Segments}
 \setcounter{paragraph}{0}
 
-Messages and schemas are encapsulated into a structure called a \emph{segment}. A segment can be of four types:
+Les messages et les schémas sont encapsulés dans une structure appelée \emph{segment}. Un segment peut être de quatre types:
 
-\paragraph{Message segments} contain the binary representation of a message, along with a sequential number (used to preserve the ordering of messages received), as well as the number referring to the schema that must be used to decode the message. A message segment consists of a header structured as follows:
+\paragraph{Segments de message} contiennent la représentation binaire d'un message, avec un numéro séquentiel (utilisé pour préserver l'ordre des messages reçus), ainsi que le numéro se référant au schéma qui doit être utilisé pour décoder le message. Un segment de message est constitué d'un en-tête structuré comme suit:
 
 \begin{verbatim}
 tt nnnnnnnnnnnn wwwwwwwwwwww ssss ...
 \end{verbatim}
 
-The header starts with two bits describing the type of the segment; a message segment contains the decimal value 1. The \verb+n+ and \verb+w+ sections describe the segment's sequential number and total length, both encoded on 12 bits. The four \verb+s+ bits provide the schema number in the schema bank that should be used to read this segment. The remainder of the segment is comprised of a map, list, Smallscii string or number, whose binary representation was described above.
+L'en-tête commence par deux bits décrivant le type du segment; un segment de message contient la valeur décimale 1. Les sections \verb+n+ et \verb+w+ décrivent le numéro séquentiel et la longueur totale du segment, qui sont tous deux encodées sur 12 bits. Les quatre bits de \verb+s+ fournissent le numéro de schéma dans la banque de schéma qui devrait être utilisée pour lire ce segment. Le reste du segment est composé d'un map, d'une liste, d'une chaîne Smallscii ou d'un nombre, dont la représentation binaire a été décrite ci-dessus.
 
-\paragraph{Schema segments} contain the binary representation of a schema, which is associated to a number. Multiple schemas can be used in the same communication, hence creating a bank of schemas identified by their number. A schema segment consists of a header structured as follows:
+\paragraph{Segments de schéma} contiennent la représentation binaire d'un schéma, qui est associé à un numéro. Plusieurs schémas peuvent être utilisés dans la même communication, donc une banque de schémas identifiés par leurs numéros est crée. Un segment de schéma consiste en un en-tête structuré comme suit:
 
 \begin{verbatim}
 tt nnnnnnnnnnnn ssss ...
 \end{verbatim}
 
-The header starts with two bits describing the type of the segment; a schema segment contains the decimal value 2. The \verb+n+ section describes the segment's sequential number, and the \verb+s+ section gives the the schema number in the schema bank this segment should be assigned to. The remainder of the segment is comprised of a binary string describing the schema, whose representation was described above.
+L'en-tête commence par deux bits décrivant le type du segment; un segment de schéma contient la valeur décimale 2. La section \verb+n+ décrit le numéro séquentiel du segment, et la section \verb+s+ donne le numéro du schéma dans la banque de schémas auquel ce segment devrait être attribué. Le reste du segment est constitué d'une chaîne binaire décrivant le schéma, dont la représentation a été décrite ci-dessus.
 
-\paragraph{Blob segments} are intended to carry raw binary data over the BufferTannen protocol.
+\paragraph{Segments de blob} sont destinés à transporter des données binaires brutes selon le protocole BufferTannen.
 
-\paragraph{Delta segments} contain the binary representation of a message, expressed as the difference (``delta'') between that message and a previous one used as a reference. Delta segments are used to further compress the representation of a message, in the case where messages don't change much over an interval of time.
+\paragraph{segments deltas} contiennent la représentation binaire d'un message exprimé comme la différence (``delta'') entre ce message et le précédent utilisé comme référence. les segments deltas sont utilisés pour comprimer davantage la représentation d'un message, dans le cas où les messages ne changent pas beaucoup pour un intervalle de temps.
 
 \begin{verbatim}
 tt nnnnnnnnnnnn wwwwwwwwwwww rrrrrrrrrrrr...
 \end{verbatim}
 
-The header starts with two bits describing the type of the segment; a delta segment contains the decimal value 1. The \verb+n+ and \verb+w+ sections describe the segment's sequential number and total length, both encoded on 12 bits. The \verb+r+ section gives the sequential number of another segment, relative to which the delta of the current segment are expressed. What follows is a binary string that describes the ``difference'' one must compute with respect to that segment to obtain the contents of the current one.
+L'en-tête commence par deux bits décrivant le type du segment; un segment delta contient la valeur décimale 1. Les sections \verb+n+ et \verb+w+ décrivent le numéro séquentiel et la longueur totale du segment, qui sont tout encodées sur 12 bits. La section \verb+r+ donne le numéro séquentiel d'un autre segment, par rapport à laquelle le delta du segment actuel est exprimé. Ce qui suit est une chaîne binaire qui décrit le contenu de la ``différence'', et il doit être calculé par rapport à ce segment pour obtenir le contenu de l'actuel.
 
-The computation of the delta is performed recursively on each element of the two messages to compare in the order they occur. It is defined for each element type as follows.
+Le calcul du delta est récursivement effectué sur chaque élément des deux messages pour comparer dans l'ordre où ils se produisent. Chaque type d'élément est défini comme suit.
 
 \begin{itemize}
-\item Smallscii strings: if the corresponding strings are identical, emit the single bit \verb+0+. Otherwise, emit the bit \verb+1+ followed by the Smallscii string of the target message.
-%
-\item Integers: if the corresponding numbers are identical, emit the single bit \verb+0+. Otherwise, emit the bit \verb+1+ followed by the difference between the source and the target integer.
-%
-\item Enumerations: if the corresponding value of the enumerated type is the same, emit the single bit \verb+0+. Otherwise, emit the bit \verb+1+ followed by the integer value corresponding to the index of the value in the target message.
-%
-\item Lists: if both lists have the same elements in the same order, emit the single bit \verb+0+. Otherwise, emit the bit \verb+1+ followed by the binary representation of the target list.
-%
-\item Maps: recursively apply the previous rules for each key of the map.
+\item Smallscii strings: si les chaînes correspondantes sont identiques, émettre le seul bit \verb+0+. Sinon, émettre le bit \verb+1+ qui est suivi par la chaîne Smallscii du message cible.
+
+\item Integers: si les numéros correspondants sont identiques, émettre le seul bit \verb+0+. Dans le cas contraire, émettre le bit \verb+1+ suivi par la différence entre la source et le nombre entier cible.
+
+\item Enumerations: si la valeur correspondante du type énuméré est la même, émettre le seul bit \verb+0+. Autrement, émettre le bit \verb+1+ suivi par la valeur de l'entier correspondant à l'index de la valeur dans le message cible.
+
+\item Lists: si les deux listes ont les mêmes éléments dans le même ordre, émettre le seul bit \verb+0+. Sinon, émettre le bit \verb+1+ suivi par la représentation binaire de la liste des cibles.
+
+\item FixedMaps: appliquer récursivement les règles précédentes pour chaque clé du map.
 \end{itemize}
 
-One can see that delta segments apply only a coarse form of comparison. For example, no attempt is made to detect whether two lists differ by the addition or deletion of an element; the contents of the list is retransmitted in full whenever it is not identical to the original. Nevertheless, this technique allows substantial savings whenever a part of a data structure remains identical from one message to the next.
+On peut voir que les segments delta appliquent uniquement une forme grossière de comparaison. Par exemple, on ne tente pas de détecter si les deux listes diffèrent par l'addition ou la suppression d'un élément; le contenu de la liste est retransmis en pleine chaque fois qu'il n'est pas identique à l'original. Néanmoins, cette technique permet de réaliser des économies substantielles chaque fois qu'une partie d'une structure de données reste identique d'un message à l'autre.
 
-\subsection{Frames}
+\subsection{Images}
 \setcounter{paragraph}{0}
 
-The communication channel sends binary data in units called \emph{frames}. A frame is simply a set of concatenated segments in binary form, preceded by a header containing the version number of the protocol (currently ``1'') and the length (in bits) of the frame's content. Formally, the binary structure of a frame is as follows:
+Le canal de communication envoie des données binaires en unités appelées \emph{images}. Une image est simplement un ensemble de segments concaténés sous une forme binaire, précédés d'un en-tête contenant le numéro de version du protocole (actuellement ``1'') et la longueur (en bits) du contenu de l'image. Formellement, la structure binaire d'une image est la suivante:
 
 \begin{verbatim}
 vvvv nnnnnnnnnnnnnn ffff... ffff...
 \end{verbatim}
 
-The \verb+v+ section consists of the 4-bit protocol version number, followed by 14 bits indicating the total length (in bits) of the frame. Each segment is appended directly to this 18-bit header. As each segment's header contains its own length, no further marshaling is required to correctly decode segment data.
+La section \verb+v+ est constituée du numéro de version de 4 bits du protocole, suivi de 14 bits indiquant la longueur (en bits) de l'image. Chaque segment est ajouté directement à cet en-tête de 18 bits. Parce que l'en-tête de chaque segment contient sa propre longueur, aucune autre transformation n'est nécessaire pour décoder correctement les données de segment.
 
-When many segments are awaiting to be transmitted, the protocol tries to fit as many segments as possible (in sequential order) within the maximum size of a frame before sending it. This maximum size can be modified to fit the specifics of the communication channel that is being used. In the current incarnation of the protocol, segments cannot be fragmented across multiple frames. Hence a segment cannot exceed the maximum size of a frame.
+Lorsque de nombreux segments sont en attente d'être transmis, le protocole tente d'adapter autant de segments que possible (dans un ordre séquentiel) au sein de la taille maximale d'une image avant de l'envoyer. Cette taille maximale peut être modifiée pour correspondre aux spécificités du canal de communication qui est utilisé. Dans l'incarnation actuelle du protocole, les segments ne peuvent pas être fragmentés pour plusieurs images. Ainsi, un segment ne peut pas dépasser la taille maximale d'une image.
 
-Each frame is then converted into a QR code, with its binary content Base64-encoded as the code's text. This QR code can then be read at the receiving site, converted into a binary sequence, and parsed back into frames, segments and messages by applying the reverse transformations.
+Chaque image est ensuite converti en un code QR, avec son contenu binaire base64-encodé comme le texte de codes. Ce code QR peut alors être reconnu sur le site de réception, converti en une séquence binaire, et analysé et transmis aux images, aux segments et aux messages à travers l'application des transformations inverses.
 
-\subsection{Streaming Modes}
+\subsection{Modes de streaming}
 \setcounter{paragraph}{0}
 
-BufferTannen is designed with two sending modes, respectively called ``Lake'' mode and ``Stream'' mode.
+BufferTannen est conçu avec deux modes d'envoi, respectivement appelés le mode ``Lake'' et le mode ``Stream''.
 
-Lake mode is intended for the sending of a finite piece of data, such as a file, or a sequence of BufferTannen messages whose complete contents are known in advance. The data to be sent is divided into a finite set of segments, and the whole sequence of segments is repeatedly emitted through QR codes. If any frames are missed or incorrectly decoded, the infinite repetition of all segments makes possible to catch the missing data at the next loop. Ultimately, decoding errors may entail that the data needs to be read for more than one loop before it is completely received.
+le mode Lake est destiné à l'envoi d'une pièce finie de données, comme un fichier, ou une séquence de messages BufferTannen dont le contenu complet est connu à l'avance. Les données à envoyer sont divisées en un ensemble fini de segments, et toute la séquence de segments est émie à plusieurs reprises à travers des codes QR. Si des images sont manquantes ou mal décodées, la répétition infinie de tous les segments permet d'attraper les données manquantes à la boucle suivante. Finalement, les erreurs de décodage peuvent indiquer que les données doivent être lues pour plus d'une boucle avant qu'elles soient complètement reçues.
 
-The use of Lake mode can be detected by frames carrying a non-zero value to their ``total segments'' header field. Hence a receiver that starts reading at any point through the sequence of frames knows how many segments in total are to be received, and the relative position of each segment in the data to be reconstructed. This makes Lake mode a relatively slow, but very robust optical data transmission scheme.
+L'utilisation du mode Lake peut être détectée par des images transportant une valeur non nulle à leur champ d'en-tête de ``segments totaux''. Ainsi, un récepteur qui commence à lire à tout moment la séquence d'images sait combien de segments doivent au total être reçus, et la position relative de chaque segment dans les données pour reconstruire. Cela rend le mode Lake un schéma de transmission optique de données relativement lente, mais très robuste.
 
-In Stream mode, the data is continuously read into segments which then form a stream of frames, and the frames are immediately sent. The reading process stops only when there is no more data to read. The frames already sent are removed from the memory, so there is no way to resend the data for several times. However, for the sake of the data consistency, we made a buffer for the clones of the sent frames, and after having sent a specific amount frames fetched from the original data, the frames in the buffer are resent again and then removed from the buffer. Therefore, Stream mode is intended to send realtime data, typically where where the data loss is acceptable and the consistency can be slightly sacrificed (e.g.\ audio or video).
+En mode Stream, les données sont constamment lues en segments qui forment alors un flux d'images, et les images sont immédiatement envoyées. Le processus de lecture arrête seulement quand il n'y a plus de données pour lire. Les images déjà envoyées sont supprimées de la mémoire, donc il n'y a aucun moyen de renvoyer les données à plusieurs reprises. Cependant, pour le bien de la cohérence de données, nous avons fait un tampon pour les clones des images envoyées, et après avoir envoyé une quantité spécifique d'images récupérées à partir des données original, les images dans la mémoire tampon sont renvoyées à nouveau, puis enlevées de la mémoire tampon . Par conséquent, le mode Stream est destiné à envoyer des données en temps réel, généralement là où la perte de données est acceptable et la consistance peut être légèrement sacrifiée (par exemple audio ou vidéo).
 
 \begin{figure*}
 \centering
@@ -674,20 +675,20 @@ Resource ident.:     myfile.jpg
 Processing rate:     35 ms/frame (27 fps)
 --------------------------------------------------------------------------
 \end{verbatim}
-\caption{Part of the text interface of the QR code receiver operating in Lake mode}
+\caption{Une partie de l'interface texte du récepteur de codes QR qui fonctionne en mode Lake}
 \label{fig:qr:lake-gui}
 \end{figure*}
 
-Figure \ref{fig:qr:lake-gui} shows a portion of the text interface of our QR code receiver implementation. The interface shows that the frames being received are in Lake mode. The buffer state field indicates the progress of the reception. In the example, it shows that 130 out of 219 segments have been correctly received; the text bar at the left indicates to what portions of the total sequence these segments correspond. A section of the sequence that has not been received at all is indicated by a blank space; increasingly full portions of the sequence are represented respectively by the symbols \verb+.+, \verb+.+ and \verb+|+. The \verb+>+ symbol indicates the relative position of the last segment that was correctly read.
+La Figure \ref{fig:qr:lake-gui} montre une partie de l'interface texte de notre mise en œuvre de récepteur de codes QR. L'interface montre que les images étant reçus sont en mode Lake. Le champ d'état de tampon indique la progression de la réception. Dans cet exemple, il montre que les segments 130 sur 219 ont été correctement reçus; la barre de texte à gauche indique quelles parties de la séquence totale correspondent ces segments. Une section de la séquence qui n'a pas été reçue du tout est indiquée par un espace vide; les parties de plus en plus complètes de la séquence sont représentées respectivement par les symboles \verb+.+, \verb+:+ et \verb+|+. Le symbole \verb+>+ indique la position relative du dernier segment qui a été lu correctement.
 
-The ``Link quality'' field gives a realtime indication of the decoding rate. It shows that 22 of the last 30 images captured by the camera were correctly decoded, and that globally, 339 images were decoded out of 454 captured. The resource identifier and data stream index, carried by each frame, is also displayed.
+Le champ ``Link quality" donne une indication en temps réel du taux de décodage. Il montre que 22 des 30 dernières images capturées par la caméra ont été correctement décodées, et que globalement, 339 images ont été décodées sur 454 images capturées. L'identifiant de ressource et l'index de flux de données, portés par chaque image, sont également affichés.
 
-\subsection{Experimental Results}
+\subsection{Résultats expérimentaux}
 \setcounter{paragraph}{0}
 
-The experiments of Section \ref{sec:qr:experiments} confirmed our intuition that optical code streams are an inherently unreliable and low-bandwidth communication channel. The compactness of the BufferTannen protocol can be motivated by an example from runtime verification. A particular video game, called Pingus, was instrumented to produce events containing the state of every character in the game. The schema for these events is shown in Figure \ref{fig:qr:pingus-schema}.
+Les expériences de la section \ref{sec:qr:experiments} ont confirmé notre intuition que les flux de code optiques sont un canal de communication intrinsèquement peu fiable et à faible bande passante. La compacité du protocole BufferTannen peut être motivée par un exemple de la vérification de l'exécution. Un jeu vidéo particulier, appelé Pingus, a été instrumenté pour produire des événements qui contiennent l'état de chaque personnage dans le jeu. Le schéma de ces événements est illustré à la figure \ref{fig:qr:pingus-schema}.
 
-\subsubsection{File Transfer}
+\subsubsection{Transfert de fichiers}
 
 \begin{figure}
 \centering
@@ -707,62 +708,60 @@ FixedMap {
   ]
 }
 \end{verbatim}
-\caption{The schema of events produced by an instrumented video game.}
+\caption{Le schéma d'événements produits par un jeu vidéo instrumenté.}
 \label{fig:qr:pingus-schema}
 \end{figure}
 
-An event typically contains data for 50 characters, hence the map structure is repeated that many times. Sending such an event in clear-text format, without any whitespace, takes roughly 3,750 bytes. At a rate of 30 events per second, it takes 879 kbps of bandwidth to transmit the event stream. The same event in BufferTannen takes 1,856 \emph{bits}, or 232 bytes. This divides by more than 16 the bandwidth requirements for sending a stream of such events, yielding a bandwidth of 54 kbps.\footnote{Sending the same character string into Gzip shrinks it down to 716 bytes, which makes standard compression a less appealing alternative in that context.} From that point on, delta segments can be used to further reduce the stream's bandwidth, and transmit the remaining events using slightly more than 100 bytes each, consuming a bandwidth of approximately 24 kbps. Our previous experiments show that this is within the range of what one can reasonably expect to transmit using QR codes.
+Un événement contient généralement des données pour 50 caractères, ainsi la structure map est répétée autant de fois. L'envoi d'un tel événement en format texte clair, sans aucun espace, prend environ 3750 octets. À un fréquence de 30 événements par seconde, il prend 879 kbps de bande passante pour transmettre le flux d'événements. Le même événement dans BufferTannen prend 1.856 bits, ou 232 octets. Cela divise par plus de 16 les exigences de bande passante pour envoyer un flux de ces événements, ce qui donne une bande passante de 54 kbps.\footnote{Envoi de la même chaîne de caractères en Gzip se rétrécit vers à 716 octets, ce qui rend la compression standard une alternative moins attrayante dans ce contexte.} Dès cet instant, les segments de delta peuvent être utilisés pour réduire davantage la bande passante du flux, et transmettre les événements restants en utilisant un peu plus de 100 octets pour chacun, qui consomme une bande passante d'environ 24 kbps. Nos expériences précédentes montrent que cela est dans le gamme de ce que l'on peut raisonnablement attendre à transmettre à travers les codes QR.
 
-We then tested the ability of the BufferTannen protocol to mitigate these defects, through its use of repetition and its compact binary representation.\footnote{A video of BufferTannen in action is available online: \url{https://www.youtube.com/watch?v=GSL0md0TlY8}}
+Nous avons ensuite testé la capacité du protocole BufferTannen pour atténuer ces défauts, à travers son utilisation de répétition et sa représentation binaire compacte \footnote{Une vidéo de BufferTannen en action est disponible en ligne: \url{https://www.youtube.com/watch?v=GSL0md0TlY8}}
 
-We chose to encode data into 4,000-bit codes, which, after the encapsulation of BufferTannen, amounts to a QR code of about 5,800 bits. With the combination of 5800 bits and L correction level, according to Table \ref{tab:qr:sample-sizes}, the symbol size is about 93 $\times$ 93 which is between the combinations of 3,500-bit, H-level and 4,000-bit, H-level. From the result of the last experiment, the combinations of 4,000-bit, H level and any sample fps has more than 95\% correction rate which is reliable. Secondly, the code rates were 4, 6, 8, 10, 12 fps. According to the last experiment, this configuration is reliable and supposed to be able to supply 23.2--69.6 kbps, and 16.0--48.0 kbps of bandwidth, respectively.
-%
-In the consideration of the practical application, we chose to transfer a sample file of which the size is 37,656 bytes, and we performed each experiment 20 times.
+Nous avons choisi d'encoder des données en codes de 4000 bits, qui, après l'encapsulation de BufferTannen, équivaut à un code QR d'environ 5800 bits. Avec la combinaison de 5800 bits et du niveau L de correction, selon le Tableau \ref{tab:qr:sample-sizes}, la taille de symboles est d'environ 93 $\times$ 93 qui est entre les combinaisons de 3500 bits, du niveau H et de 4000 bits, du niveau H. D'après le résultat de la dernière expérience, les combinaisons de 4000 bits, du niveau H et tous les fps ont le taux plus de 95\% de correction   qui est fiable. D'autre part, les fréquences de codage sont 4, 6, 8, 10, 12 images par seconde. Selon la dernière expérience, cette configuration est fiable et censée être capable de fournir, respectivement 23.2--69.6 kbps et 16.0--48.0 kbps de bande passante. Étant donné l'application pratique, nous avons choisi de transférer un fichier d'exemple dont la taille est 37,656 octets, et nous avons effectué chaque expérience 20 fois.
 
-The result of the Lake mode experiment in Figure \ref{img-explake} shows that the best fps value is 10, and in this case the sample file needed to be transferred on average 2.4 times to make sure that the receiver could get all the frames. The average spent time is 17.27 seconds, from which the bandwidth is about 17.0 kbps.
+Le résultat de l'expérience du mode Lake dans la Figure \ref{img-explake} montre que la meilleure valeur de fps est 10, et dans ce cas, le fichier d'exemple avait besoin d'être transféré en moyenne 2,4 fois pour s'assurer que le récepteur pourra obtenir toutes les images. Le temps passé en moyenne est 17,27 secondes, et la bande passante est donc environ 17,0 kbps.
 
 \begin{figure}[ht]
 \begin{center}
 \centering
 \includegraphics[width=\linewidth]{lake.png}
-\caption{Time to send data in Lake mode}
+\caption{Temps de l'envoi des données en mode Lake}
 \label{img-explake}
 \end{center}
 \end{figure}
 
-In Stream mode, the percentage of received codes is important. In the experiment, according to Figure \ref{img-expstream}, the average completion ratios of all configurations are over 99\%, and the configuration of 12 fps needs approximately 13.11 seconds to send all frames with a data streaming channel of 22.4 kbps.
+En mode Stream, le pourcentage de codes reçus est important. Dans l'expérience, selon la Figure \ref{img-expstream}, les taux moyens d'achèvement de toutes les configurations sont plus de 99\%, et la configuration de 12 fps a besoin d'environ 13,11 secondes pour envoyer toutes les images avec un canal de streaming de données de 22,4 kbps .
 
 \begin{figure}[ht]
 \begin{center}
 \centering
 \includegraphics[width=\linewidth]{stream.png}
-\caption{Time to send data in Stream mode}
+\caption{Temps de l'envoi des données en mode Lake Stream}
 \label{img-expstream}
 \end{center}
 \end{figure}
 
-\subsubsection{Paper Swiping}\label{subsub:swipe}
+\subsubsection{Glisser du papier}\label{subsub:swipe}
 
-The ability to send streams of data in Lake mode can also be used to supplement QR codes' inherently limited capacity. When displaying a printed code on a piece of paper, large amounts of data can be carried only through increasing the code's resolution; however, resolution can only be increased up to a certain, predefined limit.\footnote{4,296 alpha-numeric characters, or 3,222 bytes assuming Base-64 encoding.} Moreover, for higher resolutions, the code may become hard to read using entry-level, low-resolution cameras. Therefore, it is safe to assume that, using existing QR code technology, no more than 3,000 bytes of data can be transferred using a QR code.
+La capacité d'envoi des flux de données en mode Lake peut également être utilisée pour compléter la capacité intrinsèquement limitée de codes QR. Lors de l'affichage d'un code imprimé sur une feuille de papier, de grandes quantités de données peuvent être seulement apportées par l'augmentation de la résolution de codes; Cependant, la résolution ne peut être augmentée jusqu'à un limite certain et prédéfini.\footnote{4296 caractères alphanumériques ou 3222 octets en codage Base-64.} En outre, pour des résolutions plus élevées, le code peut devenir difficile à reconnaître en utilisant des caméras en niveau d'entrée et en basse résolution. Par conséquent, c'est prudent de supposer que, avec l'aide de la technologie existante de codes QR, un maximum de  3000 octets de données peuvent être transférées à travers un code QR.
 
-This limitation can be overcome by the use of the BufferTannen protocol. Although no code larger than roughly 4,000 bytes can be created, multiple such codes can be lined on a piece of paper. Each such code can be formatted to contain a single frame of data sent by the BufferTannen protocol in Lake Mode. It suffices for a user to swipe the camera over these multiple codes; by virtue of Lake Mode, the order in which the codes are scanned is irrelevant, and the complete piece of data can be correctly reconstructed from the individual frames. It is therefore possible to transmit theoretically unlimited amounts of data, while using codes of a lower resolution (this lower resolution being compensated by the presence of more than one code).
+Cette limitation peut être surmontée par l'utilisation du protocole BufferTannen. Bien qu'aucun code dont la taille est supérieure à environ 4000 octets ne puisse être créé, plusieurs de ces codes peuvent être alignés sur un morceau de papier. Chaque tel code peut être formaté pour contenir une unique image de données envoyées par le protocole BufferTannen en mode Lake. Il suffit à l'utilisateur de glisser la caméra sur ces codes; en vertu du mode Lake, l'ordre dans lequel les codes sont scannés n'est pas pertinent, et les pièces complètes de données peuvent être correctement reconstruites à partir des images individuelles. c'est donc possible de théoriquement transmettre des quantités illimitées de données, tout en utilisant des codes d'une résolution inférieure (cette résolution inférieure étant compensée par la présence de plus d'un code).
 
-To verify this claim, we printed on a piece of paper the contents of a 37 kb file as a sequence of QR codes, processed as frames through BufferTannen in Lake Mode. We then hovered the camera over that sheet of paper at arm's length (see Figure \ref{fig:qr:paper-swipe}). The software's user interface displayed in real time the number of frames remaining to be decoded and their location in the complete stream, giving indications to the user as to which codes to swipe over. It shall be noted that the camera operated in ``film'' mode, and not in ``snapshot'' mode. In other words, images were continuously captured by the camera as it was being moved over the sheet; the user did not need to point and click at each individual QR code (which would be fastidious).
+Pour vérifier cette affirmation, nous avons imprimé sur une feuille de papier le contenu d'un fichier de 37 ko en tant qu'une séquence de codes QR, traités comme des images par BufferTannen en mode Lake. Nous avons ensuite passé la caméra au-dessus de cette feuille de papier à une distance d'une longueur de bras (montré dans la Figure \ref{fig:qr:paper-swipe}). L'interface utilisateur du logiciel affiche en temps réel le nombre d'images restantes à décoder et leurs positions dans le flux complet, qui donne à l'utilisateur des indications de codes que passe la caméra. Il convient de noter que la caméra fonctionnait en mode ``film'', et non en mode ``snapshot''. En d'autres termes, les images ont été capturées continuellement par la caméra lorsque elle était déplacée au-dessus de la feuille; l'utilisateur n'a pas besoin de pointer et de cliquer sur chaque code QR individuel (ce qui serait fastidieux).
 
 \begin{figure}
 \centering
 \includegraphics[width=\linewidth]{swipe.jpg}
-\caption{Swiping the camera over a set of QR codes to reconstruct the contents of a larger file.}
+\caption{Passer la caméra au-dessus d'un ensemble de codes QR pour reconstituer le contenu d'un fichier plus grand.}
 \label{fig:qr:paper-swipe}
 \end{figure}
 
-The error correction level chosen was L and the sizes of raw data per code that we tested were 500, 750, 1,000, 1,250, 1,500, 1,750, and 2,000 bytes. With 500 bytes there were 76 codes while with 2,000 bytes there were only 19. After being encapsulated by BufferTannen protocol, the final sizes of data used to generate the QR codes became correspondingly 723, 1,055, 1,391, 1,724, 2,054, 2,389, and 2,722 bytes. The codes were printed at 300 dpi and 600 dpi on standard office paper, and we programmed to give each edge of every code 500 dots in the paper.
+Le niveau de correction d'erreur choisi était L et les tailles de données brutes par code que nous avons testé étaient 500, 750, 1000, 1250, 1500, 1750, et 2000 octets. Avec 500 octets, il y avait 76 codes tandis qu'avec 2000 octets, il y en avait seulement 19. Après avoir été encapsulées par le protocole BufferTannen, les tailles finales de données utilisées pour générer les codes QR sont devenus en conséquence 723, 1055, 1391, 1724, 2054, 2389 et 2722 octets. Les codes ont été imprimés à 300 ppp (points par pouces) et 600 ppp sur des papiers de bureau , et nous avons programmés pour donner 500 points à chaque bord de tous les codes dans le papier.
 
-At 300 dpi, the codes of size ranging from 500 to 1,250 bytes were all decoded successfully and smoothly. However, when the size reaches 1,500 bytes, the decoding becomes more problematic. For some codes, we had to retry for several times by sticking the camera near the paper for a few seconds, yet among the total 31 codes, three remained impossible to decode at all. In the case of codes of 1,750 and 2,000 bytes, none of the codes could be decoded. This can be explained by the fact that higher density codes entail that each module of the code is smaller and hence harder to capture. For example, the edge of a 500-bytes and L-level code is about 77 modules, so each module can have approximately 6 dots in the paper, while the edge of a 2000-bytes, L-level code is 149 modules, so each module amounts to only 3 printed dots.
+À 300 ppp, les codes dont la taille était de 500 à 1250 octets étaient tous décodés avec succès et en douceur. Cependant, quand la taille a atteint 1500 octets, le décodage est devenu plus problématique. Pour certains codes, nous avons dû recommencer plusieurs fois et coller la caméra près du papier pendant quelques secondes, mais parmi les totaux 31 codes, trois restaient impossible de décoder du tout. Dans le cas des codes de 1.750 et de 2.000 octets, aucun des codes ne pourra être décodé. Ceci peut être expliqué par le fait que les codes de densité plus élevée ont pour effet que chaque module de code est plus petit et ainsi plus difficile à capturer. Par exemple, le bord d'un code de 500-octets et du niveau L est environ 77 modules, de sorte que chaque module peut avoir environ 6 points dans le papier, tandis que le bord d'un code de 2000-octets et du niveau L est 149 modules, donc chaque module ne peut avoir que 3 points pour imprimer.
 
-At 600 dpi, none of the codes could be decoded, no matter how many bytes they carried. The reason is that the codes printed at 600 dpi are too small and the camera has to approach very closely to the paper, but the captured images were all blurred and out of focus. It therefore seems that codes printed at 600 dpi are beyond the ability of a standard web camera.
+À 600 ppp, aucun des codes ne pourra être décodé, peu importe le nombre d'octets qu'ils ont apporté. La raison en est que les codes imprimés à 600 ppp sont trop petits et la caméra doit approcher de très près au papier, mais les images capturées étaient toutes troubles et hors du focus. Ceci semble donc que les codes imprimés à 600 ppp sont au-delà de la capacité d'une standard caméra web.
 
-Nevertheless, this experiment demonstrates the viability of the concept of hovering a camera across an array of QR codes. Our empirical findings indicate that a stream of data can be split into a set of QR codes of about 1,000 bytes each, the contents of which correspond to individual frames of the BufferTannen protocol containing the data to be transmitted. Swiping the camera over this set of codes, in no particular order, is sufficient to reconstruct on the device side the complete data contents.
+Néanmoins, cette expérience démontre la viabilité du concept de passer une caméra à travers un tableau de codes QR. Nos découvertes empiriques indiquent qu'un flux de données peut être divisé en un ensemble de codes QR d'environ 1000 octets chacun, dont le contenu correspond à des images individuelles du protocole BufferTannen qui contiennent les données de transmission. Il suffit de passer la caméra au-dessus de cet ensemble de codes, dans aucun ordre particulier, pour reconstruire le contenu complet de données dans le côté de l'appareil.
 
 %% }}} --- Section
 
@@ -771,9 +770,10 @@ Nevertheless, this experiment demonstrates the viability of the concept of hover
 %% -----------------------
 \section{Conclusion}\label{sec:qr:conclusion} %% {{{
 
-In this chapter, we presented a solution for an one-way communication channel based on QR codes, and performed experiments to measure its performance. We first experimentally tested the characteristics of a QR data stream under various conditions, and extracted the parameters maximizing the effective bandwidth of the channel. However, since that channel is inherently error-prone and low-bandwidth, we then introduced BufferTannen, a protocol designed especially for this kind of channel. BufferTannen takes care of splitting, marshaling, and to some extend compressing the data to transmit in order to maximize the efficiency of the QR code stream. The feasibility of this approach was then empirically observed through a new set of experiments.
+Dans ce chapitre, nous avons présenté une solution d'un canal de communication unidirectionnelle sur la base de codes QR, et réalisé les expériences pour mesurer sa performance. Nous avons d'abord testé expérimentalement les caractéristiques d'un flux de données de codes QR sous diverses conditions, et extrait les paramètres qui  maximisent la bande passante effective du canal. Toutefois, étant donné que le canal est intrinsèquement enclin à erreur et à faible bande passante, nous avons ensuite introduit BufferTannen, un protocole conçu spécialement pour ce type de canal. BufferTannen prend soin du fractionnement, de la transformation, et dans une certaine mesure de la compression des données de transmission afin de maximiser l'efficacité du flux de codes QR. La faisabilité de cette approche a ensuite été empiriquement observée lors de une nouvelle série d'expériences.
 
-Within the limits of the protocol and of the communication channel, the presented results can be put to good use in a variety of situations. In limited environments where the use of radio signal or cables is forbidden or difficult, our approach can provide an easy way to communicate between peers, either as an emergency backup or as a primary means. Furthermore, the evolution of the quality of both display and image capture devices makes it possible to foresee increased transmission rates in the future. %as the performance of common devices keeps increasing, the symbols containing more data, or even some more complicated symbol formats can be brought into concern.
-Finally, the aforementioned techniques could be turned into a bidirectional communication link in the case of endpoints equipped with both a camera and a display. In such a case, acknowledgments of correctly decoded images could be exchanged, which in turn would allow resending data on demand and increase the effective bandwidth.
+Même avec les limites du protocole et du canal de communication, les résultats présentés peuvent être utilisés à bon escient dans une variété de situations. Dans les environnements limités où l'utilisation du signal de radio ou de câbles est interdite ou difficiles, notre approche peut fournir un moyen facile pour communiquer entre pairs, soit comme sauvegarde d'urgence ou comme moyen principal. Par ailleurs, en raison de l'évolution de la qualité des deux dispositifs d'affichage et de capture d'images, c'est possible de prévoir des vitesses de transmission accrues dans l'avenir.
+
+Enfin, les techniques susmentionnées pourraient être transformées en une liaison de communication bidirectionnelle dans le cas de terminaux équipés d'une caméra et d'un écran. Dans un tel cas, les reconnaissances d'images correctement décodées pourraient être échangées, ce qui permettrait de renvoyer des données sur demande et d'augmenter la bande passante effective.
 
 %% }}} --- Section
