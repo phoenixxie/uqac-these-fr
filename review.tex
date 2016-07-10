@@ -76,7 +76,7 @@ La logique temporelle est une extension de la logique classique, et elle fournit
 
 \subsection{Syntaxe}
 
-Une formule bien formée de la LTL consiste en un ensemble fini de propositions atomiques, des opérateurs booléens $\neg, \wedge, \vee, \rightarrow$ et des opérateurs de logiques temporelles \textbf{F}(future), \textbf{G}(global), \textbf{X}(next), \textbf{U}(until), \textbf{W}(weak-until) et \textbf{R}(release). Elle peut être représentée sous la forme Backus Naur comme suit \citep{huth2004}:
+Une formule LTL bien formée consiste en un ensemble fini de propositions atomiques, des opérateurs booléens $\neg, \wedge, \vee, \rightarrow$ et des opérateurs de logiques temporelles \textbf{F}(future), \textbf{G}(global), \textbf{X}(next), \textbf{U}(until), \textbf{W}(weak-until) et \textbf{R}(release). Elle peut être représentée sous la forme Backus Naur comme suit \citep{huth2004}:
 \begin{align}
 \phi ::= & \top | \bot | p | (\neg\phi) | (\phi \wedge \phi) | (\phi \vee \phi) | (\phi \rightarrow \phi) \nonumber \\
 & | (\X \phi) | (\F \phi) | (\G \phi) | (\phi \U \phi) | (\phi \W \phi) | (\phi \R \phi)
@@ -84,7 +84,7 @@ Une formule bien formée de la LTL consiste en un ensemble fini de propositions 
 
 \subsection{Sémantiques}
 
-Pour une séquence d'états $s_0, s_1, s_2, ..., s_i, s_{i + 1}, ... $ où $s_{i + 1}$ est un état futur de $s_i$, on définit un chemin avec $\pi^i = s_i \rightarrow s_{i + 1} \rightarrow ... $ où $i$ est le premier état dans ce chemin. Étant donné que $\pi(i)$ est l'ensemble de propositions atomiques qui sont vraies au $i$ème état, le fait qu'un chemin $\pi^i$ satisfait ou non une formule de la LTL est définie comme suit \citep{rozier2011linear}:
+Pour une séquence d'états $s_0, s_1, s_2, ..., s_i, s_{i + 1}, ... $ où $s_{i + 1}$ est un état futur de $s_i$, on définit un chemin avec $\pi^i = s_i \rightarrow s_{i + 1} \rightarrow ... $ où $i$ est le premier état dans ce chemin. Étant donné que $\pi(i)$ est l'ensemble de propositions atomiques qui sont vraies au $i$-ème état, le fait qu'un chemin $\pi^i$ satisfait ou non une formule LTL est définie comme suit \citep{rozier2011linear}:
 
 \begin{itemize}
   \item \listequation{\pi^i \vDash \top} \label{eq:true}
@@ -104,7 +104,7 @@ Pour une séquence d'états $s_0, s_1, s_2, ..., s_i, s_{i + 1}, ... $ où $s_{i
 
 Les formules \ref{eq:true} et \ref{eq:false} suggèrent que les états dans le chemin $\pi^i$ devraient toujours être vrais ou faux.
 
-Dans la formule \ref{eq:ap}, $p$ est une proposition atomique appartenant à l'ensemble fini de propositions atomiques de la LTL, et cette formule demande de vérifier seulement le $i$ème état.
+Dans la formule \ref{eq:ap}, $p$ est une proposition atomique appartenant à l'ensemble fini de propositions atomiques de la LTL, et cette formule demande de vérifier seulement le $i$-ème état.
 
 Les formules \ref{eq:not}---\ref{eq:then} sont les opérateurs booléens de la logique propositionnelle qui respectent les règles du tableau \ref{table:prologic}.
 
@@ -127,7 +127,7 @@ Faux & Faux & Vrai & Faux & Faux & Vrai \\
 \label{table:prologic}
 \end{table}
 
-Les formules \ref{eq:next}, \ref{eq:future} et \ref{eq:global} sont les conjonctions unaires de logiques temporelles . L'opérateur \X signifie ``la prochaine fois'' et il saute le $i$ème état et évalue le chemin $\pi^{i + 1}$. L'opérateur \F signifie ``parfois dans l'avenir'' qui exige qu'à partir du $i$ème état, une propriété reste valide dans un état futur sur le chemin. Et l'opérateur \G (``globalement'' ou ``toujours'') indique qu'une propriété devrait reste valide dans chaque état depuis la $i$ème état jusqu'à la fin ou le futur infini.
+Les formules \ref{eq:next}, \ref{eq:future} et \ref{eq:global} sont les conjonctions unaires de logiques temporelles . L'opérateur \X signifie ``la prochaine fois'' et il saute le $i$-ème état et évalue le chemin $\pi^{i + 1}$. L'opérateur \F signifie ``parfois dans l'avenir'' qui exige qu'à partir du $i$-ème état, une propriété reste valide dans un état futur sur le chemin. Et l'opérateur \G (``globalement'' ou ``toujours'') indique qu'une propriété devrait reste valide dans chaque état depuis la $i$-ème état jusqu'à la fin ou le futur infini.
 
 Les formules \ref{eq:until}, \ref{eq:wuntil} et \ref{eq:release} sont les opérateurs binaires de logiques temporelles. L'opérateur\U est l'abréviation de ``until''. La formule $\psi \U \varphi$ reste valide si $\varphi$ reste valide à un état futur sur le chemin, et avant cet état, la propriété $\psi$ reste valide à chaque état. L'opérateur\W est une version faible de l'opérateur\U, sauf que pour la formule $\psi \W \varphi$, $\varphi$ n'a pas besoin de rester valide à terme dans un état futur. L'opérateur\R, qui signifie ``libérer'', est en fait une logique duale de l'opérateur\U, c.-à-d. $\psi \U \varphi \equiv \neg (\neg \psi \R \neg \varphi)$. L'opérateur\R exige que pour la formule $\psi \R \varphi$, la propriété $\varphi$ devrait continuellement rester valide jusqu'à ce que $\psi$ devienne valide et $\psi$ n'a pas besoin de rester valide à terme.
 
@@ -143,7 +143,7 @@ Metric Temporal Logic (MTL) \citep{chang1994compositional} a été inventée pou
 & \mbox{où } \sim \in \{<, =, >, \equiv_d\} \mbox{ et } c \geq 0, d \geq 2
 \end{align*}
 
-$\fullmoon_{\sim{}c}\phi$ signifie ``Suivant'', $\circleddash_{\sim{}c}\phi$ signifie ``Précédent'', $\phi \mathrel{U}_{\sim{}c} \phi$ signifie ``Jusqu'à'' et $\phi \mathrel{S}_{\sim{}c} \phi$ signifie ``Depuis'' \citep{chang1994compositional}. Étant donné que $T_i$ indique le temps du $i$ème état du chemin $\pi^i$, le fait qu'une formule reste ou non valide à la position $j$ du chemin $\pi$ est défini comme suit (on ignore les opérateurs propositionnels ici):
+$\fullmoon_{\sim{}c}\phi$ signifie ``Suivant'', $\circleddash_{\sim{}c}\phi$ signifie ``Précédent'', $\phi \mathrel{U}_{\sim{}c} \phi$ signifie ``Jusqu'à'' et $\phi \mathrel{S}_{\sim{}c} \phi$ signifie ``Depuis'' \citep{chang1994compositional}. Étant donné que $T_i$ indique le temps du $i$-ème état du chemin $\pi^i$, le fait qu'une formule reste ou non valide à la position $j$ du chemin $\pi$ est défini comme suit (on ignore les opérateurs propositionnels ici):
 \begin{eqnarray*}
 \pi^i \vDash \fullmoon_{\sim{}c}\psi & \iff & \pi^{i+1} \vDash \psi \mbox{ et } T_{i+1} - T_i \sim c \\
 \pi^i \vDash \circleddash_{\sim{}c}\psi & \iff & i \geq 1 \mbox{ et } \pi^{i-1} \vDash \psi \mbox{ et } T_i - T_{i-1} \sim c \\

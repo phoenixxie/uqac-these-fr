@@ -1,66 +1,63 @@
 %!TEX root = these.tex
 
-\chapter{Offline Evaluation of LTL Formulæ with Bitmap Manipulations}
+\chapter{Évaluation hors ligne de formules LTL avec les manipulations de bitmaps}
 
-This chapter represents a modified version of a paper which is written by K. Xie and S. Hallé and still under review for publication in the proceedings of the International Conference: Runtime Verification 2016 (RV'16) in Madrid, Spain in 2016.
+Ce chapitre présente une version modifiée et traduite d'un article qui est écrit par K. Xie et S. Hallé et qui est encore en cours de révision pour sa publication dans les actes de la conférence internationale: Runtime Verification 2016 (RV'16) à Madrid, Espagne en 2016.
 
 %% ------------------
 %% Section: intro
 %% ------------------
 \section{Introduction}\label{sec:bm:intro} %% {{{
 
-\emph{Temporal logic} \cite{huth2004} is a logistic system which uses rules and symbols to describe and reason about the change of a system's state in terms of time. It is based on the idea that one state may not be constantly true or false as time goes. \emph{Linear Temporal Logic (LTL)} \citep{pnueli97} is a temporal logic, and as its name entails, \emph{LTL} can denote only one sequence of states and for each state there is only one future state.
+Une \emph{logique temporelle} \citep{huth2004} est un système logistique qui utilise des règles et des symboles pour décrire et raisonner sur le changement de l'état d'un système en termes de temps. Elle est basée sur l'idée qu'un état ne peut pas rester constamment vrai ou faux avec le temps. Une \emph{Logique Temporelle Linéaire (LTL)} \citep{pnueli97} est une logique temporelle, et comme son nom l'implique, une \emph{LTL} peut désigner une seule séquence d'états et pour chaque état il n'y a qu'un état futur.
 
-A \emph{bitmap}, also known as a bit array or bitset, is a compact data structure storing a sequence of binary values. As will be shown in Section \ref{sec:bm:compression}, it can be used to express a set of numbers, or an array where each bit represents a 2-valued option. Bitmaps present several advantages as a data structure: they can concisely represent information, and provide very efficient functions to manipulate them, taking advantage of the fact that multiple bits can be processed in parallel in a single CPU instruction.
+Un \emph{bitmap}, qui est également connu sous forme de tableau de bites ou de bitset, est une structure compacte de données stockant une séquence de valeurs binaires. Comme on le verra dans la section \ref{sec:bm:compression}, il peut être utilisé pour exprimer un ensemble de nombres, ou un tableau dont chaque bit représente une option de 2 valeurs. Les bitmaps présentent plusieurs avantages en tant qu'une structure de données: ils peuvent représenter brièvement de l'information et fournir des fonctions très efficaces pour les manipuler, grâce au fait que les bits multiples peuvent être traités en parallèle à travers une seule instruction du processeur.
 
-In this paper, we explore the idea of using bitmap manipulations for the offline evaluation of LTL formul\ae{} on an event log. For this purpose, in Section \ref{sec:bm:ltlbitmap}, we introduce a solution which, for a given event trace $\sigma$ and an LTL formula $\varphi$, first converts each ground term into as many bitmaps; intuitively, the bitmap for atomic proposition $p$ describes which events of $\sigma$ satisfy $p$. Algorithms are then detailed for each LTL operator, taking bitmaps as their input and returning a bitmap as their output. The recursive application of these algorithms can be used to evaluate any LTL formula.
+Dans ce chapitre, nous explorons l'idée de l'utilisation des manipulations de bitmaps pour l'évaluation hors ligne de formules LTL d'un journal d'événements. A cet effet, dans la section \ref{sec:bm:ltlbitmap}, nous introduisons une solution qui, pour une trace d'événements données $\sigma$ et une formule LTL $\varphi$, convertit d'abord des termes de base en autant de bitmaps; intuitivement, le bitmap correspondant à une proposition atomique $p$ décrit les événements de $\sigma$ qui satisfont $p$. Les algorithmes sont ensuite détaillés pour chaque opérateur LTL qui prend des bitmaps comme leur entrée et qui retourne un bitmap comme leur sortie. L'application récursive de ces algorithmes peut être utilisée pour évaluer toute formule LTL.
 
-This solution presents several advantages. First, the use of bitmaps can be seen as a form of \emph{indexing} (in the database sense of the term) of a trace's content. Rather than being an online algorithm merely reading a pre-recorded trace, our solution exploits the fact that the trace is completely known in advance, and makes extensive use of this index to jump to specific locations in the trace to speed up its process. Second, a bitmap having consecutive 0s or 1s can be compressed, which reduces the space cost and speeds up the execution of many operations even further \citep{lemire2014}.
+Cette solution présente plusieurs avantages. Tout d'abord, l'utilisation de bitmaps peut être considérée comme une forme d'\emph{indexation} (dans le sens du terme de base de données) du contenu d'une trace. Plutôt que d'être un algorithme en ligne qui lit simplement une trace pré-enregistrée, notre solution exploite le fait que la trace est complètement connue à l'avance, et profite largement de cet indice pour accéder directement à des endroits spécifiques dans la trace afin d'accélérer son processus. Deuxièmement, un bitmap ayant des 0s ou 1s consécutifs peut être compressé, ce qui réduit le coût de l'espace et accélère profondément l'exécution de nombreuses opérations \citep{lemire2014}.
 
-To this end, Section \ref{sec:bm:experiments} describes an experimental setup used to test our solution. It reveals that, that, for complex LTL formul\ae{} containing close to 20 temporal operators and connectives, large event traces can be evaluated at a throughput ranging in the tens of millions of events per second. These experiments show that the bitmaps are a compact and fast data structure, and are particularly appropriate for the kind of manipulations required for offline monitoring.
-
+À cette fin, la Section \ref{sec:bm:experiments} décrit une installation expérimentale utilisée pour tester notre solution. Elle révèle que, pour des formules LTL complexes qui contiennent près de 20 opérateurs temporels et conjonctifs, des grandes traces d'événements peuvent être évaluées à un débit de plusieurs dizaines de millions d'événements par seconde. Ces expériences montrent que les bitmaps sont une structure de données compact et rapide, et sont particulièrement appropriés pour le type de manipulations nécessaires de monitoring hors ligne.
 %% }}} --- Section
 
 %% ------------------
 %% Section: bitmap compression
 %% ------------------
-\section{Bitmaps and Compression}\label{sec:bm:compression} %% {{{
+\section{Bitmaps et Compression}\label{sec:bm:compression} %% {{{
 
-A bitmap (or bitset) is a binary array that we can view as an efficient and compact representation of an integer set. Given a bitmap of $n$ bits, the $i$-th bit is set to 1 if the $i$-th integer in the range $[0, n-1]$ exists in the set.
+Un bitmap (ou bitset) est un tableau binaire que l'on peut considérer comme une représentation efficace et compacte d'un ensemble entier. Étant donné un bitmap de $n$ bits, le $i$-ème bit est mis à 1 si le $i$-ème entier dans la gamme $[0, n-1]$ existe dans l'ensemble.
 
-It was recognized early on that bitmaps could provide efficient ways of manipulating these sets, by virtue of their binary representation. For example, union and intersection between sets of integers can be computed using bitwise operations (OR, AND) on their corresponding bitmaps; in turn, such bitwise operations can be performed very quickly by microprocessors, and even in a single CPU operation for 32 or 64-bit wide chunks, depending on the architecture
+On a reconnu que des bitmaps pourraient fournir des moyens efficaces de manipulation de ces ensembles, en vertu de leur représentation binaire. Par exemple, Une union et une intersection entre les ensembles d'entiers peuvent être calculées avec les opérations binaires (OR, AND) sur leurs bitmaps correspondants; à leur tour, de telles opérations binaires peuvent être effectuées très rapidement par les microprocesseurs, même dans une seule opération du processeur de larges morceaux de 32 ou de 64 bits qui dépend de l'architecture.
 
-Furthermore, a bitmap can be used to map $n$ chunks of data to $n$ bits. If the size of each chunk is greater than 1, the bitmap can greatly reduce the size of the storage. In addition, with its capacity of exploiting bit-level parallelism in hardware, standard operations on bitmaps can be very efficient. Unsurprisingly, bitmaps have been used in a lot of applications where the space or speed requirements are essential, sucha as information retrieval \cite{Chan:1998:BID:276305.276336}, databases \cite{burdick2001mafia}, and data mining \cite{Ayres:2002:SPM:775047.775109,Uno:2005:LVC:1133905.1133916}.
+Par ailleurs, un bitmap peut être utilisé pour mapper $n$ blocs de données à $n$ bits. Si la taille de chaque bloc est supérieur à 1, le bitmap peut réduire considérablement la taille du stockage. De plus, avec sa capacité de l'exploitation du parallélisme au niveau des bits du matériel, les opérations standard de bitmaps peuvent être très efficaces. Sans surprise, les bitmaps ont été utilisés dans de nombreuses applications où les exigences d'espace ou de vitesse sont essentielles, telles que la recherche d'information \citep{Chan:1998:BID:276305.276336}, les bases de données \citep{burdick2001mafia}, et l'exploration de données \citep{Ayres:2002:SPM:775047.775109,Uno:2005:LVC:1133905.1133916}.
 
-A bitmap with low fraction of bits set to value 1 can be considered \emph{sparse} \cite{lemire2014}. Such a sparse bitmap, stored as is, is a waste of both time and especially space. Consequently, many algorithms have been developed to \emph{compress} these bitmaps; most of them there are based on the Run-Length Encoding (RLE) model derived from the BBC compression scheme \cite{antoshenkov1995byte}. In the following, we briefly describe a few of these techniques. In particular, we detail the WAH \cite{wu2006optimizing}, Concise \cite{colantonio2010} and EWAH\cite{lemire2010} algorithms, because they have well-implemented open source libraries in Java that we will evaluate experimentally later in this paper.
+Un bitmap avec une faible fraction de bits mis à la valeur 1 peut être considéré comme \emph{creux} \citep{lemire2014}. Un tel bitmap creux est une perte de temps et surtout d'espace. Par conséquent, de nombreux algorithmes ont été développés pour \emph{compresser} ces bitmaps; la plupart d'entre eux sont basés sur le modèle Run-Length Encoding (RLE) dérivé du système de compression BBC \citep{antoshenkov1995byte}. Dans ce qui suit, nous décrivons brièvement quelques-unes de ces techniques. En particulier, nous détaillons les algorithmes WAH \citep{wu2006optimizing}, Concise \citep{colantonio2010} et EWAH \citep{lemire2010}, parce qu'ils ont les librairies open source bien implémentées en Java que nous allons évaluer expérimentalement plus tard dans ce chapitre.
 
 \subsection{WAH}
 
-WAH \citep{wu2006optimizing} divides a bitmap of $n$ bits into $\lceil \frac{n}{w-1}\rceil$ words of $w -1$ bits, where $w$ is a convenient word length (for example, 32). WAH distinguishes between two types of words: words made of just $w-1$ ones ($11\dots 1$) or just $w-1$ zeros ($00\dots 0$), are \emph{fill words}, whereas words containing a mix of zeros and ones are \emph{literal words}. Literal words are stored using $w$ bits: the most significant bit is set to zero and the remaining bits store the heterogeneous $w-1$ bits. Sequences of homogeneous fill words (all ones or all zeros) are also stored using w bits: the most significant bit is set to 1, the second most significant bit indicates the bit value of the homogeneous block sequence, while the remaining $w-2$ bits store the run length of the homogeneous block sequence.
+L'algorithme WAH \citep{wu2006optimizing} divise un bitmap de $n$ bits en $\lceil \frac{n}{w-1}\rceil$ mots de $w-1$ bits où $w$ est une pratique longueur de mot (par exemple, 32). WAH fait la distinction entre deux types de mots: les mots avec seulement les $w-1$ uns ($11\dots 1$) ou avec seulement $w-1$ zéros ($00\dots 0$), sont les \emph{mots pleins}, alors que les mots contenant un mélange de zéros et d'uns sont les \emph{mots littéraux}. les mots littéraux sont stockés avec $w$ bits: le bit le plus significatif est mis à zéro et les bits restants stockent les $w-1$ bits hétérogènes. Des séquences de mots pleins homogènes (tous uns ou tous zéros) sont également stockées avec $w$ bits: le bit le plus significatif est mis à 1, le bit le deuxième plus significatif indique la valeur de bits de la séquence de bloc homogène, tandis que les restants $w-2$ bits stockent la longueur de série de la séquence de bloc homogène.
 
 \subsection{Concise}
 
-Concise \citep{colantonio2010} is a bitmap compression algorithm based on WAH. Comparing with WAH, for which the run length is $w-2$ bits, Concise uses $w - 2 - \lceil \log_2 w \rceil$ for the run length and $\lceil \log_2 w \rceil$ bits to store an integer value indicating to flip a bit of a single word of $w-1$ bits. This feature can improve the compression ratio in the worst case.
+L'algorithme Concise \citep{colantonio2010} est un algorithme de compression bitmap sur la base de WAH. En comparant avec WAH, dont la longueur de série est de $w-2$ bits, Concise utilise $w - 2 - \lceil \log_2 w \rceil$bits pour la longueur de série et $\lceil \log_2 w \rceil$ bits pour stocker une valeur entière qui indique de retourner un bit d'un seul mot de $w-1$ bits. Cette fonction peut améliorer le taux de compression dans le pire cas.
 
 \subsection{EWAH}
 
-EWAH \cite{lemire2010} is also a variant of WAH but it does not use its first bit to indicate the type of the word like WAH and Concise. EWAH rather defines a $w$-bits marker word. The most significant $w/2$ bits of the word are used to store the number of the following fill words (all ones or all zeros) and the rest $w/2$ bits encodes the number of \emph{dirty words}. These words are exactly like the literal words of WAH, but utilize all $w$ bits. 
+L'algorithme EWAH \citep{lemire2010} est aussi une variante de WAH mais il n'utilise pas son premier bit pour indiquer le type de mot comme WAH et Concise. EWAH définit plutôt un \emph{mot de marqueur} de $w$ bits . Les $w/2$ bits les plus significatifs du mot sont utilisés pour stocker le nombre des mots pleins suivants (tous uns ou tous zéros) et les restants $w/2$ bits encodent pour le nombre des \emph{mots sales}. Ces mots sont exactement comme les mots littéraux de WAH, mais utilisent tous $w$ bits.
 
-With respect to WAH and Concise, the structure used for EWAH makes it difficult to recognize a single word in the sequence as a marker word or a dirty word without reading the sequence from the beginning. Hence, apart from exceptional situations, a reverse enumeration of the bits in the sequence is nearly impossible.
+En ce qui concerne WAH et Concise, la structure utilisée pour EWAH nous rend difficile de reconnaître un seul mot dans la séquence comme un mot de marqueur ou un mot sale, sans lire la séquence depuis le début. De ce fait, en dehors des situations exceptionnelles, une énumération inverse des bits de la séquence est presque impossible.
 
 \subsection{Roaring}
 
-In all the previous models, fast random access to the bits in an arbitrary sequence is relatively difficult. At the very least, the word that contains the bit to read must be identified, and the position of this word in the stream requires a knowledge of how many literal or fill words are present before. Besides the RLE-model algorithms, there exist other bitmap compression models that support fast random access similar to uncompressed bitmaps. One of them is called ``Roaring bitmap'' \cite{lemire2015}, which we shall briefly describe.
+Dans tous les modèles précédents, l'accès aléatoire rapide aux bits dans une séquence arbitraire est relativement difficile. À tout le moins, le mot qui contient le bit à lire doit être identifié, et la position de ce mot dans le flux requiert une connaissance du nombre de mots littéraux ou pleins qui apparaissent plus tôt. Outre les algorithmes de modèle RLE, il existe d'autres modèles de compression bitmap qui prennent en charge un accès aléatoire rapide similaire à des bitmaps sans compression. L'un d'eux est appelé ``Roaring bitmap'' \citep{lemire2015}, que nous allons décrire brièvement.
 
-Roaring bitmap has a compact and efficient two-level indexing data structure that splits 32-bit indexes into chunks, each of which stores the 16 most significant bits of a 32-bit integer and points to a specialized container storing the 16 least significant bits. There are two types of containers: a sorted 16-bit integer array for \emph{sparse} chunks, which store at most 4,096 integers, and a bitmap for \emph{dense} chunks that stores $2^{16}$ integers. This hybrid data structure allows fast random access whereas all RLE-model algorithms mentioned cannot because of the characteristics mentioned earlier.
-
-%The time complexities of the LTL operators with \emph{Roaring bitmap} are $O(n)$ because we cannot skip certain bits when enumerating the bitmap.
+Roaring bitmap a une structure compacte et efficace de données d'indexation en deux niveaux qui divise les indices de 32 bits en blocs, dont chacun stocke les 16 bits les plus significatifs d'un nombre entier de 32 bits et pointe à un conteneur spécialisé stockant les 16 bits les moins significatifs. Il existe deux types de conteneurs: un tableur d'entiers de 16 bits triés pour les \emph{creux} morceaux, qui stockent au maximum 4096 entiers, et un bitmap pour les \emph{denses} morceaux qui stockent $2^{16}$ entiers. Cette structure de données hybride permet l'accès aléatoire rapide alors que tous les algorithmes de modèles RLE mentionnés ne peuvent pas en raison des caractéristiques mentionnées plus tôt.
 
 \subsection{Discussion}
 
-The RLE-model algorithms share some common features and also have their own characteristics. First, all of them have two different kinds of words, one of which is to store the raw uncompressed word (literal word) and the other is compressed word (sequence word) having a bit and a number. The number represents the number of consecutive words which are full of 0s or 1s determined by the bit.
+Les algorithmes de modèles RLE partagent certaines fonctions communes et ont également leurs propres caractéristiques. Tout d'abord, ils ont tout deux types de mots, dont l'un est de stocker le mot non compressé brut (mot littéral) et l'autre est le mot compressé (mot de séquence) qui a un bit et un nombre. Le nombre représente le nombre de mots consécutifs qui sont pleins de bits de zéros ou d'uns qui sont déterminés par le bit.
 
-We use $wlen$ to represent the number of bits in a word, $ulen$ the number of available in a literal word and $wcap$ the maximum number of bits stored in a sequence word. Table \ref{tbl:bm:bmparms} lists the parameters of the three RLE-model algorithms.
+Nous utilisons une variable $wlen$ pour représenter le nombre de bits dans un mot, une variable $ulen$ pour le nombre de bits disponibles dans un mot littéral et une variable $wcap$ pour le nombre maximal de bits stockés dans un mot de séquence. Le Tableau \ref{tbl:bm:bmparms} liste les paramètres des trois algorithmes de modèles RLE.
 
 \begin{table}[h]
 \centering
@@ -75,41 +72,42 @@ Concise & 31 bits & 32 bits & $2^{25} - 1$ \\
 EWAH & 32 or 64 bits & 32 or 64 bits & $2^{16} - 1 \text{ or } 2^{32} - 1$ \\
 \hline
 \end{tabular}
-\caption{Parameters of RLE-model algorithms}
+\caption{Paramètres d'algorithmes de modèles RLE}
 \label{tbl:bm:bmparms}
 \end{table}
 
-Considering that a $n$-bits bitmap has $m$ sequences of consecutive (0...1...) bits:
+Étant donné qu'un bitmap de $n$ bits a $m$ séquences de bits consécutifs comme (0...1...):
 \begin{align*}
-& c^1_0c^0_1c^1_1c^0_1c^1_2c^0_2...c^1_{m - 1}c^0_{m - 1}, c^i_j \text{ is the number of } \\
-& \text{consecutive } i \text{ bits and } i \in (0, 1),\, 0 \leq j \leq m.  
+& c^1_0c^0_1c^1_1c^0_1c^1_2c^0_2...c^1_{m - 1}c^0_{m - 1}, c^i_j \text{ est le nombre de } \\
+& i \text{ bits consécutifs et } i \in (0, 1),\, 0 \leq j \leq m.  
 \end{align*}
 
-Then the number of total bits, i.e. the size of the uncompressed bitmap is:
+Alors le nombre de bits au total, c.-à-d. la taille du bitmap non compressé est:
 \begin{align*}
-& total\_bits = \sum_{j = 0}^{m - 1} \sum_{i = 0}^1 c^i_j = \sum_{j = 0}^{m - 1} \sum_{i = 0}^1 l^i_j + s^i_j, \\
+& \textit{bits\_totaux} = \sum_{j = 0}^{m - 1} \sum_{i = 0}^1 c^i_j = \sum_{j = 0}^{m - 1} \sum_{i = 0}^1 l^i_j + s^i_j, \\
 & l^i_j = c^i_j \text{ mod } ulen, s^i_j = c^i_j - l^i_j
 \end{align*}
 
-If exists a positive integer $slen$, $\forall c^i_j = slen$, then
+S'il y a un nombre entier positif $slen$, $\forall c^i_j = slen$, alors
 \begin{align}
 m = n \div (2 \times slen) \label{eq:seqnum}
 \end{align}
 
-When $1 \leq slen < wlen$, then $\forall l^i_j > 0, \forall s^i_j = 0$, which is considered the worst case, the size of the compressed bitmap is:
+Lorsque $1 \leq slen < wlen$, alors $\forall l^i_j > 0, \forall s^i_j = 0$, ce qui est considéré comme le pire cas, la taille du bitmap compressé est:
 \begin{align*}
-compressed\_bits = \lceil \frac{total\_bits}{ulen} \rceil \times wlen 
+\textit{bits\_compressés} = \lceil \frac{\textit{bits\_totaux}}{ulen} \rceil \times wlen 
 \end{align*}
 
-None of the three RLE-model algorithms can well compress this kind of bitmap. Both \emph{WAH} and \emph{Concise} waste one bit for the type identification and \emph{EWAH} seems to cost the least for its $ulen = wlen$ but its actual size should be a little more than $total\_bits$ because some empty sequence word is needed to store the number of the literal words.
+Aucun des trois algorithmes de modèles RLE ne peut bien compresser ce genre de bitmaps. \emph{WAH} et \emph{Concise} perdent un bit pour l'identification de types et \emph{EWAH} semble coûter le moins grâce à $ulen = wlen$, mais sa taille actuelle devrait être un peu plus de \textit{bits\_totaux} parce qu'au moins un mot de séquence est nécessaire pour stocker le nombre de mots littéraux.
 
-Furthermore, when $wlen \leq slen$, then $\forall s^i_j > 0$, the sequence can be well compressed with any RLE-model algorithm. Suppose $\forall l^i_j > 0$, the size of the compressed bitmap is:
+En outre, lorsque $wlen \leq slen$, alors $\forall s^i_j > 0$, la séquence peut être bien compressée avec tout algorithme de modèles RLE. Supposons $\forall l^i_j > 0$, la taille du bitmap compressé est:
+
 \begin{align*}
-compressed\_bits = &\sum_{j = 0}^{m - 1} \sum_{i = 0}^1 \lceil \frac{slen}{wcap} \rceil \times wlen + wlen \\
+\textit{bits\_compressés} = &\sum_{j = 0}^{m - 1} \sum_{i = 0}^1 \lceil \frac{slen}{wcap} \rceil \times wlen + wlen \\
 = & 2 \times m \times wlen \times (1 + \lceil \frac{slen}{wcap} \rceil)
 \end{align*}
 
-From this discussion, we can see that $slen$, i.e. the number of consecutive 1 or 0 bits in a sequence, is a crucial argument and is able to decide the compression rate of a RLE bitmap compression algorithm. Some optimization like Concise is merely to try to improve the performance of the worst case.
+De cette discussion, nous pouvons savoir que la variable $slen$, c.-à-d. le nombre de bits consécutifs d'uns ou de zéros dans une séquence, est un argument crucial et capable de décider le taux de compression d'un algorithme de modèle RLE. Une optimisation comme Concise est seulement un essai de l'amélioration de la performance du pire cas.
 
 %% }}} --- Section
 
