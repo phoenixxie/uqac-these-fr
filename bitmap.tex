@@ -27,7 +27,7 @@ Cette solution présente plusieurs avantages. Tout d'abord, l'utilisation de bit
 
 Un bitmap (ou bitset) est un tableau binaire que l'on peut considérer comme une représentation efficace et compacte d'un ensemble entier. Étant donné un bitmap de $n$ bits, le $i$-ème bit est mis à 1 si le $i$-ème entier dans la gamme $[0, n-1]$ existe dans l'ensemble.
 
-On a reconnu que des bitmaps pourraient fournir des moyens efficaces de manipulation de ces ensembles, en vertu de leur représentation binaire. Par exemple, Une union et une intersection entre les ensembles d'entiers peuvent être calculées avec les opérations binaires (OR, AND) sur leurs bitmaps correspondants; à leur tour, de telles opérations binaires peuvent être effectuées très rapidement par les microprocesseurs, même dans une seule opération du processeur de larges morceaux de 32 ou de 64 bits qui dépend de l'architecture.
+On a reconnu que des bitmaps pourraient fournir des moyens efficaces de manipulation de ces ensembles, en vertu de leur représentation binaire. Par exemple, Une union et une intersection entre les ensembles d'entiers peuvent être calculées avec les opérations au niveau du bit (OR, AND) sur leurs bitmaps correspondants; à leur tour, de telles opérations au niveau du bit peuvent être effectuées très rapidement par les microprocesseurs, même dans une seule opération du processeur de larges morceaux de 32 ou de 64 bits qui dépend de l'architecture.
 
 Par ailleurs, un bitmap peut être utilisé pour mapper $n$ blocs de données à $n$ bits. Si la taille de chaque bloc est supérieur à 1, le bitmap peut réduire considérablement la taille du stockage. De plus, avec sa capacité de l'exploitation du parallélisme au niveau des bits du matériel, les opérations standard de bitmaps peuvent être très efficaces. Sans surprise, les bitmaps ont été utilisés dans de nombreuses applications où les exigences d'espace ou de vitesse sont essentielles, telles que la recherche d'information \citep{Chan:1998:BID:276305.276336}, les bases de données \citep{burdick2001mafia}, et l'exploration de données \citep{Ayres:2002:SPM:775047.775109,Uno:2005:LVC:1133905.1133916}.
 
@@ -114,78 +114,52 @@ De cette discussion, nous pouvons savoir que la variable $slen$, c.-à-d. le nom
 %% ------------------
 %% Section: algos
 %% ------------------
-\section{Evaluating LTL formul\ae{} with Bitmap}\label{sec:bm:ltlbitmap} %% {{{
+\section{Évaluation de formules LTL avec Bitmaps}\label{sec:bm:ltlbitmap} %% {{{
 
-Since bitmaps have been shown to be very efficient for storing manipulating encoded sets of integers, in this section we describe a technique for evaluating arbitrary formul\ae{} expressed in Linear Temporal Logic on a given trace of events through bitmap manipulations.
+Comme il a été montré que les bitmaps sont très efficaces pour stocker et manipuler des ensembles d'entiers encodés, dans cette section, nous décrivons une technique d'évaluation des formules arbitraires exprimées en Logique Temporelle Linéaire sur une trace donnée d'événements par des manipulations bitmap.
 
-\subsection{Preliminaries}
+\subsection{Fonctions bitmap}
 
-We shall first recall some basic background about Linear Temporal Logic (LTL). LTL formul\ae{} are made of a finite set of atomic propositions, constituting the ground terms of any expression. These propositions can be combined using the Boolean connectives $\neg$, $\wedge$, $\vee$, $\rightarrow$ and temporal logic operators \textbf{F} (eventually), \textbf{G} (globally), \textbf{X} (next), and \textbf{U} (until).
+On suppose qu'une structure bien conçue de données bitmap met en \oe{}uvre un certain nombre de fonctions de base. Compte tenu des bitmaps $a$, $b$, nous noterons $|a|$ en tant que la fonction qui calcule la longueur de $a$. La notation $a \otimes b$ désignera la logique au niveau du bit ET de $a$ et $b$, $a \oplus b$ au niveau du bit OU, et $!a$ au niveau du bit NON.
 
-Let $\overline{s} = s_0, s_1, s_2, ..., s_n$ be a finite sequence of \emph{events}, and let $\pi(i)$ be the set of atomic propositions that are true in $s_i$. The trace $\overline{s}$ is said to satisfy an LTL formula $\varphi$ if the rules described in Table \ref{tab:bm:semantics} apply recursively. We assume a finite-trace semantics where, if $\overline{s}$ is the empty trace,  $\overline{s} \not\models \F \varphi$, $\overline{s} \not\models \X \varphi$, $\overline{s} \not\models \varphi \U \psi$, but $\overline{s} \models \F \varphi$.
-
-\begin{table}
-\begin{eqnarray*}
-\overline{s} \models p & \iff &  p \in \pi(0)\\
-\overline{s} \models \neg\psi & \iff &  \overline{s} \not\models \psi\\
-\overline{s} \models \psi \wedge \varphi & \iff &  \overline{s} \models \psi \mbox{ and }\overline{s} \models \varphi\\
-pi^i \models \psi \vee \varphi & \iff &  \overline{s} \models \psi\mbox{ or }\overline{s} \models \varphi\\
-\overline{s} \models \psi \rightarrow \varphi & \iff &  \overline{s} \models \varphi \mbox{ whenever }\overline{s} \models \psi\\
-\overline{s} \models \X\psi & \iff &  \pi^{1} \models \psi\\
-\overline{s} \models \G\psi & \iff &  \forall j \geq 0, \overline{s}^j \models \psi\\
-\overline{s} \models \F\psi & \iff &  \exists j \geq 0, \overline{s}^j \models \psi\\
-\overline{s} \models \psi \U \varphi & \iff &  \exists j \geq i, \pi^j \models \varphi \mbox{ and }\forall k, i \leq k < j, \pi^k \models \psi\\
-\overline{s} \models \psi \W \varphi & \iff & \mbox{ either } \exists j \geq i, \pi^j \vDash \varphi \mbox{ and } \forall k, i \leq k < j, \pi^k \vDash \psi, \mbox{ or } \forall k \geq i, \pi^k \vDash \psi \\
-\overline{s} \models \psi \R \varphi & \iff & \mbox{ either } \exists j \geq i, \pi^j \vDash \psi \mbox{ and } \forall k, i \leq k \leq j, \pi^k \vDash \varphi, \mbox{ or } \forall k \geq i, \pi^k \vDash \varphi
-\\
-\end{eqnarray*}
-\caption{The semantics of LTL. Here $\overline{s}^i$ denotes the subtrace of $\overline{s}$ that starts at event $i$.}
-\label{tab:bm:semantics}
-\end{table}
-
-LTL is one of the notations that is widely used in the context of offline monitoring and runtime verification. Depending on the context, LTL formul\ae{} can represent security policies, constraints on sequences of method calls in an object-oriented program, correct interaction between a user and some interface, etc.
-
-We suppose that a well-designed bitmap data structure implements a number of basic functions. Given bitmaps $a$, $b$, we will note $|a|$ the function that computes the length of $a$. The notation $a \otimes b$ will denote the bitwise logical AND of $a$ and $b$, $a \oplus b$ the bitwise logical OR, and $!a$ its bitwise inverse. % as are described in Table \ref{tbl:bmfuncs}.
-
-These bitmap functions would be enough to evaluate the LTL operators, but in order to optimize our solution and integrate more closely with bitmap compression algorithms shown in Section \ref{sec:bm:compression}, we need to manipulate the internal data structure of the bitmap and thus introduce seven derivative bitmap functions see Table \ref{tbl:bm:bmhelpers}).
-
+Ces fonctions bitmap seraient suffisantes pour évaluer les opérateurs LTL, mais dans le but d'optimiser notre solution et d'intégrer plus étroitement avec les algorithmes de compression bitmap montrés dans la Section \ref{sec:bm:compression}, nous avons besoin de manipuler la structure de données interne du bitmap et donc d'introduire sept fonctions bitmap dérivés (montrés dans le Tableau \ref{tbl:bm:bmhelpers}).
 
 \begin{table}
 \centering
 \begin{tabular}{|p{1.5in}|p{3.25in}|}
 \hline
-Function & Description \\
+Fonction & Description \\
 \hline
-addMany(bitmap, val, len) & adds a $len$-bits sequence of the same value $val$ to the end of the bitmap whose size then increases by $len$. \\
+addMany(bitmap, val, len) & Elle ajoute une séquence de $len$ bits de la même valeur $val$ à la fin du bitmap dont la taille augmente alors par $len$. \\
 \hline
-copyTo(bitmapDest, bitmapSrc, start, len) & copies the $len$-bits sequence from the index $start$ in bitmap $bitmapSrc$ to the end of another bitmap $bitmapDest$ whose size then increases by $len$. \\
+copyTo(bitmapDest, bitmapSrc, start, len) & Elle copie la séquence de $len$ bits à partir de l'index $start$ dans le bitmap $bitmapSrc$ à la fin d'un autre bitmap $bitmapDest$ dont la taille augmente alors par $len$. \\
 \hline
-removeFirstBit(bitmap) & removes the first bit of the bitmap, and the size of the bitmap decreases by 1. \\
+removeFirstBit(bitmap) & Elle supprime le premier bit du bitmap et la taille du bitmap diminue par 1. \\
 \hline
-next(b, bitmap, start) & gets the position of the next occurrence of the bit with value b from the inclusive position $start$ of the bitmap, or $-1$ if there is no more. \\
+next(b, bitmap, start) & Elle retourne la position de la prochaine apparition du bit de la valeur $b$ de la position inclusive $start$ du bitmap, ou $-1$ s'il n'y a pas de tel bit. \\
 \hline
-last(b, bitmap) & gets the position of last occurrence of the bit with value b in the bitmap, or $-1$ if the bitmap does not have a bit with value b. \\
+last(b, bitmap) & Elle retourne la position de la dernière apparition du bit de la valeur $b$ dans le bitmap, ou $-1$ s'il n'y a pas de tel bit. \\
 \hline
 \end{tabular}
-\caption{Derivative bitmap functions}
+\caption{Fonctions bitmap dérivés}
 \label{tbl:bm:bmhelpers}
 \end{table}
 
-\subsection{Manipulating Bitmaps to Implement LTL Operators} %% {{{
+\subsection{Manipulation de bitmaps pour mettre en \oe{}uvre les opérateurs LTL} %% {{{
 
-We are now ready to define a procedure for evaluating arbitrary LTL formul\ae{} with the help of bitmaps. Given a finite sequence of states $(s_0, s_1, ..., s_{n - 1})$ and an LTL formula $\varphi$, the principle is to compute a bitmap $(b_0b_1...b_ib_{i + 1}...b_{n - 1})$ of length $n$, noted $B_\varphi$, whose content is defined follows:
+Nous sommes maintenant prêts à définir une procédure d'évaluation des formules LTL arbitraires avec l'aide de bitmaps. Étant donnée une séquence finie d'états $(s_0, s_1, ..., s_{n - 1})$ et une formule LTL $\varphi$, le principe est de calculer un bitmap $(b_0b_1...b_ib_{i + 1}...b_{n - 1})$ de $n$ bits, a noté $B_\varphi$, dont le contenu est défini comme suit:
 
 \begin{equation}\label{eq:map}
 b_i = \begin{cases}
-1 & \text{if $\overline{s}^i \models \varphi$} \\
-0 & \text{otherwise}
+1 & \text{si $\overline{s}^i \models \varphi$} \\
+0 & \text{autrement}
 \end{cases}
 \end{equation}
 
-The finite set of atomic propositions constitute the initial bitmaps. These basic bitmaps are created by reading the original trace, and setting bit $i$ of $B_p$ to 1 if the atomic proposition is true at the corresponding state $s_i$, and otherwise 0. One can see that this construction respects Definition \ref{eq:map} in the case of ground terms.
+L'ensemble fini de propositions atomiques constituent les bitmaps initiaux. Ces bitmaps de base sont créés par lire la trace originale, et mettre le $i$-ème bit de $B_p$ à 1 si la proposition atomique est vraie à l'état correspondant $s_i$, et le mettre autrement à 0. On peut voir que cette construction respecte la Définition \ref{eq:map} dans le cas de termes atomiques.
 
-From these initial bitmaps, bitmaps corresponding to increasingly complex formul\ae{} can now be recursively computed. The cases of conjunction, disjunction and negation are easy to deal with, since these connectives have their direct equivalents as bitwise operators. For example, given bitmaps $B_\varphi$ and $B_\psi$, the bitmap $B_{\varphi \wedge \psi}$ can be obtained by computing $B_\varphi \otimes B_\psi$. The remaining propositional connectives can be easily reduced to these three through standard identities. % Propositional logic operators have their direct translated to bitwise operators. The functions $\mathop{not}(), \mathop{and}(), \mathop{or}()$ from the bitmap are enough to the calculation of the formul\ae{} $\neg\psi$\eqref{eq:not}, $\psi \wedge \varphi$\eqref{eq:and}, $\psi \vee \varphi$\eqref{eq:or}. And the formula $\psi \rightarrow \varphi$ can be expanded to $\neg \psi \vee \varphi$ \cite{huth2004}.
-% 
+De ces bitmaps initiaux, des bitmaps correspondants à des formules de plus en plus complexes peuvent maintenant être récursivement calculés. Les cas de conjonction, de disjonction et de négation sont faciles à traiter, puisque ces opérateur ont leurs équivalents directs comme les opérateurs au niveau du bit. Par exemple, étant donnés les bitmaps $B_\varphi$ et $B_\psi$, le bitmap $B_{\varphi \wedge \psi}$ peut être obtenue en calculant $B_\varphi \otimes B_\psi$. Les autres opérateurs propositionnels peuvent être facilement convertis à leurs opérateurs au niveau du bit correspondants à travers les identités standards.
+
 % \begin{align*}
 % \neg \psi &\mapsto \mathop{not}(B_\psi) \\
 % \psi \wedge \varphi &\mapsto \mathop{and}(B_\psi, B_\varphi) \\
@@ -193,21 +167,22 @@ From these initial bitmaps, bitmaps corresponding to increasingly complex formul
 % \psi \rightarrow \varphi &\mapsto \mathop{or}(\mathop{not}(B_\psi), B_\varphi) \\
 % \end{align*}
 %
-Temporal logic operators are a little more complicated because they concern the change of the states in terms of time, potentially requiring to enumerate the actual states and the bits in the bitmaps.
 
-A few of them can still be handled easily. The expression $\X\varphi$ states that $\varphi$ must hold in the next state of the trace. To compute the bitmap $B_{\X\varphi}$, it suffices to remove the first state of $B_\varphi$, shift the remaining bits one position to the left, and fill the last bit with 0. This is illustrated in Figure \ref{fig:patterns}a, and formalized in Algorithm \ref{alg:next}.
+Les opérateurs logiques temporelles sont un peu plus compliqué, car ils concernent le changement des états en termes de temps, ce qui requiert potentiellement l'énumération des états actuels et des bits dans les bitmaps.
+
+Quelques-uns d'entre eux peuvent encore être traités facilement. L'expression $\X\varphi$ indique que $\varphi$ doit être valide à l'état suivant de la trace. Pour le calcul du bitmap $B_{\X\varphi}$, il suffit de supprimer le premier état de $B_\varphi$, déplacer les bits restants une position vers la gauche, et mettre le dernier bit à 0. Ceci est illustré dans la Figure \ref{fig:patterns} (a), et formalisé dans l'Algorithme \ref{alg:next}.
 
 \begin{figure}
 \centering
 \subfloat[$\mbox{\bf X}\,\varphi$]{\includegraphics[scale=0.3]{Pattern-X}}~~~
 \subfloat[$\mbox{\bf G}\,\varphi$]{\includegraphics[scale=0.3]{Pattern-G}}~~~
 \subfloat[$\varphi\,\mbox{\bf U}\,\psi$]{\includegraphics[scale=0.3]{Pattern-U}}
-\caption{A graphical representation of the computation of three temporal operators on bitmaps}
+\caption{Une représentation graphique du calcul des trois opérateurs temporels sur bitmaps}
 \label{fig:patterns}
 \end{figure}
 
 \begin{algorithm}
-\caption{Computing $\X a$}
+\caption{Calcul de $\X a$}
 \label{alg:next}
 \begin{algorithmic}[1]
 \Require Bitmap $a$
@@ -218,12 +193,12 @@ A few of them can still be handled easily. The expression $\X\varphi$ states tha
 \end{algorithmic}
 \end{algorithm}
 
-To compute the vector for $\G\psi$, it suffices to find the smallest position $i$ such that all subsequent bits are 1. In $B_{\G\psi}$, all bits before $i$ are set to 0, and all bits after (and including) $i$ are set to 1. Thus to implement this operator using bitmaps, we need to do a search in the bitmap $B_{\psi}$ from back to front to find the last occurrence of the bit 0, as can be seen from Algorithm \ref{alg:global}. % and \ref{alg:future}.
+Pour calculer le vecteur de $\G\psi$, il suffit de trouver la plus petite position $i$ de telle sorte que tous les bits suivants sont 1. Dans $B_{\G\psi} $, tous les bits devant $i$ sont mis à 0, et tous les bits d'après (inclusivement) $i$ sont mis à 1. Ainsi, pour mettre en \oe{}uvre cet opérateur avec des bitmaps, nous avons besoin de faire une recherche dans le bitmap $B_{\psi}$ de l'arrière vers l'avant pour trouver la dernière apparition du bit 0, comme on peut le voir de l'Algorithme \ref{alg:global}.
 
-Operator \textbf{F} (See Algorithm \ref{alg:future}) is the dual of \textbf{G}; its corresponding algorithm works in the same way as for \textbf{G}, swapping 0 and 1.
+L'opérateur \textbf{F} (montré dans l'Algorithme \ref{alg:future}) est le double de \textbf{G}; son algorithme correspondant fonctionne de la même manière que pour \textbf{G}, en échangeant 0 et 1.
 
 \begin{algorithm}
-\caption{Computing $\G a$}
+\caption{Calcul de $\G a$}
 \label{alg:global}
 \begin{algorithmic}[1]
 \Require Bitmap $a$
@@ -240,7 +215,7 @@ Operator \textbf{F} (See Algorithm \ref{alg:future}) is the dual of \textbf{G}; 
 \end{algorithm}
 
 \begin{algorithm}
-\caption{\textbf{F}uture}
+\caption{Calcul de $\F a$}
 \label{alg:future}
 \begin{algorithmic}[1]
 \Require Bitmap $a$
@@ -257,14 +232,14 @@ Operator \textbf{F} (See Algorithm \ref{alg:future}) is the dual of \textbf{G}; 
 \end{algorithmic}
 \end{algorithm}
 
-According to Definition \eqref{eq:until}, if there is an index $j$ such that $\overline{s}^j \models \psi$ and $\overline{s}^i$ for all $i < j$, then $\overline{s}\models \varphi\U\psi$. In terms of bitmap operations, we need to keep checking if there is any bit set as 1 in $B_{\varphi}$ before every occurrence of bit 1 in $B_{\psi}$ (see Algorithm \ref{alg:until}).
+D'après la Définition \eqref{eq:until}, s'il y a un indice $j$ avec qui $\overline{s}^j \models \psi$ et $\overline{s}^i$ pour tout $i < j$, alors $\overline{s} \models \varphi\U\psi$. En termes d'opérations bitmap, nous avons besoin de continuer à vérifier s'il y a du bit mis à 1 dans le bitmap $B_{\varphi}$ devant chaque apparition de bit 1 dans $B_{\psi}$ (montré dans l'Algorithme \ref{alg:until}).
 
 \begin{algorithm}
-\caption{Computing $a \U b$}
+\caption{Calcul de $a \U b$}
 \label{alg:until}
 \begin{multicols}{2}
 \begin{algorithmic}[1]
-\Require Bitmaps $a$ and $b$
+\Require Bitmaps $a$ et $b$
 \State $out \gets \langle~\rangle$
 \State $p, a_0, a_1, b_0, b_1 \gets 0$
 \While {$p < |a|$}
@@ -277,7 +252,7 @@ According to Definition \eqref{eq:until}, if there is an index $j$ such that $\o
   \EndIf
 
   \If {$a_1 = -1$ or $b_1 = -1$}
-    \State \textbf{break}
+    \BreakWhile
   \EndIf
 
   \State $nearest1 \gets$ min($a_1$, $b_1$)
@@ -285,7 +260,7 @@ According to Definition \eqref{eq:until}, if there is an index $j$ such that $\o
     %\State // (00..) U (00..) $\Rightarrow$ (00..)
     \State addMany($out$, 0, $nearest1 - p$)
     \State $p \gets nearest1$
-    \State \textbf{continue}
+    \Continue
   \EndIf
 
   \If {$p = b_1$}
@@ -298,7 +273,7 @@ According to Definition \eqref{eq:until}, if there is an index $j$ such that $\o
     \EndIf
     \State addMany($out$, 1, $b_0 - p$)
     \State $p \gets b_0$
-    \State \textbf{continue}
+    \Continue
   \EndIf
 
   \If {$a_0 \leq a_1$}
@@ -331,18 +306,18 @@ According to Definition \eqref{eq:until}, if there is an index $j$ such that $\o
   \end{multicols}
 \end{algorithm}
 
-The operation $\psi \textbf{ W } \varphi$ (Definition \eqref{eq:wuntil}) is quite like $\psi \textbf{ U } \varphi$, except that as the equation \eqref{eq:uw} \citep{huth2004} entails, the operation of the former also includes the operation $\textbf{G}\psi$. Algorithm \ref{alg:wuntil} explains its operation.
+L'opération $\psi \textbf{ W } \varphi$ (la Définition \eqref{eq:wuntil}) est tout à fait semblable à $\psi \textbf{ U } \varphi$, sauf que comme l'implique l'équation \eqref{eq:uw} \citep{huth2004}, l'opération de la première comprend également l'opération $\textbf{G}\psi$. L'Algorithme \ref{alg:wuntil} explique son opération.
 
 \begin{equation} \label{eq:uw}
 \psi \textbf{W} \varphi \equiv \psi \textbf{U} \varphi \vee \textbf{G}\psi
 \end{equation}
 
 \begin{algorithm}
-\caption{Computing $a \W b$}
+\caption{Calcul de $a \W b$}
 \label{alg:wuntil}
 \begin{multicols}{2}
 \begin{algorithmic}[1]
-\Require Bitmaps $a$ and $b$
+\Require Bitmaps $a$ et $b$
 \State $out \gets \langle~\rangle$
 \State $p, a_0, a_1, b_0, b_1 \gets 0$
 \While {p < |a|}
@@ -353,14 +328,14 @@ The operation $\psi \textbf{ W } \varphi$ (Definition \eqref{eq:wuntil}) is quit
     \State $b_1 \gets$ next(1, $b$, $p$)
   \EndIf
   \If {$a_1 = -1$ or $b_1 = -1$}
-    \State \textbf{break}
+    \BreakWhile
   \EndIf
 
   \State $nearest1 \gets$ min($a_1$, $b_1$)
   \If {$nearest1 > p$}
     \State addMany($out$, 0, $nearest1 - p$)
     \State $p \gets nearest1$
-    \State \textbf{continue}
+    \Continue
   \EndIf
 
   \If {$p = b_1$}
@@ -372,7 +347,7 @@ The operation $\psi \textbf{ W } \varphi$ (Definition \eqref{eq:wuntil}) is quit
     \EndIf
     \State addMany($out$, 1, $b_0 - p$)
     \State $p \gets b_0$
-    \State \textbf{continue}
+    \Continue
   \EndIf
 
   \If {$a_0 \leq a_1$}
@@ -412,14 +387,14 @@ The operation $\psi \textbf{ W } \varphi$ (Definition \eqref{eq:wuntil}) is quit
 \end{multicols}
 \end{algorithm}
 
-As the dual of the operator \textbf{U}, the operator \textbf{R} defined in \eqref{eq:release} need to union two parts for the formula $\psi \textbf{R} \varphi$: the first part aims to find whether exist $i, j (0 \leq i < j)$ which make $\pi^i, \pi^{i + 1}, ... \pi^j$ satisfy $\varphi$ when $\pi^j$ satisfies $\psi$; and the second is simply $G\varphi$. Algorithm \ref{alg:release} describes this procedure.
+Comme le double de l'opérateur \textbf{U}, l'opérateur \textbf{R} défini dans \eqref{eq:release} a besoin de faire une union de deux parties pour la formule $\psi \textbf{ R } \varphi$: la première partie vise à détecter si existent $i, j (0 \leq i < j) $ qui rendent la séquence $\pi^i, \pi^{i + 1}, ... \pi^j $ satisfaite à $\varphi$ lorsque $\pi^j$ satisfait $\psi$; et la seconde est tout simplement $G\varphi$. L'Algorithme \ref{alg:release} décrit cette procédure.
 
 \begin{algorithm}
-\caption{Computing $a \R b$}
+\caption{Calcul de $a \R b$}
 \label{alg:release}
 \begin{multicols}{2}
 \begin{algorithmic}[1]
-\Require Bitmaps $a$ and $b$
+\Require Bitmaps $a$ et $b$
 \State $out \gets \langle~\rangle$
 \State $p, a_0, a_1, b_0, b_1 \gets 0$
 \While {$p < |a|$}
@@ -427,20 +402,20 @@ As the dual of the operator \textbf{U}, the operator \textbf{R} defined in \eqre
     \State $b_1 \gets$ next(1, $b$, $p$)
   \EndIf
   \If {$b_1 = -1$}
-    \State \textbf{break}
+    \BreakWhile
   \EndIf
 
   \If {$b_1 > p$}
     \State addMany($out$, 0, $b_1 - p$)
     \State $p \gets b_1$
-    \State \textbf{continue}
+    \Continue
   \EndIf
 
   \If {$a_1 \leq p$}
     \State $a_1 \gets$ next(1, $a$, $p$)
   \EndIf
   \If {$a_1 = -1$}
-    \State \textbf{break}
+    \BreakWhile
   \EndIf
 
   \If {$b_0 \leq b_1$}
@@ -452,7 +427,7 @@ As the dual of the operator \textbf{U}, the operator \textbf{R} defined in \eqre
   \If {$a_1 \geq b_0$}
     \State addMany($out$, 0, $b_0 - p + 1$)
     \State $p \gets b_0 + 1$
-    \State \textbf{continue}
+    \Continue
   \EndIf
 
   \If {$a_0 \leq a_1$}
@@ -485,11 +460,11 @@ As the dual of the operator \textbf{U}, the operator \textbf{R} defined in \eqre
 
 \subsection{Discussion}
 
-An interesting point of this last algorithm is that the bitmaps $a$ and $b$ are not traversed in a linear fashion. Rather, entire blocks of each bitmap can be skipped to reach directly the next 0 or the next 1, depending on the case. Note that this is only possible if the trace is completely known in advance before starting to evaluate a formula (and moreover, the trace is traversed backwards). Therefore, our proposed solution is an example of an offline monitor that is not simply an online monitor that is fed events of a pre-recorded trace one by one: it exploits the possibility of \emph{random access} to parts of the trace that is only possible in an offline setting.
+Un point intéressant des derniers trois algorithmes est que les bitmaps $a$ et $b$ ne sont pas toujours traversés de façon linéaire. Au contraire, des blocs entiers de chaque bitmap peuvent être contournés pour atteindre directement le prochain bit de 0 ou 1, selon le cas. Il faut remarquer que ceci est possible uniquement si la trace est complètement connue à l'avance avant de commencer à évaluer une formule (et de plus, la trace est traversée vers l'arrière). Par conséquent, la solution proposée est un exemple d'un moniteur en mode hors ligne qui n'est pas simplement un moniteur en ligne qui est fourni des événements d'une trace pré-enregistrée un par un: il exploite la possibilité de \emph{accès aléatoire} à des parties de la trace qui est seulement possible dans un réglage hors ligne.
 
-This example shows one of the advantages of our proposed technique in terms of complexity. Indeed, reading the original log to create the ground bitmaps can be done in linear time (and in a single pass for all propositional symbols at once). However, once these initial bitmaps are computed, many of the required operations do not require a linear processing of the trace anymore. For example, evaluating $\X\varphi$ requires a simple bit shift, which can be done in a single CPU operation for 64 bits at a time, and potentially much more if compression is used.\footnote{The left bit shift of a compressed block is the block itself, as long as the next bit to the right has the same value.} Similarly, looking for the next 0 or 1 seldom requires linear searching, as the use of compression makes it possible to skip over fill words in one operation. Computing the bitmap for a \textbf{F} or \textbf{G} operator requires a single such lookup for the entire trace.
+Cet exemple montre l'un des avantages de notre technique proposée en termes de complexité. En effet, la lecture du journal d'origine pour la création des bitmaps fragmentés peut être faite en temps linéaire (et en une seule passe pour tous les symboles propositionnels à la fois). Cependant, une fois que ces bitmaps initiaux sont calculés, un grand nombre des opérations nécessaires ne requièrent plus un traitement linéaire de la trace. Par exemple, l'évaluation $\X\varphi$ nécessite un simple décalage de bits, qui peut être fait dans une seule opération de CPU pour 64 bits à la fois, et potentiellement beaucoup plus si la compression est appliquée.\footnote{Le décalage à gauche de bits d'un bloc compressé est le bloc lui-même, aussi longtemps que le premier bit du prochain bloc à droite a la même valeur.} De la même façon, la recherche du prochain bit de 0 ou 1 requiert rarement la recherche linéaire, car l'utilisation de la compression permet de contourner des mots pleins avec une opération. Le calcul du bitmap pour un opérateur \textbf{F} ou \textbf{G} exige une seule telle recherche pour toute la trace.
 
-Another interesting point is the fact that operators \textbf{F} and \textbf{G} are monotonous. As can be seen in Figure \ref{fig:patterns}, the resulting bitmap is of the form $0^*1^*$ (or the reverse). Hence a very simple bitmap is propagated upwards to further algorithms; it can be heavily compressed, and makes any lookup for the next 0 or the next 1 trivial. While not producing such simple vectors, bitmaps resulting from the application of \textbf{U} still have a relatively regular structure that is again amenable to reasonable compression.
+Un autre point intéressant est le fait que les opérateurs \textbf{F} et \textbf{G} sont monotones. Comme on peut le voir dans la Figure \ref{fig:patterns}, le bitmap résultant est sous forme de $0^*1^*$ (ou l'inverse). Ainsi, un bitmap très simple se propage vers d'autres algorithmes; il peut être fortement compressé, et rend toute recherche du prochaine 0 ou 1 trivial. Bien que les bitmaps résultant des applications de \textbf{U}, de \textbf{W} et de \textbf{R} ne produisent pas de vecteurs tellement simples, ils ont toujours une structure relativement régulière qui est aussi souple pour la compression raisonnable.
 
 %% }}} --- Subsection
 
@@ -498,100 +473,66 @@ Another interesting point is the fact that operators \textbf{F} and \textbf{G} a
 %% ------------------
 %% Section: expériences
 %% ------------------
-\section{Implementation and Experiments}\label{sec:bm:experiments} %% {{{
+\section{Implémentation et expériences}\label{sec:bm:experiments} %% {{{
 
-While the worst-case complexity of every algorithm presented in the previous section is still $O(n)$ (where $n$ is the size of the input bitmap), we suspect that performance in practice should be much better. Therefore, in this section, we describe experiments in order to achieve the following purposes:
+Alors que la complexité du pire cas de chaque algorithme présenté dans la section précédente est encore $O(n)$ (où $n$ est la taille du bitmap d'entrée), nous soupçonnons que la performance pratique devrait être beaucoup mieux. Par conséquent, dans cette section, nous décrivons des expériences en vue d'atteindre les objectifs suivants:
 
 \begin{enumerate}
-\item Test the performance of fundamental LTL algorithms
-\item Test the performance of the recursive application of these algorithms on complex LTL formul\ae{}
-\item Evaluate the performance and space savings incurred by the use of compression
+\item Tester la performance des algorithmes LTL fondamentaux;
+\item Tester la performance de l'application récursive de ces algorithmes sur des formules LTL complexes;
+\item Évaluer la performance et l'espace économique occasionnés grâces à l'utilisation de la compression.
 \end{enumerate}
 
-\begin{comment}
-\subsection{Modifications to Libraries} %% {{{
+\subsection{Préparation des expériences} %% {{{
 
-Section \ref{sec:bm:ltlbitmap} mentions that the time and space complexities of all LTL operators are $O(n)$ where $n$ is the size of the input uncompressed bitmap. After applying RLE-model bitmap compression algorithms to our solution, the space complexities become $O(m)$ as is discussed above, and we managed to make the time complexities also become $O(m)$ by implementing the bitmap manipulation functions listed in Table \ref{tbl:bm:bmhelpers} for every  bitmap compression algorithms.
+Comme un moyen d'éviter les coûts d'entrées ou de sorties de disques à l'exécution, nous chargeons tous les fichiers pertinents dans la mémoire avant les calculs. Ainsi, bien que l'utilisation de bitmaps peut considérablement réduire l'exigence de mémoire, nous avons préparé un poste de travail qui a un processeur d'Intel Xeon E5-2630 v3 et 48 Go de mémoire.
 
-Because of lack of the support of random access for the RLE-model bitmap compression algorithms, we cannot enumerate the bits in the same way as uncompressed bitmap. Therefore we design an \emph{iterator} data structure to store not only the absolute index of current bit in the uncompressed bitmap but also the relative index in the compressed bitmap.
+Tous les codes sont mis en \oe{}vre en Java qui prend en soi la responsabilité de la gestion de la mémoire et de la collecte des ordures. En ce qui concerne le délai causé par la collecte des ordures (GC) et surtout Full-GC, nous avons manuellement effectué \textit{System.gc()} avant et après chaque calcul de formules pour fournir un environnement d'exécution qui était aussi ``propre'' que possible.
 
-Taking the function \textbf{next(1, )} as an example, if the current relative index is in a sequence word of 0, the search in this word is unnecessary, and we just jump to the next word; if the index is in a sequence word of 1, we return the current index; however, if the index is in a literal word, we have to look for the bit 1 in the $ulen$-bits word.
-
-%% }}}
-\end{comment}
-
-\subsection{Experimental Setup} %% {{{
-
-As a means to avoid the runtime disk I/O cost we load all relevant files into memory before the calculations. Thus although using bitmap can considerably reduce the requirement of memory, we prepared a workstation with an Intel Xeon E5-2630 v3 Processor and 48 GB of memory.
-
-All codes are implemented in Java which self takes responsibility of the memory management and garbage collection. Concerning the delay caused by garbage collection (GC) and especially Full-GC, we called \textit{System.gc()} before and after every formula calculation to provide a runtime environment that was as ``clean'' as possible.
-
-Table \ref{table:bmlibs} shows the libraries used for different types of bitmap. In order to implement all the LTL operations, we modified the codes of the libraries to add the necessary functions listed in Table \ref{tbl:bm:bmhelpers} and to optimize the functions so that the time complexities of the operators become $O(m)$ where $m$ is the number of sequences of consecutive 0/1 bits.
+Le Tableau \ref{table:bmlibs} montre les librairies utilisées pour différents types de bitmap. Afin de mettre en \oe{}uvre toutes les opérations LTL, nous avons modifié les codes des librairies pour ajouter les fonctions nécessaires énumérées dans le Tableau \ref{tbl:bm:bmhelpers} et optimiser les fonctions de sorte que les complexités en temps des opérateurs deviennent $O(m)$ où $m$ est le nombre de séquences de bits consécutifs de 0 ou de 1.
 
 \begin{table}
 \centering
 \begin{tabular}{|c|l|}
 \hline
-Bitmap & Source \\
+Librairie bitmap & Source \\
 \hline
-Uncompressed & \texttt{java.util.BitSet} from Java SDK \\
+Non compressée & \texttt{java.util.BitSet} à partir de SDK Java  \\
 \hline
-\multirow{2}{*}{WAH} & Original:\ \ \url{https://github.com/metamx/extendedset} \\
-& Modified: \url{https://github.com/phoenixxie/extendedset} \\
+\multirow{2}{*}{WAH} & Originale:\ \ \url{https://github.com/metamx/extendedset} \\
+& Modifiée: \url{https://github.com/phoenixxie/extendedset} \\
 \hline
-\multirow{2}{*}{Concise} & Original:\ \ \url{https://github.com/metamx/extendedset} \\
-& Modified: \url{https://github.com/phoenixxie/extendedset} \\
+\multirow{2}{*}{Concise} & Originale:\ \ \url{https://github.com/metamx/extendedset} \\
+& Modifiée: \url{https://github.com/phoenixxie/extendedset} \\
 \hline
-\multirow{2}{*}{EWAH} & Original:\ \ \url{https://github.com/lemire/javaewah} \\
-& Modified: \url{https://github.com/phoenixxie/javaewah} \\
+\multirow{2}{*}{EWAH} & Originale:\ \ \url{https://github.com/lemire/javaewah} \\
+& Modifiée: \url{https://github.com/phoenixxie/javaewah} \\
 \hline
 Roaring & \url{https://github.com/lemire/RoaringBitmap} \\
 \hline
 \end{tabular}
-\caption{Bitmap libraries}
+\caption{Librairies bitmap}
 \label{table:bmlibs}
 \end{table}
 
-Because of lack of the support of random access for the RLE-model bitmap compression algorithms, we cannot enumerate the bits in the same way as for an uncompressed bitmap. Therefore we designed an \emph{iterator} data structure to store not only the absolute index of current bit in the uncompressed bitmap but also the relative index in the compressed bitmap. Taking the function \textbf{next(1,x)} as an example, if the current relative index is in a sequence word of 0, the search in this word is unnecessary, and we just jump to the next word; if the index is in a sequence word of 1, we return the current index; however, if the index is in a literal word, we have to look for the bit 1 in the $ulen$-bits word.
+En raison du manque de soutien de l'accès aléatoire pour les algorithmes de modèles RLE de compression bitmap, nous ne pouvons pas énumérer les bits de la même manière qu'un bitmap non compressé. Par conséquent, nous avons conçu une structure de données \emph{itérateur} pour stocker non seulement l'indice absolu du bit actuel dans le correspondant bitmap non compressé, mais aussi l'indice relatif dans le bitmap compressé. Prenant l'exemple de la fonction \textbf{next(1, x)}, si l'indice relatif actuel est dans un mot de séquence de 0, la recherche dans ce mot est inutile, et nous passons simplement au mot suivant; si l'indice est dans un mot de séquence de 1, on retourne l'index actuel; cependant, si l'indice est dans un mot littéral, nous devons chercher le bit 1 dans le mot de $ulen$ bits.
 
-For the experiments, we developed a random data generator. Every time it generates $5 \times 10^7$ tuples, and each tuple contains 3 random numbers ($a, b, c$) related with 3 simple inequalities: $a > 0$, $b > 0$ and $c \leq 0$, which will be labelled as $s_0$, $s_1$ and $s_2$, respectively. According to \eqref{eq:ap}, the true/false values of these 3 statements consist of the atomic propositions. When a tuple was passed to the 3 statements, we got 3 boolean values each of which was then turned into a 1/0 bit in the bitmap corresponding to one of the 3 statements. When all tuples were processed, we had 3 bitmaps having 50 million bits each.
+Pour les expériences, nous avons développé un générateur de données aléatoires. Chaque fois qu'il génère $5 \times 10^7$ tuples, et chaque tuple contient trois nombres aléatoires ($a, b, c$) liés à trois inégalités simples: $a > 0$, $b > 0$ et $c \leq 0$, qui seront étiquetées comme $s_0$, $s_1$ et $s_2$, respectivement. Selon \eqref{eq:ap}, les valeurs vrai/faux de ces trois déclarations sont composées des propositions atomiques. Quand un tuple a été passé aux trois déclarations, nous avons obtenu trois valeurs booléennes dont chacune a ensuite été transformée en bit de 1 ou de 0 dans le bitmap correspondant à l'un des trois états. Lorsque tous les tuples ont été traités, nous avions trois bitmaps ayant 50 millions de bits chacun.
 
-% The experiment data was a file with 50 million lines of states, each of which contained 3 random numbers used for 3 relational statements. The true/false values of these 3 statements $(s_0, s_1, s_2)$ consisted of the atomic propositions.
+\subsection{Opérateurs LTL fondamentaux} %% {{{
 
-% \begin{table}
-% \centering
-% \begin{tabular}{|c|c|}
-% \hline
-% & Relational statement \\
-% \hline
-% $s_0$ & $a > 0$ \\
-% \hline
-% $s_1$ & $b > 0$ \\
-% \hline
-% $s_2$ & $c \leq 0$ \\
-% \hline
-% \end{tabular}
-% \caption{Relational statements}
-% \label{tbl:bm:statements}
-% \end{table}
+Une première expérience est formée de l'évaluation de la performance, en termes de temps de calcul, pour évaluer un vecteur de bits sur chaque opérateur propositionnel et temporel.
 
-% Pas vraiment pertinent --SH
-% The range of the random numbers is [-10000, 10000], and according to the three inequalities mentioned earlier, it is easy to know that the difference between the probabilities of getting 1 and getting 0 is only about $0.05\permil$ if the random function is fair enough, therefore there should be nearly the same number of 1 and 0 bits in the generated bitmap.
+Dans la première expérience, nous avons effectué 100 passes d'un benchmark sur les opérateurs fondamentaux avec des bitmaps non compressés. Dans chaque passe, les données d'expérience ont été régénérées et transmises aux déclarations relationnelles à partir desquelles les bitmaps ont été créés. Puis les formules ont été exécutées avec les bitmaps. Dans la dernière étape, nous avons calculé le temps moyen d'exécution d'une passe pour chaque opérateur LTL, et le nombre de bits traités par seconde.
 
-\subsection{Basic LTL Operators} %% {{{
-
-A first experiment consisted of evaluating the performance, in terms of computation time, for evaluating a bit vector on each propositional and temporal operator taken separately.
-
-In the first experiment, we ran 100 passes of a benchmark on the fundamental operators with uncompressed bitmaps. In every pass, the experiment data was regenerated and passed to the relational statements from which the bitmaps were created. Then the formul\ae{} were executed with the bitmaps. In the final step we calculated the average running time of a pass for each LTL operator, and the number of bits processed per second.
-
-Table \ref{tbl:bm:basicops} shows that the propositional logic operators were faster than most temporal logic operators. Among the temporal logic operators, the binary operators were slower than the unary ones because the former require more operations than the latter, especially in the situation that many 0s and 1s sequences are mixed in the bitmap. The dual operators \textbf{G} and \textbf{F} have similar algorithms but \textbf{F} surprisingly took three times longer than \textbf{G}. This can be explained by the fact that for a fairly-randomized input bitmap, \textbf{F} will append more 1s than 0s to its output bitmap, while \textbf{G} will append more 0s than 1s. Although the Java \texttt{BitSet} implementation supports both to set a bit to 1 and to clear a bit to 0\footnote{\url{https://docs.oracle.com/javase/8/docs/api/java/util/BitSet.html}}, it actually does nothing when clearing a new bit of which the index is beyond its size, i.e. appending a bit 0. This results in an asymmetrical processing of 0s and 1s in the bitmap.
+Le Tableau \ref{tbl:bm:basicops} montre que les opérateurs logiques propositionnels étaient plus rapides que la plupart des opérateurs logiques temporels. Parmi les opérateurs logiques temporels, les opérateurs binaires sont plus lents que celles unaire parce que les premiers requièrent plus d'opérations que les seconds, particulièrement dans la situation où plusieurs séquences de 0s et de 1s sont mélangées dans le bitmap. Les duals opérateurs \textbf{G} et \textbf{F} ont des algorithmes similaires, mais \textbf{F} a pris étonnamment trois fois plus longtemps que \textbf {G}. Ceci peut être expliqué par le fait que pour un bitmap d'entrée assez randomisé, \textbf{F} ajoute plus de bits de 1s que de 0s à son bitmap de sortie, tandis que \textbf{G} ajoute plus de bits de 0s que de 1s. Bien que l'implémentation de \texttt{BitSet} en Java puisse mettre un bit à 1 et à 0\footnote{\url{https://docs.oracle.com/javase/8/docs/api/java/util/BitSet.html}}, elle ne fait actuellement rien quand elle est demandée de mettre à 0 un nouveau bit dont l'indice est au-delà de sa taille, c'est-à-dire l'ajout d'un bit 0. Il en résulte un traitement asymétrique de bits de 0s et de 1s dans le bitmap.
 
 \begin{table}
 \centering
 \small
 \begin{tabular}{|c|c|c|c|c|}
 \hline
-Formula & Min.\ time & Max.\ time & Avg.\ time & Throughput \\
+Formule & Temps\ Min. & Temps\ Max. & Temps\ Moyen & Débit \\
 & (ms) & (ms) & (ms) & (b/s) \\
 \hline
 $\neg s_0$ & 0 & 15 & 6.18 & $8.09 \times 10^{9}$ \\
@@ -616,21 +557,20 @@ $s_0 \R s_1$ & 1735 & 2188 & 1961.37 & $5.10 \times 10^7$ \\
 \hline
 \end{tabular}
 \vskip 8pt
-\caption{Running time for evaluating each LTL operator on a bit vector, without the use of a compression library.}
+\caption{Temps d'exécution d'évaluation de chaque opérateur LTL sur un vecteur de bits, sans l'utilisation de librairie de compression.}
 \label{tbl:bm:basicops}
 \end{table}
 
 %% }}} --- Subsection
 
-\subsection{Complex formul\ae{}} %% {{{
+\subsection{Formules complexes} %% {{{
 
-The results from this first experiment suggest that propositional logic operators, temporal logic unary operators and temporal logic binary operators have different magnitudes of processing speed; therefore we can divide the operators into three groups.
+Les résultats de cette première expérience suggèrent que les opérateurs logiques propositionnels, les opérateurs logiques temporels unaires et les opérateurs logiques temporels binaires ont des magnitudes différentes de vitesse de traitement; par conséquent, nous pouvons diviser les opérateurs en trois groupes.
 
-At the beginning of this second experiment, we composed various combinations of operators into 14 LTL formul\ae{} with the help of the tool \emph{randltl} from the library \textit{Spot} \footnote{\url{https://spot.lrde.epita.fr/index.html}}; the formul\ae{} are shown in Table \ref{tbl:bm:complex-formulas}. Then we also ran a 50-pass benchmark on the these formul\ae{} with uncompressed bitmaps. In each cycle the data was regenerated and re-executed with the 14 formul\ae{}. We measured the running time of each cycles and calculated the average time cost and the processing speed as before.
-
+Au début de cette deuxième expérience, nous avons composé diverses combinaisons d'opérateurs en 14 formules LTL avec l'aide de l'outil \emph {randltl} de la librairie \textit{Spot}\footnote{\url{https://spot.lrde.epita.fr/index.html}}; les formules sont présentées dans le Tableau \ref{tbl:bm:complex-formulas}. Ensuite, nous avons également effectué un benchmark de 50 passes sur ces formules avec des bitmaps non compressés. Dans chaque cycle les données ont été régénérées et ré-exécutées avec les 14 formules. Nous avons mesuré le temps d'exécution de chaque cycle et calculé le coût du temps moyen et la vitesse de traitement comme avant.
 
 \begin{table}[h]
-%\begin{footnotesize}
+\begin{footnotesize}
 
 \begin{equation}\tag{F1}
 \G ((s_2 \mathrel{\rightarrow} \F (\mathop{\neg}(s_1 \U  s_2) \W  (s_2 \mathrel{\vee} \G s_1))) \W  (\mathop{\neg}\F (s_0 \R  \X s_2) \W  ((s_0 \mathrel{\wedge} s_2 \mathrel{\wedge} \F s_2) \U  s_0)))
@@ -722,22 +662,22 @@ At the beginning of this second experiment, we composed various combinations of 
 ((s_2 \R  s_0) \R  s_1)) \U  s_1)) \W  s_0) \W  (((s_0 \R  s_1) \R  (s_0 \W  s_1)) \U  s_0))
 \end{multline}
 
-%\end{footnotesize}
+\end{footnotesize}
 \vskip 8pt
-\caption{The complex LTL formul\ae{} evaluated experimentally.}
+\caption{Les formules LTL complexes évaluées expérimentalement}
 \label{tbl:bm:complex-formulas}
 \end{table}
 
-As is indicated in Table \ref{tbl:bm:complex}, 3 groups of operators have different scales of processing speed. The combinations having temporal logic and binary operators always took more time than others, and formul\ae{} 13 and 14 are the slowest. This result also shows that our solution can handle a fairly large number of bits (events from the trace) per second, ranging from millions to billions.
+Comme il est indiqué dans le Tableau \ref{tbl:bm:complex}, trois groupes d'opérateurs ont différentes échelles de vitesse de traitement. Les combinaisons ayant les opérateurs logiques temporels et binaires ont toujours pris plus de temps que d'autres, et les formules F13 et F14 sont les plus lentes. Ce résultat montre également que notre solution peut manipuler un assez grand nombre de bits (événements de la trace) par seconde, allant de millions à des milliards.
 
 \begin{table}[h]
 \centering
 \small
 \begin{tabular}{|c|c|c|c|c|c|c|c|}
 \hline
-Formula & Prop. & Temp. & Temp. & Min Time & Max Time & Avg. Time & Approx. \\
-No. & Logic & Unary & Binary & (ms) & (ms) & (ms) & bits/second \\
-& Ops. & Ops. & Ops. & & & & \\
+Formule & Opérateurs & Opérateurs & Opérateurs & Temps & Temps & Temps & Bits/second \\
+No. & Logiques & Temporels & Temporels. & Min.  & Max. & Avg. & Approx. \\
+ & Props. & Unaires & Binaires & (ms) & (ms) & (ms) &  \\
 \hline
 F1 & 6 & 6 & 6 & 10454 & 14205 & 11483.02 & $1.31 \times 10^7$ \\
 \hline
@@ -769,40 +709,36 @@ F14 & 0 & 0 & 18 & 22800 & 27481 & 24877.67 & $6.03 \times 10^6$  \\
 \hline
 \end{tabular}
 \vskip 8pt
-\caption{Running time for the evaluation of LTL formul\ae{} of Table \ref{tbl:bm:complex-formulas}, without the use of a compression library.}
+\caption{Temps d'exécution de l'évaluation des formules LTL du Tableau \ref{tbl:bm:complex-formulas}, sans l'utilisation de librairie de compression.}
 \label{tbl:bm:complex}
 \end{table}
 
 %% }}} --- Subsection
 
-\subsection{Use of Bitmap Compression} %% {{{
+\subsection{Utilisation de compression bitmap} %% {{{
 
-According to the RLE-model algorithms, the compression ratio mostly depends on the length of consecutive 0s or 1s. Hence in this experiment we modified the generator to enable it to repeat the same tuple a specified number of times: 1, 32 and 64. This new mechanism is able to ensure the existence of continuous sequences with a minimum length ($slen$) in the generated bitmaps. Intuitively, when the value of $slen$ increases, the number of sequences decreases; therefore the RLE-model algorithms can be expected to have better performance than an uncompressed bitmap. % for its $O(m)$ time and space complexities.
+Selon les algorithmes de modèles RLE, le taux de compression dépend principalement de la longueur de bits consécutifs de 0s ou de 1s. De ce fait, dans cette expérience, nous avons modifié le générateur pour lui permettre de répéter le même tuple un certain nombre de fois: 1, 32 et 64. Ce nouveau mécanisme est en mesure d'assurer l'existence de séquences continues d'une longueur minimum ($slen$) dans les bitmaps générés. Intuitivement, lorsque la valeur de $slen$ augmente, le nombre de séquences diminue; par conséquent, les algorithmes de modèles RLE devraient avoir de meilleures performances qu'un bitmap non compressé.
 
 \begin{figure}[h]
 \begin{center}
 \centering
 \includegraphics[width=\linewidth]{states.png}
-\caption{Bitmap generation with compression algorithms}
+\caption{Génération de bitmaps avec les algorithmes de compression}
 \label{img:states}
 \end{center}
 \end{figure}
 
-In the first part of the experiment, we generated the bitmaps with different algorithms and different values of $slen$, and then calculated the compression ratios. The result in Figure \ref{img:states} confirms the hypothesis that when $slen < wlen$ (where $wlen$ is the length of a word), the bitmap cannot be well compressed by any RLE-model algorithm, and in this case, the algorithm EWAH behaves a little better than the others due to its smaller structural cost. When $slen$ increases to 32 and 64, i.e. $slen \geq wlen$, the RLE algorithms start to work well and the compression ratio of $slen = 64$ is obviously better than the one of $slen = 32$. From the figure \ref{img:states} we can also see that when $slen$ is 1, 32 and 64, EWAHs are much slower than WAH, Concise and Roaring.
+Dans la première partie de l'expérience, nous avons généré les bitmaps avec les algorithmes différents et les valeurs différentes de $slen$, puis calculé les taux de compression. Le résultat dans la Figure \ref{img:states} confirme l'hypothèse selon laquelle quand $slen < wlen$ (où $wlen$ est la longueur d'un mot), le bitmap ne peut pas être bien compressé par un algorithme de modèle RLE, et dans ce cas, l'algorithme EWAH se comporte un peu mieux que les autres en raison de son coût structurel plus petit. Lorsque $slen$ augmente à 32 et à 64, c.-à-d. $slen \geq wlen$, les algorithmes RLE commencent à bien fonctionner et le taux de compression lors de $slen = 64$ est évidemment meilleure que celui lors de $slen = 32$. De la Figure \ref{img:states}, nous pouvons également voir que quand $slen$ est égal à 1, à 32 et à 64, EWAHs sont plus lents que WAH, Concise et Roaring.
 
-\begin{comment}
-The result in Figure \ref{img:ratio} shows that when the length of consecutive bits is small ($\leq 5$), there is no great gap of the ratio among the RLE-model algorithms, Roaring bitmap and even uncompressed bitmap. The word lengths of WAH, Concise, EWAH(32bit), EWAH(64bit) are 32, 32, 32 and 64, so when the length grows beyond 50, which is over 32 and slightly less than 64, the ratios increase dramatically. The compression ratio of Roaring bitmap depends on the fraction of 1s bits in the bitmap, when the bitmap is not very sparse, the algorithm has to allocate much memory for its containers which in our opinion is the reason that its compression ratio is near 1 (uncompressed).
-\end{comment}
+Dans la deuxième partie de l'expérience, nous avons mesuré les performances des bitmaps compressés lors de l'application des algorithmes pour tous les opérateurs fondamentaux et tous les formules LTL dans les expériences précédentes. Les résultats détaillés couvrant tous les opérateurs et les formules peuvent être trouvés dans l'Annexe \ref{appendixa}.
 
-In the second part of the experiment, we measured the performance of the compressed bitmaps when applying the algorithms for all fundamental operators and all LTL formul\ae{}s in the previous experiments. Detailed results covering all the operators and formul\ae{}s can be found in Appendix \ref{appendixa}.
-
-To this end, we picked formula F1 and F14 from the previous experiment, as F1 contains all the operators and connectives of LTL and F14 is the slowest of all formul\ae{} in the previous experiment. We again ran the benchmark 100 passes; in each cycle, the formula was evaluated with one group of input bitmaps from the last step and we recorded the time cost of each bitmap algorithm and each length of consecutive bits.
+À cette fin, nous avons choisi les formules F1 et F14 de l'expérience précédente, car F1 contient tous les opérateurs et les conjonctions de LTL et F14 est la plus lente de toutes les formules dans l'expérience précédente. Nous avons à nouveau effectué le benchmark 100 fois; dans chaque cycle, la formule a été évalué par un groupe de bitmaps d'entrée de la dernière étape et nous avons enregistré le coût de temps de chaque algorithme bitmap et de chaque longueur de bits consécutifs.
 
 \begin{figure}[h]
 \begin{center}
 \centering
 \includegraphics[width=\linewidth]{p11.png}
-\caption{Comparison of compression ratio and processing rate for LTL formula 1, for various bitmap compression libraries and various values of $slen$}
+\caption{Comparaison du taux de compression et de la vitesse de traitement de la formule F1, avec diverses librairies de compression bitmap et différentes valeurs de $slen$}
 \label{img:f1}
 \end{center}
 \end{figure}
@@ -811,12 +747,12 @@ To this end, we picked formula F1 and F14 from the previous experiment, as F1 co
 \begin{center}
 \centering
 \includegraphics[width=\linewidth]{p24.png}
-\caption{Comparison of compression ratio and processing rate for LTL formula 14, for various bitmap compression libraries and various values of $slen$}
+\caption{Comparaison du taux de compression et de la vitesse de traitement de la formule F14, avec diverses librairies de compression bitmap et différentes valeurs de $slen$}
 \label{img:f14}
 \end{center}
 \end{figure}
 
-According to Figure \ref{img:f1} and \ref{img:f14}, the performance of the RLE-model algorithms, WAH, EWAH and Concise is obviously related to the value of $slen$. The Figure \ref{img:f1} also suggests that the presence of operators \textbf{G} and \textbf{F} can vastly increase the length of consecutive bits of same value, which in turn can be well compressed by RLE-model algorithms. In such a case, several algorithms have better performance than the uncompressed bitmap as $slen$ increases.
+Selon les Figures \ref{img:f1} et \ref{img:f14}, la performance des algorithmes de modèles RLE, WAH, EWAH et Concise est évidemment liée à la valeur de $slen$. La Figure \ref{img:f1} suggère également que la présence des opérateurs \textbf{G} et \textbf{F} peut grandement augmenter la longueur de bits consécutifs de même valeur, qui à leur tour peuvent être bien compressés par des algorithmes de modèles RLE. Dans un tel cas, plusieurs algorithmes ont de meilleures performances que le bitmap non compressé lors de l'augmentation de $slen$.
 
 %% }}} --- Subsection
 
@@ -825,34 +761,33 @@ According to Figure \ref{img:f1} and \ref{img:f14}, the performance of the RLE-m
 %% ------------------
 %% Section: related work
 %% ------------------
-\section{Related Work}\label{sec:bm:related} %% {{{
+\section{Travaux connexes}\label{sec:bm:related} %% {{{
 
-The prospect of using physical properties of hardware to boost the performance of runtime verification has already been studied in the recent past. For example, Pellizzoni \etal\@ \citep{pellizzoni2008hardware} utilized dedicated commercial-off-the-shelf (COTS) hardware \citep{emerson1990temporal} to facilitate the runtime monitoring of critical embedded systems whose properties were expressed in Past-time Temporal Linear Logic (PTLTL).
+La perspective de l'utilisation de propriétés physiques de matériel pour améliorer les performances de la vérification de l'exécution a déjà été étudiée dans le passé récent. Par exemple, Pellizzoni \etal\@ \citep{pellizzoni2008hardware} ont utilisé du dédié matériel commercial-off-the-shelf (COTS) \citep{emerson1990temporal} pour faciliter le monitoring de l'exécution de systèmes embarqués critiques dont les propriétés ont été exprimées en logique temporelle linéaire en temps passé (ptLTL).
 
-As the number of cores (GPU or multi-core CPUs) in the commodity hardware keeps increasing, the research of exploiting the available processors or cores to parallelize the tasks and the computing  brings a challenge and also an opportunity to improve the architecture of runtime verification. For example, Ha \etal\@ \citep{ha2009concurrent} introduced a buffering design of \emph{Cache-friendly Asymmetric Buffering (CAB)} to improve the communications between application and runtime monitor by exploiting the shared cache of the mutilcore architecture; Berkovich \etal\@ \citep{DBLP:journals/fmsd/BerkovichBF15} proposed a GPU-based solution that effectively utilizes the available cores of the GPU, so that the monitor designed and implemented with their method can run in parallel with the target program and evaluate LTL properties.
+Comme le nombre de c\oe{}urs (GPU ou CPU multi-c\oe{}urs) dans le matériel de base ne cesse de croître, la recherche de l'exploitation des processeurs disponibles ou des c\oe{}ur disponibles pour paralléliser les tâches et les calculs apporte un défi et aussi une occasion d'amélioration de l'architecture de la vérification de l'exécution. Par exemple, Ha \etal\@ \citep{ha2009concurrent} ont présenté une conception de tamponnage de \emph{Cache-friendly Asymmetric Buffering (CAB)} pour améliorer les communications entre l'application et le moniteur d'exécution en utilisant le cache partagé de l'architecture multi-c\oe{}urs; Berkovich \etal\@ \citep{DBLP:journals/fmsd/BerkovichBF15} a proposé une solution à base de GPU qui utilise efficacement les c\oe{}urs disponibles du GPU, de sorte que le moniteur conçu et implémenté avec leur méthode peut fonctionner en parallèle avec le programme cible et évaluer des propriétés LTL.
 
-Previous work by one of the authors \citep{jocasa} introduced an algorithm for the automated verification of Linear Temporal Logic formul\ae{} on event traces, using an increasingly popular cloud computing framework called MapReduce. The algorithm can process multiple, arbitrary fragments of the trace in parallel, and compute its final result through a cycle of runs of MapReduce instances.
-The proposed technique manipulates objects called \emph{tuples}, which are of the form $\langle \phi, (n, i)\rangle$, and are interpreted as the statement ``the process is at iteration $i$, and LTL formula $\phi$ is true for the suffix of the current trace starting at its $n$-th event''. One can see that this statement corresponds exactly to the fact, in the present solution, that the $n$-th position of the bitmap generated by the evaluation of $\phi$ contains the value 1.
+Le travail antérieur de l'un des auteurs \citep{jocasa} introduit un algorithme pour la vérification automatisée de formules de logiques temporelles linéaires sur des traces d'événements, en utilisant un plus en plus populaire cadre de cloud computing appelé MapReduce. L'algorithme peut traiter plusieurs fragments arbitraires de la trace en parallèle, et calculer le résultat final à travers un cycle d'exécution d'instances de MapReduce.
+La technique proposée manipule des objets appelés \emph{tuples}, qui sont de la forme $\langle \phi, (n, i)\rangle$, et sont interprétés comme la déclaration ``the process is at iteration $i$, and LTL formula $\phi$ is true for the suffix of the current trace starting at its $n$-th event''. On peut voir que cette déclaration correspond exactement au fait, dans la présente solution, que la $n$-ème position du bitmap généré par l'évaluation de $\phi$ contient la valeur 1.
 
-Apart from this similarity, however, the two techniques are radically different. Since the MapReduce approach operates on tuples one by one, while the present solution manipulates entire bitmaps, the algorithms for each LTL operator have little in common (especially that for \textbf{U}). Where the MapReduce approach gets its speed from the processing of multiple subformul\ae{} on different machines, our present solution is efficient because some operations (such as conjunction) can be computed simultaneously for many adjacent events in a single CPU cycle. In addition, a downside of the MapReduce solution is the large number of tuples generated, and the impossibility of compressing that volume of data.
+Outre cette similitude, toutefois, les deux techniques sont radicalement différentes. Puisque la méthode de MapReduce fonctionne sur les tuples un par un, alors que la présente solution manipule les bitmaps entiers, les algorithmes pour chaque opérateur LTL ont peu en commun (en particulier celui de \textbf{U}). Lorsque la méthode de MapReduce obtient sa vitesse du traitement de plusieurs sous-formules sur des machines différentes, notre solution présente est efficace parce que certaines opérations (comme conjonction) peuvent être calculées simultanément pour de nombreux événements adjacents dans un seul cycle de CPU. En plus, un inconvénient de la solution MapReduce est le grand nombre de tuples générées, et l'impossibilité de compression du volume de données.
 
-As one can see, there have been multiple attempts at leveraging parallelism and properties of hardware to evaluate temporal expressions on traces. However, As far as we know, our work it the first to get its performance boost at the level of the \emph{data structures} used to evaluate these expressions.
+Comme on peut le voir, il y avait plusieurs tentatives de s'appuyer le parallélisme et les propriétés de matériel pour évaluer les expressions temporelles sur des traces. Cependant, pour autant que l'on le sache, notre travail est le premier à obtenir l'amélioration de performance au niveau de la \emph{structures de données} pour évaluer ces expressions.
 
 %% }}} --- Section
 
 %% ------------------
 %% Section: conclusion
 %% ------------------
-\section{Conclusion and future work}\label{sec:bm:conclusion} %% {{{
+\section{Conclusion et perspectives}\label{sec:bm:conclusion} %% {{{
 
-We proposed a solution for the offline evaluation of LTL formul\ae{} by means of bitmap manipulations. In such a setting, propositional predicates on individual events of a trace states are mapped to bits of a vector (``bitmap'') that are then manipulated to implement each LTL operator. In addition to the fact that bitmap manipulations are in themselves very efficient, our algorithms take advantage of the fact that the trace is completely known in advance, and that random access to any position of that trace makes it possible to skip large blocks of events to speed up the evaluation.
+Nous avons proposé une solution pour l'évaluation hors ligne de formules LTL au moyen de manipulation de bitmaps. Dans un tel contexte, les prédicats propositionnel d'événements individuels d'états d'une trace sont mappés aux bits d'un vecteur (``bitmap'') qui sont ensuite manipulés pour mettre en \oe{}uvre chaque opérateur LTL. En plus du fait que les manipulations de bitmaps sont en soi très efficaces, nos algorithmes profitent du fait que la trace est complètement connue à l'avance, et que l'accès aléatoire à une position quelconque de cette trace permet de contourner de grands blocs d'événements pour accélérer l'évaluation.
 
-For this reason, our solution is a prime example of an offline evaluation algorithm that exploits the fact that it indeed works offline ---it is not merely an online algorithm that reads events from a pre-recorded trace one by one. As a matter of fact, in some cases (such as the \textbf{U} operator), the trace is even evaluated from the end, rather than from the beginning. A thorough performance benchmark for both fundamental operators and complex LTL formul\ae{} proved the feasibility of the approach, and showed how events from a trace can be processed at a rate ranging from millions to billions of events per second.
+Pour cette raison, notre solution est un important exemple d'un algorithme d'évaluation hors ligne qui exploite le fait que cela fonctionne bien en mode hors ligne --- il n'est pas un algorithme en ligne qui lit les événements à partir d'une trace pré-enregistré un par un. En fait, dans certains cas (comme l'opérateur \textbf{U}), la trace est même évaluée à partir de la fin, plutôt que à partir du début. Un approfondi benchmark de performance pour les opérateurs fondamentaux et les formules LTL complexes a prouvé la faisabilité de la solution, et a montré comment les événements d'une trace peuvent être traités à une vitesse allant de millions à des milliards d'événements par seconde.
 
-To further exploit the potential of bitmaps, we introduced bitmap compression algorithms in our solution and integrated them in our benchmark. In the experiments, as we expected, compressed bitmaps demonstrated thair ability to easily compress sparse bitmaps and accelerating the LTL operations when there is a certain amount of consecutive bits with the same value. We have explained, how many LTL operators naturally increase the regularity of the bitmaps they are processing.
+Pour exploiter davantage le potentiel de bitmap, nous avons présenté des algorithmes de compression bitmap dans notre solution et les avons intégrés dans notre benchmark. Dans les expériences, comme nous l'espérions, notre solution a démontré sa capacité de compresser facilement les creux bitmaps et d'accélérer les opérations LTL quand il y a un certain nombre de bits consécutifs avec la même valeur. Nous avons expliqué, comment de nombreux opérateurs LTL augmentent naturellement la régularité des bitmaps qu'ils traitent.
 
-Obviously, this solution is suitable only for offline evaluation. However, The promising results obtained in our implementation lead to a number of potential extensions and improvements over the current method. First, the algorithm can be reused as a basis for other temporal languages that intersect with LTL, such as PSL \cite{IntroPSLBook}. Second, the technique could be expanded to take into account data parameters and quantification. Finally, one could also consider to parallellize the evaluation of large segments of btimaps on multiple machines.
-
+De toute évidence, cette solution ne convient que à l'évaluation hors ligne. Cependant, les résultats prometteurs obtenus dans notre implémentation conduisent à un grand nombre d'extensions et d'améliorations potentielles basées sur la méthode actuelle. Tout d'abord, l'algorithme peut être réutilisé comme base pour d'autres langages temporels qui se croisent avec LTL, tels que PSL \citep{IntroPSLBook}. D'autre part, cette technique pourrait être étendue pour prendre en considération des paramètres et de la quantification de données. Enfin, on pourrait aussi envisager la parallélisation de l'évaluation de grands segments de bitmaps sur plusieurs machines.
 %% }}} --- Section
 
 %% :folding=explicit:wrap=soft:mode=latex:

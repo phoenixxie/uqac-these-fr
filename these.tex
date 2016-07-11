@@ -36,7 +36,7 @@
 \usepackage{hyperref}        % Better handling of references in PDFs
 \usepackage{comment}         % To comment out blocks of text
 \usepackage{algorithm,algorithmicx,algpseudocode}
-\usepackage[page,titletoc]{appendix}
+\usepackage[toc,page]{appendix}
 
 \setlist{parsep=0pt,listparindent=\parindent}
 
@@ -111,6 +111,33 @@
 
 \newcommand{\etal}{et al.}
 
+\makeatletter
+\newcommand{\newalgname}[1]{%
+  \renewcommand{\ALG@name}{#1}%
+}
+\newalgname{Algorithme}% All algorithms will be called "Algorithme"
+\renewcommand{\listalgorithmname}{Liste des \ALG@name s}
+\makeatother
+
+\renewcommand{\algorithmicrequire}{\textbf{Entrée:}}
+\renewcommand{\algorithmicensure}{\textbf{Sortie:}}
+\renewcommand{\algorithmiccomment}[1]{\{#1\}}
+\renewcommand{\algorithmicend}{\textbf{fin}}
+\renewcommand{\algorithmicif}{\textbf{si}}
+\renewcommand{\algorithmicthen}{\textbf{alors}}
+\renewcommand{\algorithmicelse}{\textbf{sinon}}
+\renewcommand{\algorithmicfor}{\textbf{pour}}
+\renewcommand{\algorithmicforall}{\textbf{pour tout}}
+\renewcommand{\algorithmicdo}{\textbf{faire}}
+\renewcommand{\algorithmicwhile}{\textbf{tant que}}
+\renewcommand{\algorithmicreturn}{\textbf{retourner}}
+\newcommand{\algorithmicelsif}{\algorithmicelse\ \algorithmicif}
+\newcommand{\algorithmicendif}{\algorithmicend\ \algorithmicif}
+\newcommand{\algorithmicendfor}{\algorithmicend\ \algorithmicfor}
+
+\newcommand{\Continue}{\State \textbf{continuer}}
+\newcommand{\BreakWhile}{\State \textbf{sortir} \algorithmicwhile}
+
 \graphicspath {{imgs/}}
 
 \theoremstyle{definition}
@@ -170,7 +197,7 @@
 \singlespacing
 %% \include{avant-propos} %% Facultatif
 \cleardoublepage
-\pdfbookmark{\contentsname}{\contentsname}
+% \pdfbookmark{\contentsname}{\contentsname}
 \label{\contentsname}
 \tableofcontents
 \newpage
@@ -208,7 +235,8 @@
 % \end{appendices}
 
 \begin{appendices}
-\chapter{Experiment results of calculating LTL formul\ae{}s with bitmap compression}
+\renewcommand\chaptername{Appendix}
+\chapter{Résultats expérimentaux d'évaluation de formules LTL}
 \label{appendixa}
 \input{appendices}
 \end{appendices}
