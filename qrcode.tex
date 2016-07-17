@@ -148,7 +148,7 @@ Dans le court sondage précédent de technologies de communication sans fil sont
 
 \subsection{Aperçu de codes QR}
 
-Un code QR (officiellement appelé ``Quick Response Code'') \citep{qrcode-about} est un code-barre à deux dimensions qui stocke des données, comme le montre la figure \ref{fig:qr:helloqr}. En comparaison avec le code-barre bien connu UPC, qui est linéaire (i.e.\ unidimensionnel), un code QR peut stocker plus d'informations dans une impression plus petite.\footnote{\url{http://www.qrcode.com/en/}} Le standard du code QR stipule que ces codes peuvent avoir une capacité aussi élevée que 7089 caractères numériques ou 2953 caractères à 8 bits, et qu'un code est représenté dans un tableau carré d'un maximum de 177 $\times$ 177 ``pixels'', appelé \emph{modules} \citep{iso18004}.
+Un code QR (officiellement appelé ``Quick Response Code'') \citep{qrcode-about} est un code-barre à deux dimensions qui stocke des données, comme le montre la Figure \ref{fig:qr:helloqr}. En comparaison avec le code-barre bien connu UPC, qui est linéaire (i.e.\ unidimensionnel), un code QR peut stocker plus d'informations dans une impression plus petite.\footnote{\url{http://www.qrcode.com/en/}} Le standard du code QR stipule que ces codes peuvent avoir une capacité aussi élevée que 7089 caractères numériques ou 2953 caractères à 8 bits, et qu'un code est représenté dans un tableau carré d'un maximum de 177 $\times$ 177 ``pixels'', appelé \emph{modules} \citep{iso18004}.
 
 \begin{figure}
 \centering
@@ -261,7 +261,7 @@ Le décodage de codes dépend de la qualité et de la complexité de l'image cap
 
 Nos expériences ont rapidement trébuché par ce qui semble être un bogue dans de la librairie de décodage d'images ZXing. Lors de l'analyse de séquences d'images capturées par la caméra pour rechercher des erreurs de décodage, nous avons découvert que pour un nombre de fois, le décodage a échoué pendant que l'image correspondante semblait avoir aucun problème apparent (aucun trouble, cadrage juste, etc.). L'essai d'afficher encore les codes échoués à l'écran et puis d'essayer de les décoder avec la caméra n'a donné aucun succès, même après avoir changé la taille des codes, la position de la caméra, les conditions d'éclairage, etc. Le fait le plus curieux est que les codes immédiatement avant et après le code problématique ont été correctement décodées, tout en étant capturés dans les mêmes conditions. Même l'envoi de l'image ``pure''  du code directement à l'algorithme de décodage, sans aide de la caméra, produit une erreur de décodage.
 
-Il semble donc la librairie ne peut pas reconnaître certains des codes qu'elle produit en soi (La Figure \ref{fig:qr:bad-code} montre un tel exemple). Cela indique très probablement un bogue de la librairie, qui a persisté jusqu'à la dernière version disponible au moment où ce chapitre a été écrit. Par conséquent, dans ce qui suit, le lecteur doit garder à l'esprit qu'une proportion inconnue d'erreurs de reconnaissance sont causées par ce soi-disant bug, et non par les conditions expérimentales particulières. Tel est le cas, par exemple, pour les écarts dans le taux de correction que nous observerons dans les Figures \ref{img-exp1} et \ref{img-exp2}.
+Il semble donc la librairie ne peut pas reconnaître certains des codes qu'elle produit en soi (La Figure \ref{fig:qr:bad-code} montre un tel exemple). Cela indique très probablement un bogue de la librairie, qui a persisté jusqu'à la dernière version disponible au moment où ce chapitre a été écrit. Par conséquent, dans ce qui suit, le lecteur doit garder à l'esprit qu'une proportion inconnue d'erreurs de reconnaissance sont causées par ce soi-disant bug, et non par les conditions expérimentales particulières. Tel est le cas, par exemple, pour les écarts dans le taux de correction que nous observerons dans les Figures \ref{img-exp1}, \ref{img-exp2} et \ref{img-exp3}.
 
 \begin{figure}
 \centering
@@ -276,7 +276,7 @@ L'expérience vise à identifier la combinaison de paramètres qui permettraient
 
 \subsubsection{Résolution de codes}
 
-Le premier paramètre est la taille de données de codes (c.-à-d. le nombre de bits de données contenues dans chaque code) et la taille physique (le nombre de pixels utilisés pour afficher le code sur l'écran). Nous avons varié la taille des données par incréments de 500 bits, de 500 à 4500 bits. Comme le montre le tableau \ref{tab:qr:sample-sizes}, le plus grand code QR, qui contient 4500 bits de données en utilisant le niveau le plus élevé de correction d'erreur, occupe 101 $\times$ 101 modules. Nous avons aussi fixé la taille physique de codes à 700 $\times$ 700 pixels sur l'écran, ce qui rend chaque module un carré d'au moins 6 $\times$ 6 pixels.
+Le premier paramètre est la taille de données de codes (c.-à-d. le nombre de bits de données contenues dans chaque code) et la taille physique (le nombre de pixels utilisés pour afficher le code sur l'écran). Nous avons varié la taille des données par incréments de 500 bits, de 500 à 4500 bits. Comme le montre le Tableau \ref{tab:qr:sample-sizes}, le plus grand code QR, qui contient 4500 bits de données en utilisant le niveau le plus élevé de correction d'erreur, occupe 101 $\times$ 101 modules. Nous avons aussi fixé la taille physique de codes à 700 $\times$ 700 pixels sur l'écran, ce qui rend chaque module un carré d'au moins 6 $\times$ 6 pixels.
 
 \begin{table}[ht]
 \begin{center}
@@ -408,7 +408,7 @@ Ces résultats nous ont amenés à expérimenter avec les fréquences plus élev
 
 Ces expériences initiales nous permettent de tirer quelques conclusions sur la nature d'un canal de communication de codes QR. Premièrement, bien que la fréquence plus élevée de codes et la taille plus élevée de codes aient un impact négatif sur le taux de reconnaissance, les données accrues qui peuvent être globalement portées compensent le taux plus élevé d'erreurs en termes de la bande passante effective. Deuxièmement, l'introduction de répétition et la variation de formes de points pour les mêmes données augmentent la bande passante effective; cela montre que deux codes différents pour la moitié du temps est plus efficace qu'un seul code pour le même intervalle. Troisièmement, même pour les plus petites tailles de codes, le taux d'erreur du canal est jamais zéro, ce qui indique que le canal est intrinsèquement avec perte.
 
-A partir de ces constatations, on peut raisonnablement s'attendre qu'un flux de QR code fournisse un canal avec une bande passante effective d'environ 40 kbps, lors de l'affichage de 10 codes de 4000 bits par seconde en utilisant la technique de bourrage aléatoire et le niveau L de correction d'erreur. Le taux de décodage du canal avec ces paramètres doit être au moins 95\%. Évidement, ces constatations sont applicables à un réglage d'une caméra fixe. Elle ne prennent pas en considération la gigue potentielle, le flou ou d'autres effets qui peuvent se produire dans d'autres contextes ---bien qu'une expérience informelle décrite dans la section \ref{subsub:swipe} tende à indiquer que la technologie est relativement robuste.
+A partir de ces constatations, on peut raisonnablement s'attendre qu'un flux de QR code fournisse un canal avec une bande passante effective d'environ 40 kbps, lors de l'affichage de 10 codes de 4000 bits par seconde en utilisant la technique de bourrage aléatoire et le niveau L de correction d'erreur. Le taux de décodage du canal avec ces paramètres doit être au moins 95\%. Évidement, ces constatations sont applicables à un réglage d'une caméra fixe. Elle ne prennent pas en considération la gigue potentielle, le flou ou d'autres effets qui peuvent se produire dans d'autres contextes ---bien qu'une expérience informelle décrite dans la Section \ref{subsub:swipe} tende à indiquer que la technologie est relativement robuste.
 
 %% }}} --- Section
 
@@ -557,7 +557,7 @@ Avec les schémas, les messages peuvent être représentés sous une forme binai
 
 \paragraph{Enum} Une énumération est simplement fabriquée en bits de séquence correspondant à la valeur appropriée. Encore, le nombre de bits à lire est dicté par la taille de l'énumération, tel que spécifié dans le schéma du message à lire. Par exemple, si l'énumération définit 4 valeurs, alors 2 bits seront lus. La valeur numérique $i$ correspond à la $i$-ème chaîne déclarée dans l'énumération.
 
-\paragraph{List} Une liste commençant par 8 bits enregistre le nombre d'éléments de la liste. Le reste de la liste est la concaténation de la représentation binaire de chaque élément de la liste. Puisque le type de chaque élément et le nombre de ces éléments à lire sont tous deux connus, aucun délimiteur n'est nécessaire entre chaque élément ou à la fin de la liste.
+\paragraph{List} Une liste commence par 8 bits qui enregistrent le nombre d'éléments dans la liste. Le reste de la liste est la concaténation de la représentation binaire de chaque élément de la liste. Puisque le type de chaque élément et le nombre de ces éléments à lire sont tous deux connus, aucun délimiteur n'est nécessaire entre chaque élément ou à la fin de la liste.
 
 \paragraph{Fixed Map} Le contenu d'un map fixe est simplement la concaténation de la représentation binaire de valeur de chaque map. La clé auquel chaque valeur est associée, et le type de valeur à lire, sont précisés dans le schéma du message à lire, et devraient apparaître exactement dans l'ordre où ils ont été déclarés. Cela nous évite de répéter les clés de maps dans chaque message.
 
@@ -686,7 +686,7 @@ Le champ ``Link quality" donne une indication en temps réel du taux de décodag
 \subsection{Résultats expérimentaux}
 \setcounter{paragraph}{0}
 
-Les expériences de la section \ref{sec:qr:experiments} ont confirmé notre intuition que les flux de codes optiques sont un canal de communication intrinsèquement peu fiable et à faible bande passante. La compacité du protocole BufferTannen peut être motivée par un exemple de la vérification de l'exécution. Un jeu vidéo particulier, appelé Pingus, a été instrumenté pour produire des événements qui contiennent l'état de chaque personnage dans le jeu. Le schéma de ces événements est illustré à la figure \ref{fig:qr:pingus-schema}.
+Les expériences de la Section \ref{sec:qr:experiments} ont confirmé notre intuition que les flux de codes optiques sont un canal de communication intrinsèquement peu fiable et à faible bande passante. La compacité du protocole BufferTannen peut être motivée par un exemple de la vérification de l'exécution. Un jeu vidéo particulier, appelé Pingus, a été instrumenté pour produire des événements qui contiennent l'état de chaque personnage dans le jeu. Le schéma de ces événements est illustré à la Figure \ref{fig:qr:pingus-schema}.
 
 \subsubsection{Transfert de fichiers}
 

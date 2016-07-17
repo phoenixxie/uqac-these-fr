@@ -41,7 +41,7 @@ Un verdict dans la plupart des cas simples peut être normalement exprimé comme
 \end{center}
 \end{figure}
 
-La figure \ref{img:rvstruct} décrit le processus d'un système typique de la vérification de l'exécution qui contient les quatre étapes suivantes \citep{falcone2013tutorial}:
+La Figure \ref{img:rvstruct} décrit le processus d'un système typique de la vérification de l'exécution qui contient les quatre étapes suivantes \citep{falcone2013tutorial}:
 \begin{enumerate}
 \item \emph{Synthèse du moniteur}: Un moniteur est synthétisé à partir d'une propriété.
 \item \emph{Instrumentation du système}: Les instruments supplémentaires sont intégrés au système sous surveillance afin de générer les événements pour le \emph{moniteur}.
@@ -187,7 +187,7 @@ La vérification de l'exécution en mode \emph{online} requiert l'acceptation de
 
 \section{Cadre de la vérification de l'exécution}\label{sec:rv:frameworks}
 
-Dans la vérification de l'exécution, les moniteurs sont générés à partir de spécifications formelles par les cadres de la vérification de l'exécution. Il y a quatre modes de monitoring: \emph{offline}, \emph{online}, \emph{inline}, et \emph{outline} comme nous en avons discuté antérieurement dans cette section. De nombreux cadres et systèmes utilisant des variantes ou des extension de la LTL ont été proposés, comme le montre le tableau \ref{table:rvframeworks}.
+Dans la vérification de l'exécution, les moniteurs sont générés à partir de spécifications formelles par les cadres de la vérification de l'exécution. Il y a quatre modes de monitoring: \emph{offline}, \emph{online}, \emph{inline}, et \emph{outline} comme nous en avons discuté antérieurement dans cette section. De nombreux cadres et systèmes utilisant des variantes ou des extension de la LTL ont été proposés, comme le montre le Tableau \ref{table:rvframeworks}.
 
 \begin{table}[h]
 \centering
@@ -210,7 +210,7 @@ MOP \citep{chen2007mop} & Divers & inline/outline/offline \\
 \label{table:rvframeworks}
 \end{table}
 
-Java PathExplorer (JPaX) \citep{havelund2001java} est un système de la vérification de l'exécution en ligne en vue de surveiller les traces d'exécution de programmes Java. Il dispose de trois modules (montré dans la figure \ref{img:jpax}): un module d'instrumentation, un module d'observation et un module d'interconnexion. Le programme travaillant avec le module d'instrumentation envoie les traces nécessaires d'événements au module d'interconnexion, qui transmet ensuite les traces au module d'observation qui fonctionne éventuellement sur un autre ordinateur. Le module d'instrumentation est mis en fonction par un script spécifié par l'utilisateur en Java ou en Maude qui est destiné pour la spécification du monitoring de l'exécution.
+Java PathExplorer (JPaX) \citep{havelund2001java} est un système de la vérification de l'exécution \emph{online} en vue de surveiller les traces d'exécution de programmes Java. Il dispose de trois modules (montré dans la Figure \ref{img:jpax}): un module d'instrumentation, un module d'observation et un module d'interconnexion. Le programme travaillant avec le module d'instrumentation envoie les traces nécessaires d'événements au module d'interconnexion, qui transmet ensuite les traces au module d'observation qui fonctionne éventuellement sur un autre ordinateur. Le module d'instrumentation est mis en fonction par un script spécifié par l'utilisateur en Java ou en Maude qui est destiné pour la spécification du monitoring de l'exécution.
 
 \begin{figure}[h]
 \begin{center}
@@ -221,7 +221,7 @@ Java PathExplorer (JPaX) \citep{havelund2001java} est un système de la vérific
 \end{center}
 \end{figure}
 
-JavaMaC \citep{kim2004java} est un ``système d'assurance d'exécution'' pour les programmes Java tandis que Mac signifie monitoring et vérification. Son architecture est représentée dans la figure \ref{img:javamac}. Deux langues de définition sont proposées: l'une pour les spécifications de haut niveau qui spécifie les propriétés requises, l'autre pour la spécification de bas niveau qui définit les événements et les conditions. Pendant la préparation, un ``filtre'' et un ``reconnaisseur d'événement'' qui sont utilisés pour recueillir les traces d'événements nécessaires, sont générés à partir de la spécification de bas niveau, et un ``vérificateur d'exécution'' est généré à partir de la spécification de haut niveau. Lors de l'exécution du programme cible, les événements collectés par le ``filtre'' et le ``reconnaisseur d'événement'' sont envoyés au ``vérificateur d'exécution'' qui est alors responsable pour les travaux de la vérification de l'exécution.
+JavaMaC \citep{kim2004java} est un ``système d'assurance d'exécution'' pour les programmes Java tandis que Mac signifie monitoring et vérification. Son architecture est représentée dans la Figure \ref{img:javamac}. Deux langues de définition sont proposées: l'une pour les spécifications de haut niveau qui spécifie les propriétés requises, l'autre pour la spécification de bas niveau qui définit les événements et les conditions. Pendant la préparation, un ``filtre'' et un ``reconnaisseur d'événement'' qui sont utilisés pour recueillir les traces d'événements nécessaires, sont générés à partir de la spécification de bas niveau, et un ``vérificateur d'exécution'' est généré à partir de la spécification de haut niveau. Lors de l'exécution du programme cible, les événements collectés par le ``filtre'' et le ``reconnaisseur d'événement'' sont envoyés au ``vérificateur d'exécution'' qui est alors responsable pour les travaux de la vérification de l'exécution.
 
 \begin{figure}[h]
 \begin{center}
@@ -232,7 +232,7 @@ JavaMaC \citep{kim2004java} est un ``système d'assurance d'exécution'' pour le
 \end{center}
 \end{figure}
 
-\cite{d2005event} présentent une logique nommée HAWK et ses outils de programmes Java pour la vérification de l'exécution. HAWK est en fait construite sur EAGLE, une autre logique temporelle qui est considérée comme plus expressive \citep{barringer2004rule}. Bien que HAWK soit basée sur les événements en contraste avec EAGLE qui est basée sur les états, les spécifications de HAWK sont converties aux moniteurs d'EAGLE. Comme le décrit la figure \ref{img:eagle}, pendant l'exécution du programme, l'état d'EAGLE est mis à jour par le programme instrumenté qui notifie alors l'observateur d'EAGLE. Après cela, l'observateur évalue la formule dans l'état actuel pour produire un résultat.
+\cite{d2005event} présentent une logique nommée HAWK et ses outils de programmes Java pour la vérification de l'exécution. HAWK est en fait construite sur EAGLE, une autre logique temporelle qui est considérée comme plus expressive \citep{barringer2004rule}. Bien que HAWK soit basée sur les événements en contraste avec EAGLE qui est basée sur les états, les spécifications de HAWK sont converties aux moniteurs d'EAGLE. Comme le décrit la Figure \ref{img:eagle}, pendant l'exécution du programme, l'état d'EAGLE est mis à jour par le programme instrumenté qui notifie alors l'observateur d'EAGLE. Après cela, l'observateur évalue la formule dans l'état actuel pour produire un résultat.
 
 \begin{figure}[h]
 \begin{center}
@@ -245,7 +245,7 @@ JavaMaC \citep{kim2004java} est un ``système d'assurance d'exécution'' pour le
 
 Temporal Rover \citep{drusinsky2000temporal} est un outil commercial de la vérification de l'exécution basé sur LTL et MTL. Le code de spécification de Temporal Rover est inséré dans le code source Java, C, C ++ ou HDL, puis converti en un fichier source compilable du langage correspondant. Un système de la vérification de l'exécution de Temporal-Rover a normalement deux parties: l'hôte et la cible. L'hôte est responsable de la vérification alors que la cible effectue le calcul de formules propositionnelles et renvoie les résultats à l'hôte via le port série, RPC ou un autre protocole configurable.
 
-Chacun des cadres évoqués ci-dessus utilise une spécification formalisme différente, qui suggère qu'il n'existe pas une seule spécification formalisme général pouvant servir tous les objectifs. Pour être plus expressif et générique, \cite{chen2007mop} ont introduit les ``logic-plugins'' personnalisables et extensibles dans leur cadre de l'exécution MOP et ont conçu son architecture qui est représentée à la figure \ref{img:mop} avec deux couches: l'une est appelée ``language clients'' qui soutient différents langages de programmation, tandis que l'autre est nommée ``logic repository'' qui comprend et gère divers ``logic-plugins'' pour soutenir différents formalismes de spécification, tels que: Linear Temporal Logic (LTL), Finite State Machines (FSM), Extended Regular Expressions (ERE), Context Free Grammars (CFG) and String Rewriting Systems (SRS).
+Chacun des cadres évoqués ci-dessus utilise une spécification formalisme différente, qui suggère qu'il n'existe pas une seule spécification formalisme général pouvant servir tous les objectifs. Pour être plus expressif et générique, \cite{chen2007mop} ont introduit les ``logic-plugins'' personnalisables et extensibles dans leur cadre de l'exécution MOP et ont conçu son architecture qui est représentée à la Figure \ref{img:mop} avec deux couches: l'une est appelée ``language clients'' qui soutient différents langages de programmation, tandis que l'autre est nommée ``logic repository'' qui comprend et gère divers ``logic-plugins'' pour soutenir différents formalismes de spécification, tels que: Linear Temporal Logic (LTL), Finite State Machines (FSM), Extended Regular Expressions (ERE), Context Free Grammars (CFG) and String Rewriting Systems (SRS).
 
 \begin{figure}[h]
 \begin{center}
